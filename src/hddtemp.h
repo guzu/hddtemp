@@ -39,8 +39,6 @@ enum e_gettemp {
   GETTEMP_ERROR,            /* Error */
   GETTEMP_NOT_APPLICABLE,   /* */
   GETTEMP_UNKNOWN,          /* Drive is not in database */
-  GETTEMP_GUESS,            /* Not in database, but something was guessed, user must
-			       check that the temperature returned is correct */
   GETTEMP_KNOWN,            /* Drive appear in database */
   GETTEMP_NOSENSOR,         /* Drive appear in database but is known to have no sensor */
   GETTEMP_DRIVE_SLEEP       /* Drive is sleeping */
@@ -78,7 +76,7 @@ struct bustype {
 
 extern struct bustype *   bus[BUS_TYPE_MAX];
 extern char               errormsg[MAX_ERRORMSG_SIZE];
-extern int                tcp_daemon, debug, quiet, wakeup, af_hint;
+extern int                tcp_daemon, debug, quiet, wakeup, af_hint, foreground;
 extern char               separator;
 extern long               portnum, syslog_interval;
 extern char *             listen_addr;

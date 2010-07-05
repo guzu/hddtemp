@@ -28,10 +28,7 @@ $ ./configure --with-db-path=/etc/hddtemp.db
 INFORMATION
 ===========
 hddtemp accesses to the SATA disks via ATA pass-through commands (defined in 
-T10/04-262r7). At the time of writing (kernel 2.6.11-rc5 has just been 
-released), kernels doesn't have support for ATA pass-through. You have to 
-update the libata driver with a newer version that could be found on:
-http://www.kernel.org/pub/linux/kernel/people/jgarzik/libata/
+T10/04-262r7). Only kernels >= 2.6.16 have this support.
 
 In daemon mode, hddtemp doesn't allow too much query at a time. If the interval
 between two query is inferior to 1 minute, hddtemp will give the previous value

@@ -80,8 +80,8 @@ int sata_pass_thru(int device, unsigned char *cmd, unsigned char *buffer) {
 
   ret = scsi_SG_IO(device, cdb, sizeof(cdb), buffer, cmd[3] * 512, sense, sizeof(sense), dxfer_direction);
  
-  /* Verify SATA magics */
-  if (sense[0] != 0x72 || sense[7] != 0x0e || sense[9] != 0x0e || sense[10] != 0x00)
+  /* Verify SATA magic */
+  if (sense[0] != 0x72)
     return 1;		  
   else 
     return ret;

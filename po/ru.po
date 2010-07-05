@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hddtemp 0.3-beta3\n"
-"Report-Msgid-Bugs-To: hddtemp@guzu.net\n"
-"POT-Creation-Date: 2005-02-25 22:43+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-15 22:01+0200\n"
 "PO-Revision-Date: 2003-03-08 16:42+0300\n"
 "Last-Translator: Michael Shigorin <mike@altlinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -15,23 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/hddtemp.c:112
-#, c-format
-msgid ""
-"\n"
-"Regexp%s| Value | Description\n"
-"------%s---------------------\n"
-msgstr ""
-"\n"
-"Регэкс%s| Знач. | Описание   \n"
-"------%s---------------------\n"
-
-#: src/hddtemp.c:118
-#, c-format
-msgid "%s%s| %5d | %s\n"
-msgstr ""
-
-#: src/hddtemp.c:161
+#: src/hddtemp.c:156
 #, c-format
 msgid ""
 "\n"
@@ -40,7 +24,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/hddtemp.c:188
+#: src/hddtemp.c:189
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -53,71 +37,58 @@ msgstr ""
 "ВНИМАНИЕ: Если вы точно знаете, что датчик есть, напишите hddtemp@guzu.net\n"
 "ВНИМАНИЕ: (см. опции --help, --debug и --drivebase).\n"
 
-#: src/hddtemp.c:192
+#: src/hddtemp.c:197
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr "%s: %s:  нет датчика\n"
 
-#: src/hddtemp.c:197
-#, c-format
-msgid ""
-"WARNING: Drive %s doesn't appear in the database of supported drives\n"
-"WARNING: But using a common value, it reports something.\n"
-"WARNING: Note that the temperature shown could be wrong.\n"
-"WARNING: See --help, --debug and --drivebase options.\n"
-"WARNING: And don't forget you can add your drive to hddtemp.db\n"
-msgstr ""
-"ВНИМАНИЕ: Диск %s не включен в базу данных поддерживаемых приводов.\n"
-"ВНИМАНИЕ: Но с использованием распространенных параметров он что-то выдает.\n"
-"ВНИМАНИЕ: Заметьте, что показанная температура может таковой не являться.\n"
-"ВНИМАНИЕ: См. опции --help, --debug и --drivebase.\n"
-"ВНИМАНИЕ: И не забудьте, что можно добавить привод в hddtemp.db\n"
-
 #: src/hddtemp.c:202
-#, c-format
-msgid "%s: %s:  %d%sC or %sF\n"
+#, fuzzy, c-format
+msgid "%s: %s:  %d%sC\n"
 msgstr "%s: %s:  %d%sC или %sF\n"
 
-#: src/hddtemp.c:214
+#: src/hddtemp.c:226
 #, c-format
 msgid "%s: %s: drive is sleeping\n"
 msgstr "%s: %s:  нет датчика\n"
 
-#: src/hddtemp.c:217
-#, c-format
-msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
+#: src/hddtemp.c:233
+#, fuzzy, c-format
+msgid "%s: %s:  drive supported, but it doesn't have a temperature sensor.\n"
 msgstr "%s: %s:  известный диск, не содержащий датчика температуры.\n"
 
-#: src/hddtemp.c:220
+#: src/hddtemp.c:237
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr "ОШИБКА: %s: %s: неизвестный статус возврата\n"
 
-#: src/hddtemp.c:235
+#: src/hddtemp.c:252
 #, c-format
 msgid ""
 "\n"
 "If one of the field value seems to match the temperature, be sure to read\n"
-"the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
+"the hddtemp man page before sending a report (section REPORT). Thanks.\n"
 msgstr ""
 
-#: src/hddtemp.c:308
+#: src/hddtemp.c:329
 #, c-format
 msgid "ERROR: invalid separator.\n"
 msgstr "ОШИБКА: неверный разделитель.\n"
 
-#: src/hddtemp.c:319
+#: src/hddtemp.c:340
 #, c-format
 msgid "ERROR: invalid port number.\n"
 msgstr "ОЩИБКА: неверный номер порта.\n"
 
-#: src/hddtemp.c:329
+#: src/hddtemp.c:362
 #, fuzzy, c-format
 msgid ""
-" Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
+" Usage: hddtemp [OPTIONS] [TYPE:]DISK1 [[TYPE:]DISK2]...\n"
 "\n"
 "   hddtemp displays the temperature of drives supplied in argument.\n"
 "   Drives must support S.M.A.R.T.\n"
+"\n"
+"  TYPE could be SATA, PATA or SCSI. If omitted hddtemp will try to guess.\n"
 "\n"
 "  -b   --drivebase   :  display database file content that allow hddtemp to\n"
 "                        recognize supported drives.\n"
@@ -128,6 +99,7 @@ msgid ""
 "  -d   --daemon      :  run hddtemp in TCP/IP daemon mode (port %d by "
 "default.)\n"
 "  -f   --file=FILE   :  specify database file to use.\n"
+"  -F   --foreground  :  don't daemonize, stay in foreground.\n"
 "  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon "
 "mode).\n"
 "  -n   --numeric     :  print only the temperature.\n"
@@ -135,6 +107,8 @@ msgid ""
 "  -s   --separator=C :  separator to use between fields (in TCP/IP daemon "
 "mode).\n"
 "  -S   --syslog=s    :  log temperature to syslog every s seconds.\n"
+"  -u   --unit=[C|F]  :  force output temperature either in Celius or "
+"Fahrenheit.\n"
 "  -q   --quiet       :  do not check if the drive is supported.\n"
 "  -v   --version     :  display hddtemp version number.\n"
 "  -w   --wake-up     :  wake-up the drive if need.\n"
@@ -158,6 +132,7 @@ msgstr ""
 "  -d   --daemon      :  запустить hddtemp в фоновом режиме\n"
 "                        (по умолчанию используется порт %d)\n"
 "  -f   --file=FILE   :  указать файл базы данных.\n"
+"  -F   --foreground  :  don't daemonize, stay in foreground.\n"
 "  -n   --numeric     :  вывод только значения температуры.\n"
 "  -p   --port=#      :  порт (в фоновом режиме).\n"
 "  -s   --separator=C :  разделитель полей (в фоновом режиме).\n"
@@ -168,59 +143,72 @@ msgstr ""
 "\n"
 "Сообщения об ошибках и данные для дисков отправляйте на <hddtemp@guzu.net>.\n"
 
-#: src/hddtemp.c:522
+#: src/hddtemp.c:393
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "Версия hddtemp: %s\n"
 
-#: src/hddtemp.c:547
+#: src/hddtemp.c:409
 #, fuzzy, c-format
 msgid "ERROR: invalid interval.\n"
 msgstr "ОШИБКА: неверный разделитель.\n"
 
-#: src/hddtemp.c:547
+#: src/hddtemp.c:429
+#, c-format
 msgid "Too few arguments: you must specify one drive, at least.\n"
 msgstr ""
 
-#: src/hddtemp.c:557
-#, fuzzy
+#: src/hddtemp.c:439
+#, fuzzy, c-format
 msgid "ERROR: can't use --debug and --daemon or --syslog options together.\n"
 msgstr "ОШИБКА: одновременное использование --debug и --daemon недопустимо.\n"
 
-#: src/hddtemp.c:583
+#: src/hddtemp.c:496
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr "ОШИБКА: %s: невозможно определить тип шины\n"
 
-#: src/ata.c:66 src/scsi.c:68
+#: src/ata.c:66 src/scsi.c:64
 msgid "unknown"
 msgstr "неизв."
 
-#: src/ata.c:98
+#: src/ata.c:85 src/ata.c:104 src/scsi.c:91
 #, c-format
-msgid "field(%d)\t = %d\n"
-msgstr "поле(%d)\t = %d\n"
-
-#: src/ata.c:167
 msgid "S.M.A.R.T. not available"
 msgstr "S.M.A.R.T. недоступен"
 
-#: src/db.c:180
+#: src/db.c:115
+#, c-format
+msgid ""
+"\n"
+"Regexp%s| Value | Description\n"
+"------%s---------------------\n"
+msgstr ""
+"\n"
+"Регэкс%s| Знач. | Описание   \n"
+"------%s---------------------\n"
+
+#: src/db.c:121
+#, c-format
+msgid "%s%s| %5d | %s\n"
+msgstr ""
+
+#: src/db.c:236
 #, c-format
 msgid "hddtemp: can't open %1$s: %2$s\n"
 msgstr "hddtemp: не могу открыть %1$s: %2$s\n"
 
-#: src/db.c:194
+#: src/db.c:250
 #, c-format
 msgid "ERROR: syntax error at line %1$d in %2$s\n"
 msgstr "Синтаксическая ОШИБКА в строке %1$d файла %2$s\n"
 
-#: src/db.c:201
+#: src/db.c:257
 #, c-format
 msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
 msgstr "ОШИБКА: строка длиннее %1$d символов в %2$s.\n"
 
-#: src/scsi.c:112 src/scsi.c:130
+#: src/scsi.c:111 src/scsi.c:129
 #, c-format
 msgid "log sense failed : %s"
 msgstr ""

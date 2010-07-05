@@ -118,10 +118,21 @@ static enum e_gettemp sata_get_temperature(struct disk *dsk) {
   int              i;
   u16 *            p;
 
-  if(dsk->db_entry && dsk->db_entry->attribute_id == 0) {
+  if(dsk->db_entry->attribute_id == 0) {
     close(dsk->fd);
     dsk->fd = -1;
     return GETTEMP_NOSENSOR;
+  }
+
+  switch(ata_get_powermode(dsk->fd)) {
+  case PWM_STANDBY:
+  case PWM_SLEEPING:
+    if (!wakeup)
+      return GETTEMP_DRIVE_SLEEP;
+  case PWM_UNKNOWN:
+  case PWM_ACTIVE: /* active or idle */
+  default:
+    break;
   }
   
   /* get SMART values */
@@ -154,24 +165,15 @@ static enum e_gettemp sata_get_temperature(struct disk *dsk) {
   }
 
   /* temperature */
-  if(dsk->db_entry && dsk->db_entry->attribute_id > 0)
-    field = sata_search_temperature(values, dsk->db_entry->attribute_id);
-  else
-    field = sata_search_temperature(values, DEFAULT_ATTRIBUTE_ID);
+  field = sata_search_temperature(values, dsk->db_entry->attribute_id);
 
   if(field)
     dsk->value = *(field+3);
 
   if(dsk->db_entry && dsk->value != -1)
     return GETTEMP_KNOWN;
-  else {
-    if(dsk->value != -1) {
-      return GETTEMP_GUESS;
-    }
-    else {
-      return GETTEMP_UNKNOWN;
-    }
-  }
+  else
+    return GETTEMP_UNKNOWN;
 
   /* never reached */
 }

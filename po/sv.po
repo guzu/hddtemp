@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Swedish translation of hddtemp.
+# Copyright (C) 2006 Free Software Foundation, Inc.
+# This file is distributed under the same license as the hddtemp package.
+# Daniel Nylander <po@danielnylander.se>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: hddtemp 0.3-beta14-4\n"
 "Report-Msgid-Bugs-To: hddtemp@guzu.net\n"
 "POT-Creation-Date: 2005-02-25 22:43+0100\n"
-"PO-Revision-Date: 2005-11-02 19:03+0100\n"
+"PO-Revision-Date: 2006-11-15 14:47+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,7 @@ msgstr ""
 "X-Poedit-Language: swe\n"
 "X-Poedit-Country: swe\n"
 
-#: src/hddtemp.c:112
-#, c-format
-msgid ""
-"\n"
-"Regexp%s| Value | Description\n"
-"------%s---------------------\n"
-msgstr ""
-"\n"
-"Regexp%s| Värde | Beskrivning\n"
-"------%s---------------------\n"
-
-#: src/hddtemp.c:118
-#, c-format
-msgid "%s%s| %5d | %s\n"
-msgstr "%s%s| %5d | %s\n"
-
-#: src/hddtemp.c:161
+#: ../src/hddtemp.c:156
 #, c-format
 msgid ""
 "\n"
@@ -46,7 +30,7 @@ msgstr ""
 "Modell: %s\n"
 "\n"
 
-#: src/hddtemp.c:188
+#: ../src/hddtemp.c:189
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -56,16 +40,15 @@ msgid ""
 msgstr ""
 "VARNING: Disken %s verkar inte ha en temperatursensor.\n"
 "VARNING: Detta behöver inte betyda att den inte har en.\n"
-"VARNING: Om du är säker att den har en, vänligen kontakta (hddtemp@guzu."
-"net).\n"
-"VARNING: Se --help, --debug och --drivebase flaggorna.\n"
+"VARNING: Om du är säker att den har en, kontakta (hddtemp@guzu.net).\n"
+"VARNING: Se flaggorna --help, --debug och --drivebase.\n"
 
-#: src/hddtemp.c:192
+#: ../src/hddtemp.c:197
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr "%s: %s:  ingen sensor\n"
 
-#: src/hddtemp.c:197
+#: ../src/hddtemp.c:204
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't appear in the database of supported drives\n"
@@ -76,59 +59,61 @@ msgid ""
 msgstr ""
 "VARNING: Disken %s verkar inte finnas i databasen över diskar som stöds\n"
 "VARNING: Men använder man ett vanligt värde rapporterar den något.\n"
-"VARNING: Notera att temperaturen som visas kan vara felaktig.\n"
-"VARNING: Se --help, --debug och --drivebase flaggorna.\n"
+"VARNING: Observera att temperaturen som visas kan vara felaktig.\n"
+"VARNING: Se flaggorna --help, --debug och --drivebase.\n"
 "VARNING: Och glöm inte att du kan lägga till din disk till hddtemp.db\n"
 
-#: src/hddtemp.c:202
+#: ../src/hddtemp.c:211
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
 msgstr "%s: %s:  %d%sC eller %sF\n"
 
-#: src/hddtemp.c:214
+#: ../src/hddtemp.c:235
 #, c-format
 msgid "%s: %s: drive is sleeping\n"
-msgstr "%s: %s: disken sover\n"
+msgstr "%s: %s: hårddisken sover\n"
 
-#: src/hddtemp.c:217
+#: ../src/hddtemp.c:242
 #, c-format
-msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
-msgstr "%s: %s:  känd disk men den har ingen temperatursensor.\n"
+msgid "%s: %s:  drive supported, but it doesn't have a temperature sensor.\n"
+msgstr "%s: %s:  disken stöds, men har ingen temperatursensor.\n"
 
-#: src/hddtemp.c:220
+#: ../src/hddtemp.c:246
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
-msgstr "FEL: %s: %s: okänd returnerad status\n"
+msgstr "FEL: %s: %s: okänd svarsstatus\n"
 
-#: src/hddtemp.c:235
+#: ../src/hddtemp.c:261
 #, c-format
 msgid ""
 "\n"
 "If one of the field value seems to match the temperature, be sure to read\n"
-"the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
+"the hddtemp man page before sending a report (section REPORT). Thanks.\n"
 msgstr ""
 "\n"
-"Om ett av fältvärdena verkar matcha temperaturen, var säker på att du\n"
-"läst manualsidan för hddtemp före du skickar en rapport till mig (sektionen\n"
+"Om ett av fältvärdena verkar matcha temperaturen, se till att läsa\n"
+"manualsidan för hddtemp innan du skickar en rapport (sektionen\n"
 "REPORT). Tack.\n"
 
-#: src/hddtemp.c:308
+#: ../src/hddtemp.c:337
 #, c-format
 msgid "ERROR: invalid separator.\n"
-msgstr "FEL: ogiltig separator.\n"
+msgstr "FEL: ogiltig avgränsare.\n"
 
-#: src/hddtemp.c:319
+#: ../src/hddtemp.c:348
 #, c-format
 msgid "ERROR: invalid port number.\n"
 msgstr "FEL: ogiltigt portnummer.\n"
 
-#: src/hddtemp.c:329
+#: ../src/hddtemp.c:370
 #, c-format
 msgid ""
-" Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
+" Usage: hddtemp [OPTIONS] [TYPE:]DISK1 [[TYPE:]DISK2]...\n"
 "\n"
 "   hddtemp displays the temperature of drives supplied in argument.\n"
 "   Drives must support S.M.A.R.T.\n"
+"\n"
+"  TYPE could be SATA, PATA or SCSI. If omitted hddtemp will try to guess.\n"
 "\n"
 "  -b   --drivebase   :  display database file content that allow hddtemp to\n"
 "                        recognize supported drives.\n"
@@ -136,16 +121,14 @@ msgid ""
 "                        Useful to find a value that seems to match the\n"
 "                        temperature and/or to send me a report.\n"
 "                        (done for every drive supplied).\n"
-"  -d   --daemon      :  run hddtemp in TCP/IP daemon mode (port %d by "
-"default.)\n"
+"  -d   --daemon      :  run hddtemp in TCP/IP daemon mode (port %d by default.)\n"
 "  -f   --file=FILE   :  specify database file to use.\n"
-"  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon "
-"mode).\n"
+"  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon mode).\n"
 "  -n   --numeric     :  print only the temperature.\n"
 "  -p   --port=#      :  port to listen to (in TCP/IP daemon mode).\n"
-"  -s   --separator=C :  separator to use between fields (in TCP/IP daemon "
-"mode).\n"
+"  -s   --separator=C :  separator to use between fields (in TCP/IP daemon mode).\n"
 "  -S   --syslog=s    :  log temperature to syslog every s seconds.\n"
+"  -u   --unit=[C|F]  :  force output temperature either in Celius or Fahrenheit.\n"
 "  -q   --quiet       :  do not check if the drive is supported.\n"
 "  -v   --version     :  display hddtemp version number.\n"
 "  -w   --wake-up     :  wake-up the drive if need.\n"
@@ -154,91 +137,107 @@ msgid ""
 "\n"
 "Report bugs or new drives to <hddtemp@guzu.net>.\n"
 msgstr ""
-" Användning: hddtemp [FLAGGOR] DISK1 [DISK2]...\n"
+" Användning: hddtemp [FLAGGOR] [TYP:]DISK1 [[TYP:]DISK2]...\n"
 "\n"
-"   hddtemp visar temperaturen på de hårddiskar som angivits i argumentet.\n"
+"   hddtemp visar temperaturen för de hårddiskar som angivits i argumentet.\n"
 "   Hårddiskarna måste ha stöd för S.M.A.R.T.\n"
+"\n"
+"  TYP kan vara SATA, PATA eller SCSI. Hddtemp försöker gissa om den inte angivs.\n"
 "\n"
 "  -b   --drivebase   :  visa innehållet i databasfilen som gör att hddtemp\n"
 "                        kan känna igen diskar som stöds.\n"
 "  -D   --debug       :  visa olika S.M.A.R.T-fält och dess värden.\n"
 "                        Användbar för att hitta värdet som stämmer in på\n"
-"                        temperaturen och/eller för att skicka mig en "
-"rapport.\n"
+"                        temperaturen och/eller för att skicka mig en rapport.\n"
 "                        (görs för varje disk som skickas med).\n"
-"  -d   --daemon      :  kör hddtemp i TCP/IP-demonläge (port %d som "
-"standard.)\n"
+"  -d   --daemon      :  kör hddtemp i TCP/IP-demonläge (port %d som standard.)\n"
 "  -f   --file=FIL    :  ange databasfil att använda.\n"
-"  -l   --listen=addr :  lyssna på ett specifikt gränssnitt (i TCP/IP-"
-"demonläge).\n"
+"  -l   --listen=adr  :  lyssna på ett specifikt gränssnitt (i TCP/IP-demonläge).\n"
 "  -n   --numeric     :  skriv bara ut temperaturen.\n"
 "  -p   --port=#      :  port att lyssna på (i TCP/IP-demonläge).\n"
-"  -s   --separator=C :  separatör att använda mellan fält (i TCP/IP-"
-"demonläge).\n"
+"  -s   --separator=C :  separatör att använda mellan fält (i TCP/IP-demonläge).\n"
 "  -S   --syslog=s    :  logga temperaturen till syslog var s sekund.\n"
+"  -u   --unit=[C|F]  :  tvinga rapporterad temperatur i antingen Celius eller Fahrenheit.\n"
 "  -q   --quiet       :  kontrollera inte om det finns stöd för disken.\n"
 "  -v   --version     :  visa hddtemp versionsnummer.\n"
 "  -w   --wake-up     :  väck upp disken om det behövs.\n"
 "  -4                 :  lyssna endast på IPv4 socket.\n"
 "  -6                 :  lyssna endast på IPv6 socket.\n"
 "\n"
-"Rapportera buggar eller nya hårddiskar till <hddtemp@guzu.net>.\n"
+"Rapportera fel eller nya hårddiskar till <hddtemp@guzu.net>\n"
+"Skicka synpunkter på översättningen till <tp-sv@listor.tp-sv.se>\n"
 
-#: src/hddtemp.c:522
+#: ../src/hddtemp.c:400
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "hddtemp version %s\n"
 
-#: src/hddtemp.c:547
+#: ../src/hddtemp.c:416
 #, c-format
 msgid "ERROR: invalid interval.\n"
 msgstr "FEL: ogiltigt intervall.\n"
 
-#: src/hddtemp.c:547
+#: ../src/hddtemp.c:433
+#, c-format
 msgid "Too few arguments: you must specify one drive, at least.\n"
-msgstr "För få argument: du måste specificera åtminstone en disk.\n"
+msgstr "För få argument: du måste ange åtminstone en disk.\n"
 
-#: src/hddtemp.c:557
+#: ../src/hddtemp.c:443
+#, c-format
 msgid "ERROR: can't use --debug and --daemon or --syslog options together.\n"
-msgstr ""
-"FEL: kan inte använda --debug och --daemon eller --syslog flaggorna "
-"tillsammans.\n"
+msgstr "FEL: kan inte använda flaggorna --debug och --daemon eller --syslog samtidigt.\n"
 
-#: src/hddtemp.c:583
+#: ../src/hddtemp.c:500
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
-msgstr ""
-"FEL: %s: kan inte fastställa busstyp (eller så är denna busstyp okänd)\n"
+msgstr "FEL: %s: kan inte fastställa busstyp (eller så är busstypen okänd)\n"
 
-#: src/ata.c:66 src/scsi.c:68
+#: ../src/ata.c:66
+#: ../src/scsi.c:64
 msgid "unknown"
 msgstr "okänd"
 
-#: src/ata.c:98
+#: ../src/ata.c:85
+#: ../src/ata.c:104
+#: ../src/scsi.c:91
 #, c-format
-msgid "field(%d)\t = %d\n"
-msgstr "fält(%d)\t = %d\n"
-
-#: src/ata.c:167
 msgid "S.M.A.R.T. not available"
-msgstr "S.M.A.R.T. är inte tillgänglig"
+msgstr "S.M.A.R.T. är inte tillgängligt"
 
-#: src/db.c:180
+#: ../src/db.c:115
+#, c-format
+msgid ""
+"\n"
+"Regexp%s| Value | Description\n"
+"------%s---------------------\n"
+msgstr ""
+"\n"
+"Regexp%s| Värde | Beskrivning\n"
+"------%s---------------------\n"
+
+#: ../src/db.c:121
+#, c-format
+msgid "%s%s| %5d | %s\n"
+msgstr "%s%s| %5d | %s\n"
+
+#: ../src/db.c:236
 #, c-format
 msgid "hddtemp: can't open %1$s: %2$s\n"
 msgstr "hddtemp: kan inte öppna %1$s: %2$s\n"
 
-#: src/db.c:194
+#: ../src/db.c:250
 #, c-format
 msgid "ERROR: syntax error at line %1$d in %2$s\n"
 msgstr "FEL: syntaxfel på rad %1$d i %2$s\n"
 
-#: src/db.c:201
+#: ../src/db.c:257
 #, c-format
 msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
 msgstr " FEL: raden överstiger %1$d tecken i %2$s.\n"
 
-#: src/scsi.c:112 src/scsi.c:130
+#: ../src/scsi.c:111
+#: ../src/scsi.c:129
 #, c-format
 msgid "log sense failed : %s"
 msgstr "igenkänning av logg misslyckades : %s"
+

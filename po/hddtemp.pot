@@ -1,35 +1,22 @@
-
-# Copyright (C) 2006 Free Software Foundation, Inc.
-# This file is distributed under the same license as the 'hddtemp' package.
-# Emmanuel VARAGNAT <hddtemp@guzu.net>, 2006.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: hddtemp@guzu.net\n"
-"POT-Creation-Date: 2005-02-25 22:43+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-15 22:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Emmanuel Varagnat <hddtemp@guzu.net>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/hddtemp.c:112
-#, c-format
-msgid ""
-"\n"
-"Regexp%s| Value | Description\n"
-"------%s---------------------\n"
-msgstr ""
-
-#: src/hddtemp.c:118
-#, c-format
-msgid "%s%s| %5d | %s\n"
-msgstr ""
-
-#: src/hddtemp.c:161
+#: src/hddtemp.c:156
 #, c-format
 msgid ""
 "\n"
@@ -38,7 +25,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/hddtemp.c:188
+#: src/hddtemp.c:189
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -47,66 +34,58 @@ msgid ""
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
 
-#: src/hddtemp.c:192
+#: src/hddtemp.c:197
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr ""
 
-#: src/hddtemp.c:197
-#, c-format
-msgid ""
-"WARNING: Drive %s doesn't appear in the database of supported drives\n"
-"WARNING: But using a common value, it reports something.\n"
-"WARNING: Note that the temperature shown could be wrong.\n"
-"WARNING: See --help, --debug and --drivebase options.\n"
-"WARNING: And don't forget you can add your drive to hddtemp.db\n"
-msgstr ""
-
 #: src/hddtemp.c:202
 #, c-format
-msgid "%s: %s:  %d%sC or %sF\n"
+msgid "%s: %s:  %d%sC\n"
 msgstr ""
 
-#: src/hddtemp.c:214
+#: src/hddtemp.c:226
 #, c-format
 msgid "%s: %s: drive is sleeping\n"
 msgstr ""
 
-#: src/hddtemp.c:217
+#: src/hddtemp.c:233
 #, c-format
-msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
+msgid "%s: %s:  drive supported, but it doesn't have a temperature sensor.\n"
 msgstr ""
 
-#: src/hddtemp.c:220
+#: src/hddtemp.c:237
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr ""
 
-#: src/hddtemp.c:235
+#: src/hddtemp.c:252
 #, c-format
 msgid ""
 "\n"
 "If one of the field value seems to match the temperature, be sure to read\n"
-"the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
-msgstr ""
-
-#: src/hddtemp.c:308
-#, c-format
-msgid "ERROR: invalid separator.\n"
-msgstr ""
-
-#: src/hddtemp.c:319
-#, c-format
-msgid "ERROR: invalid port number.\n"
+"the hddtemp man page before sending a report (section REPORT). Thanks.\n"
 msgstr ""
 
 #: src/hddtemp.c:329
 #, c-format
+msgid "ERROR: invalid separator.\n"
+msgstr ""
+
+#: src/hddtemp.c:340
+#, c-format
+msgid "ERROR: invalid port number.\n"
+msgstr ""
+
+#: src/hddtemp.c:362
+#, c-format
 msgid ""
-" Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
+" Usage: hddtemp [OPTIONS] [TYPE:]DISK1 [[TYPE:]DISK2]...\n"
 "\n"
 "   hddtemp displays the temperature of drives supplied in argument.\n"
 "   Drives must support S.M.A.R.T.\n"
+"\n"
+"  TYPE could be SATA, PATA or SCSI. If omitted hddtemp will try to guess.\n"
 "\n"
 "  -b   --drivebase   :  display database file content that allow hddtemp to\n"
 "                        recognize supported drives.\n"
@@ -117,6 +96,7 @@ msgid ""
 "  -d   --daemon      :  run hddtemp in TCP/IP daemon mode (port %d by "
 "default.)\n"
 "  -f   --file=FILE   :  specify database file to use.\n"
+"  -F   --foreground  :  don't daemonize, stay in foreground.\n"
 "  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon "
 "mode).\n"
 "  -n   --numeric     :  print only the temperature.\n"
@@ -124,6 +104,8 @@ msgid ""
 "  -s   --separator=C :  separator to use between fields (in TCP/IP daemon "
 "mode).\n"
 "  -S   --syslog=s    :  log temperature to syslog every s seconds.\n"
+"  -u   --unit=[C|F]  :  force output temperature either in Celius or "
+"Fahrenheit.\n"
 "  -q   --quiet       :  do not check if the drive is supported.\n"
 "  -v   --version     :  display hddtemp version number.\n"
 "  -w   --wake-up     :  wake-up the drive if need.\n"
@@ -133,58 +115,69 @@ msgid ""
 "Report bugs or new drives to <hddtemp@guzu.net>.\n"
 msgstr ""
 
-#: src/hddtemp.c:522
+#: src/hddtemp.c:393
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr ""
 
-#: src/hddtemp.c:547
+#: src/hddtemp.c:409
 #, c-format
 msgid "ERROR: invalid interval.\n"
 msgstr ""
 
-#: src/hddtemp.c:547
+#: src/hddtemp.c:429
+#, c-format
 msgid "Too few arguments: you must specify one drive, at least.\n"
 msgstr ""
 
-#: src/hddtemp.c:557
+#: src/hddtemp.c:439
+#, c-format
 msgid "ERROR: can't use --debug and --daemon or --syslog options together.\n"
 msgstr ""
 
-#: src/hddtemp.c:583
+#: src/hddtemp.c:496
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr ""
 
-#: src/ata.c:66 src/scsi.c:68
+#: src/ata.c:66 src/scsi.c:64
 msgid "unknown"
 msgstr ""
 
-#: src/ata.c:98
+#: src/ata.c:85 src/ata.c:104 src/scsi.c:91
 #, c-format
-msgid "field(%d)\t = %d\n"
-msgstr ""
-
-#: src/ata.c:167
 msgid "S.M.A.R.T. not available"
 msgstr ""
 
-#: src/db.c:180
+#: src/db.c:115
+#, c-format
+msgid ""
+"\n"
+"Regexp%s| Value | Description\n"
+"------%s---------------------\n"
+msgstr ""
+
+#: src/db.c:121
+#, c-format
+msgid "%s%s| %5d | %s\n"
+msgstr ""
+
+#: src/db.c:236
 #, c-format
 msgid "hddtemp: can't open %1$s: %2$s\n"
 msgstr ""
 
-#: src/db.c:194
+#: src/db.c:250
 #, c-format
 msgid "ERROR: syntax error at line %1$d in %2$s\n"
 msgstr ""
 
-#: src/db.c:201
+#: src/db.c:257
 #, c-format
 msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
 msgstr ""
 
-#: src/scsi.c:112 src/scsi.c:130
+#: src/scsi.c:111 src/scsi.c:129
 #, c-format
 msgid "log sense failed : %s"
 msgstr ""

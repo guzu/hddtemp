@@ -163,19 +163,16 @@ void daemon_send_msg(struct disk *ldisks, int cfd) {
 
     switch(dsk->ret) {
     case GETTEMP_NOT_APPLICABLE:
-      n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
+      n = snprintf(msg, sizeof(msg), "%s%c%s%cNA%c*",
                    dsk->drive, separator,
                    dsk->model, separator,
-                   "NA",       separator,
-                   '*');
+                   separator);
       break;
-    case GETTEMP_GUESS:
     case GETTEMP_UNKNOWN:
-      n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
+      n = snprintf(msg, sizeof(msg), "%s%c%s%cUNK%c*",
                    dsk->drive, separator,
-                   dsk->model, separator,
-                   "UNK",     separator,
-                   '*');
+                   dsk->model, separator, 
+		   separator);
       break;
     case GETTEMP_KNOWN:
       n = snprintf(msg, sizeof(msg), "%s%c%s%c%d%c%c",
@@ -185,26 +182,23 @@ void daemon_send_msg(struct disk *ldisks, int cfd) {
                    get_unit(dsk));
       break;
     case GETTEMP_NOSENSOR:
-      n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
+      n = snprintf(msg, sizeof(msg), "%s%c%s%cNOS%c*",
                    dsk->drive, separator,
                    dsk->model, separator,
-                   "NOS",      separator,
-                   '*');
+                   separator);
       break;
     case GETTEMP_DRIVE_SLEEP:
-      n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
+      n = snprintf(msg, sizeof(msg), "%s%c%s%cSLP%c*",
                    dsk->drive, separator,
                    dsk->model, separator,
-                   "SLP",      separator,
-                   '*');
+                   separator);
       break;
     case GETTEMP_ERROR:
     default:
-      n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
+      n = snprintf(msg, sizeof(msg), "%s%c%s%cERR%c*",
                    dsk->drive,                        separator,
                    (dsk->model) ? dsk->model : "???", separator,
-                   "ERR",                             separator,
-                   '*');
+                   separator);
       break;
     }
     write(cfd,&separator, 1);
@@ -222,14 +216,11 @@ void daemon_syslog(struct disk *ldisks) {
   for(dsk = ldisks; dsk; dsk = dsk->next) {
     switch(dsk->ret) {
     case GETTEMP_KNOWN:
-    case GETTEMP_GUESS:
-      value_to_unit(dsk);
-
       syslog(LOG_INFO, "%s: %s: %d %c", 
              dsk->drive,
 	     dsk->model,
-	     dsk->value,
-	     dsk->db_entry->unit);
+	     value_to_unit(dsk),
+	     get_unit(dsk));
       break;
     case GETTEMP_DRIVE_SLEEP:
       syslog(LOG_WARNING, _("%s: %s: drive is sleeping"), 
@@ -270,28 +261,30 @@ void do_daemon_mode(struct disk *ldisks) {
   fd_set             deffds;
   time_t             next_time;
 
-  switch(fork()) {
-  case -1:
-    perror("fork");
-    exit(2);
-    break;
-  case 0:
-    break;
-  default:
-    exit(0);
-  }
-  
-  setsid();
-  
-  switch(fork()) {
-  case -1:
-    perror("fork");
-    exit(2);
-    break;
-  case 0:
-    break;
-  default:
-    exit(0);
+if (!foreground) {
+    switch(fork()) {
+    case -1:
+      perror("fork");
+      exit(2);
+      break;
+    case 0:
+      break;
+    default:
+      exit(0);
+    }
+
+    setsid();
+
+    switch(fork()) {
+    case -1:
+      perror("fork");
+      exit(2);
+      break;
+    case 0:
+      break;
+    default:
+      exit(0);
+    }
   }
   chdir("/");
   umask(0);

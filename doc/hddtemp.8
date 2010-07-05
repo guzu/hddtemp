@@ -58,6 +58,10 @@ Execute hddtemp in TCP/IP daemon mode (port 7634 by default).
 .B \-f, \-\-file=\fIfile\fI
 Specify the database file to use.
 .TP
+.B \-F, \-\-foreground
+Don't fork into the background even in daemon mode.  This is useful
+when running under a process supervisor.
+.TP
 .B \-l, \-\-listen=\fIaddr\fR
 Listen on a specific address.  \fIaddr\fR is a string containing a
 host name or a numeric host address string.  The numeric host address
@@ -80,6 +84,9 @@ seconds.
 .B \-q, \-\-quiet
 Don't check if the drive is supported.
 .TP
+.B \-u, \-\-units=\fIC|F\fR
+Force output temperature either in Celsius or Fahrenheit.\n"
+.TP
 .B \-v, \-\-version
 Display hddtemp version number.
 .TP
@@ -96,7 +103,7 @@ Listen on IPv6 sockets only.
 .SH "DRIVE DATABASE"
 If you know your drive has a temperature sensor but it is being
 reported unsupported, tell me which model and which manufacturer it
-is, and/or just add a new entry in /usr/share/misc/hddtemp.db.  Each
+is, and/or just add a new entry in /etc/hddtemp.db.  Each
 line of hddtemp.db is either a comment, a blank line or a line
 containing:
 .TP
@@ -112,7 +119,7 @@ set of drives from its model name or from a generic model name,
 Feedback is welcome (see the REPORT section below).
 
 .SH "TCP/IP DAEMON MODE"
-Exemple of type forcing:
+Example of type forcing:
 .PP
 # hddtemp SATA:/dev/sda PATA:/dev/hda
 .PP
@@ -183,5 +190,5 @@ supported on i386 architectures only.
 .PP
 Emmanuel Varagnat (hddtemp@guzu.net).
 .PP
-This manual page was originaly written by Aurelien Jarno <aurel32@debian.org>,
+This manual page was originally written by Aurelien Jarno <aurel32@debian.org>,
 for the Debian GNU/Linux system (but may be used by others).
