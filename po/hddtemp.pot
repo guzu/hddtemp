@@ -1,20 +1,19 @@
-# translation of fr.po to FRANCAIS
-# Traduction française (french translation :o)
-# Copyright (C) 2002,2003 Free Software Foundation, Inc.
-# Emmanuel Varagnat <coredump@free.fr>, 2002.
-# Aurelien Jarno <aurelien@aurel32.net>, 2003
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: fr\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2003-06-03 01:32+0200\n"
-"PO-Revision-Date: 2003-06-03 00:58GMT+1\n"
-"Last-Translator: Aurelien Jarno <aurelien@aurel32.net>\n"
-"Language-Team: FRANCAIS <fr@li.org>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.1\n"
 
 #: src/hddtemp.c:113
 #, c-format
@@ -23,14 +22,11 @@ msgid ""
 "Regexp%s| Value | Description\n"
 "------%s---------------------\n"
 msgstr ""
-"\n"
-"Regexp%s| Valeur | Description\n"
-"------%s----------------------\n"
 
 #: src/hddtemp.c:119
 #, c-format
 msgid "%s%s| %5d | %s\n"
-msgstr "%s%s|  %5d | %s\n"
+msgstr ""
 
 #: src/hddtemp.c:160
 #, c-format
@@ -40,10 +36,6 @@ msgid ""
 "Model: %s\n"
 "\n"
 msgstr ""
-"\n"
-"================= hddtemp %s ==================\n"
-"Modèle: %s\n"
-"\n"
 
 #: src/hddtemp.c:186
 #, c-format
@@ -53,16 +45,11 @@ msgid ""
 "WARNING: If you are sure it has one, please contact me (coredump@free.fr).\n"
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
-"ATTENTION : Le lecteur %s semble ne pas avoir de capteur de température.\n"
-"ATTENTION : Cela ne veut pas dire qu'il n'en n'a pas.\n"
-"ATTENTION : Si vous êtes sûr qu'il en a un, contactez moi (coredump@free."
-"fr).\n"
-"ATTENTION : Voir les options --help, --debug et --drivebase.\n"
 
 #: src/hddtemp.c:190
 #, c-format
 msgid "%s: %s:  no sensor\n"
-msgstr "%s: %s :  pas de capteur\n"
+msgstr ""
 
 #: src/hddtemp.c:194
 #, c-format
@@ -73,29 +60,21 @@ msgid ""
 "WARNING: See --help, --debug and --drivebase options.\n"
 "WARNING: And don't forget you can add your drive to hddtemp.db\n"
 msgstr ""
-"ATTENTION : Le lecteur %s n'apparait pas dans la base de données des "
-"lecteurs supportés\n"
-"ATTENTION : Mais en utilisant une valeur courante, il renvoie quelque "
-"chose.\n"
-"ATTENTION : Notez que la température renvoyée peut être erronée.\n"
-"ATTENTION : Voir les options --help, --debug et --drivebase.\n"
-"ATTENTION : Et n'oubliez pas d'ajouter votre lecteur au fichier hddtemp.db\n"
 
 #: src/hddtemp.c:199
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
-msgstr "%s: %s :  %d%sC ou %sF\n"
+msgstr ""
 
 #: src/hddtemp.c:211
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
 msgstr ""
-"%s: %s:  lecteur connu, mais il ne possède pas de capteur de température.\n"
 
 #: src/hddtemp.c:214
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
-msgstr "ERREUR : %s : %s : status inconnu\n"
+msgstr ""
 
 #: src/hddtemp.c:229
 msgid ""
@@ -108,29 +87,21 @@ msgid ""
 "Don't forget to compare your value(s) with those in the database.\n"
 "(see option --drivebase)\n"
 msgstr ""
-"\n"
-"Si un des champs semble correspondre à une température, vous pouvez\n"
-"m'envoyer un message pour que j'ajoute le lecteur à la base de donnée des\n"
-"lecteurs supportés et/ou vous pouvez ajouter l'entrée correspondante dans\n"
-"hddtemp.db et m'envoyer la version mise à jour de hddtemp.db\n"
-"\n"
-"N'oubliez pas de comparer vos valeurs avec celles de la base de données.\n"
-"(voir l'option --drivebase)\n"
 
 #: src/hddtemp.c:453
 msgid "ERROR: invalid separator.\n"
-msgstr "ERREUR : séparateur invalide.\n"
+msgstr ""
 
 #: src/hddtemp.c:464
 msgid "ERROR: invalid port number.\n"
-msgstr "ERREUR : numéro de port invalide.\n"
+msgstr ""
 
 #: src/hddtemp.c:473
 msgid "ERROR: invalid listen address.\n"
-msgstr "ERREUR : adresse de l'interface invalide.\n"
+msgstr ""
 
 #: src/hddtemp.c:479
-#, fuzzy, c-format
+#, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
 "\n"
@@ -154,97 +125,63 @@ msgid ""
 "\n"
 "Report bugs or new drives to <coredump@free.fr>.\n"
 msgstr ""
-" Utilisation: hddtemp [OPTIONS] DISQUE1 [DISQUE2]...\n"
-"\n"
-"   hddtemp affiche la temperature des lecteurs passés en argument.\n"
-"   Les lecteurs doivent avoir le support S.M.A.R.T.\n"
-"\n"
-"  -b   --drivebase   :  affiche le contenu du fichier de base de donnée "
-"qui \n"
-"                        permet à hddtemp de reconnaître les lecteurs "
-"supportés.\n"
-"  -D   --debug       :  affiche les différents champs S.M.A.R.T. et leurs "
-"valeurs.\n"
-"                        Utile pour trouver une valeur qui semble "
-"correspondre à la\n"
-"                        température et/ou m'envoyer un message.\n"
-"                        (fait pour chaque lecteur passé en argument).\n"
-"  -d   --daemon      :  lance hddtemp en mode démon (port %d par défaut).\n"
-"  -f   --file=FILE   :  specifie le fichier à utiliser comme base de "
-"données.\n"
-"  -l   --listen=addr :  écoute sur une interface spécifique (en mode "
-"démon).\n"
-"  -n   --numeric     :  affiche seulement la température.\n"
-"  -p   --port=#      :  port à utiliser (en mode démon).\n"
-"  -s   --separator=C :  séparateur à utiliser entre deux champs (en mode "
-"démon).\n"
-"  -q   --quiet       :  ne vérifie pas si le lecteur est supporté.\n"
-"  -v   --version     :  affiche la version de hddtemp.\n"
-"\n"
-"Report bugs or new drives to <coredump@free.fr>.\n"
 
 #: src/hddtemp.c:502
 #, c-format
 msgid "hddtemp version %s\n"
-msgstr "hddtemp version %s\n"
+msgstr ""
 
 #: src/hddtemp.c:521
 msgid ""
 "  ERROR: You must be root to run the command,\n"
 "  ERROR: or the root must set the suid bit for the executable.\n"
 msgstr ""
-"  ERREUR: Vous devez être root pour lancer la commande, ou\n"
-"  ERREUR: l'utilisateur root doit activer le bit suid de l'éxecutable.\n"
 
 #: src/hddtemp.c:527
 msgid "Too few arguments: you must specify one drive, at least.\n"
-msgstr "Trop peu d'arguments : vous devez spécifier au moins un lecteur.\n"
+msgstr ""
 
 #: src/hddtemp.c:537
 msgid "ERROR: can't use --debug and --daemon options together.\n"
 msgstr ""
-"ERREUR: impossible d'utiliser les options --debug et --daemon en même "
-"temps.\n"
 
 #: src/hddtemp.c:564
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr ""
-"ERREUR: %s: impossible de déterminer le type de bus (ou ce type de bus est "
-"inconnu)\n"
 
 #: src/ata.c:66 src/scsi.c:68
 msgid "unknown"
-msgstr "inconnu"
+msgstr ""
 
 #: src/ata.c:98
 #, c-format
 msgid "field(%d)\t = %d\n"
-msgstr "champ(%d)\t = %d\n"
+msgstr ""
 
 #: src/ata.c:125
 msgid "S.M.A.R.T. not available"
-msgstr "S.M.A.R.T. non disponible"
+msgstr ""
 
 #: src/db.c:180
 #, c-format
 msgid "hddtemp: can't open %1$s: %2$s\n"
-msgstr "hddtemp: ne peut ouvrir %1$s: %2$s\n"
+msgstr ""
 
 #: src/db.c:194
 #, c-format
 msgid "ERROR: syntax error at line %1$d in %2$s\n"
-msgstr "ERREUR: erreur de syntaxe à la ligne %1$d: %2$s\n"
+msgstr ""
 
 #: src/db.c:201
 #, c-format
 msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
-msgstr "  ERREUR: ligne exécdant %1$d caractères dans %2$s.\n"
+msgstr ""
 
 #: src/scsi.c:136
 #, c-format
 msgid "%s: %s:  S.M.A.R.T. not available\n"
-msgstr "%s: %s:  S.M.A.R.T. non disponible\n"
+msgstr ""
 
 #: src/scsi.c:166 src/scsi.c:206
 #, c-format

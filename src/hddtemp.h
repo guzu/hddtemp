@@ -23,9 +23,11 @@
 #include <time.h>
 #include "db.h"
 
-#ifdef ARCH_I386
-typedef unsigned short u16;
-#endif
+//#ifdef ARCH_I386
+//typedef unsigned short u16;
+//#endif
+#include <linux/types.h>
+typedef __u16 u16;
 
 #define MAX_ERRORMSG_SIZE      128
 #define DEFAULT_ATTRIBUTE_ID   194

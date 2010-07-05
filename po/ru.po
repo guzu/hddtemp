@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hddtemp 0.3-beta3\n"
-"POT-Creation-Date: 2003-01-26 17:30+0200\n"
+"POT-Creation-Date: 2003-06-03 01:32+0200\n"
 "PO-Revision-Date: 2003-03-08 16:42+0300\n"
 "Last-Translator: Michael Shigorin <mike@altlinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -14,52 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ata.c:50 scsi.c:53
-msgid "unknown"
-msgstr "неизв."
-
-#: ata.c:82
-#, c-format
-msgid "field(%d)\t = %d\n"
-msgstr "поле(%d)\t = %d\n"
-
-#: ata.c:109
-msgid "S.M.A.R.T. not available"
-msgstr "S.M.A.R.T. недоступен"
-
-#: ata.c:116 scsi.c:131
-#, c-format
-msgid "%s"
-msgstr ""
-
-#: db.c:88 db.c:102 db.c:117 db.c:127
-msgid " \t"
-msgstr ""
-
-#: db.c:141 scsi.c:101
-msgid "malloc"
-msgstr ""
-
-#: db.c:165
-#, c-format
-msgid "hddtemp: can't open %1$s: %2$s\n"
-msgstr "hddtemp: не могу открыть %1$s: %2$s\n"
-
-#: db.c:179
-#, c-format
-msgid "ERROR: syntax error at line %1$d in %2$s\n"
-msgstr "Синтаксическая ОШИБКА в строке %1$d файла %2$s\n"
-
-#: db.c:186
-#, c-format
-msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
-msgstr "ОШИБКА: строка длиннее %1$d символов в %2$s.\n"
-
-#: hddtemp.c:49
-msgid "0.3 beta6"
-msgstr ""
-
-#: hddtemp.c:95
+#: src/hddtemp.c:113
 #, c-format
 msgid ""
 "\n"
@@ -70,16 +25,12 @@ msgstr ""
 "Регэкс%s| Знач. | Описание   \n"
 "------%s---------------------\n"
 
-#: hddtemp.c:101
-#, c-format
+#: src/hddtemp.c:119
+#, fuzzy, c-format
 msgid "%s%s| %5d | %s\n"
-msgstr ""
+msgstr "%s: %s:  %d%sC или %sF\n"
 
-#: hddtemp.c:107
-msgid "\n"
-msgstr ""
-
-#: hddtemp.c:141
+#: src/hddtemp.c:160
 #, c-format
 msgid ""
 "\n"
@@ -88,17 +39,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: hddtemp.c:150
-#, c-format
-msgid "%s: %s"
-msgstr ""
-
-#: hddtemp.c:162
-#, c-format
-msgid "%s: %s: %s\n"
-msgstr ""
-
-#: hddtemp.c:166
+#: src/hddtemp.c:186
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -111,12 +52,12 @@ msgstr ""
 "ВНИМАНИЕ: Если вы точно знаете, что датчик есть, напишите coredump@free.fr\n"
 "ВНИМАНИЕ: (см. опции --help, --debug и --drivebase).\n"
 
-#: hddtemp.c:170
+#: src/hddtemp.c:190
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr "%s: %s:  нет датчика\n"
 
-#: hddtemp.c:174
+#: src/hddtemp.c:194
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't appear in the database of supported drives\n"
@@ -131,32 +72,22 @@ msgstr ""
 "ВНИМАНИЕ: См. опции --help, --debug и --drivebase.\n"
 "ВНИМАНИЕ: И не забудьте, что можно добавить привод в hddtemp.db\n"
 
-#: hddtemp.c:179
+#: src/hddtemp.c:199
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
 msgstr "%s: %s:  %d%sC или %sF\n"
 
-#: hddtemp.c:183
-#, c-format
-msgid "%s: %s: %d%sC\n"
-msgstr ""
-
-#: hddtemp.c:188
-#, c-format
-msgid "%d\n"
-msgstr ""
-
-#: hddtemp.c:191
+#: src/hddtemp.c:211
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
 msgstr "%s: %s:  известный диск, не содержащий датчика температуры.\n"
 
-#: hddtemp.c:194
+#: src/hddtemp.c:214
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr "ОШИБКА: %s: %s: неизвестный статус возврата\n"
 
-#: hddtemp.c:208
+#: src/hddtemp.c:229
 msgid ""
 "\n"
 "If one of the field value seems to match the temperature, you can\n"
@@ -176,102 +107,20 @@ msgstr ""
 "Не забудьте сравнить свои значения с уже имеющимися в базе\n"
 "(см. опцию --drivebase).\n"
 
-#: hddtemp.c:234
-msgid "socket"
-msgstr ""
-
-#: hddtemp.c:251
-msgid "bind"
-msgstr ""
-
-#: hddtemp.c:257
-msgid "fork"
-msgstr ""
-
-#: hddtemp.c:318 hddtemp.c:326 hddtemp.c:340 hddtemp.c:348
-#, c-format
-msgid "%s%c%s%c%s%c%c"
-msgstr ""
-
-#: hddtemp.c:321
-msgid "NA"
-msgstr ""
-
-#: hddtemp.c:329
-msgid "UNK"
-msgstr ""
-
-#: hddtemp.c:333
-#, c-format
-msgid "%s%c%s%c%d%c%c"
-msgstr ""
-
-#: hddtemp.c:343
-msgid "NOS"
-msgstr ""
-
-#: hddtemp.c:350
-msgid "???"
-msgstr ""
-
-#: hddtemp.c:351
-msgid "ERR"
-msgstr ""
-
-#: hddtemp.c:378
-msgid "help"
-msgstr ""
-
-#: hddtemp.c:379
-msgid "quiet"
-msgstr ""
-
-#: hddtemp.c:380
-msgid "daemon"
-msgstr ""
-
-#: hddtemp.c:381
-msgid "drivebase"
-msgstr ""
-
-#: hddtemp.c:382
-msgid "debug"
-msgstr ""
-
-#: hddtemp.c:383
-msgid "file"
-msgstr ""
-
-#: hddtemp.c:384
-msgid "version"
-msgstr ""
-
-#: hddtemp.c:385
-msgid "port"
-msgstr ""
-
-#: hddtemp.c:386
-msgid "separator"
-msgstr ""
-
-#: hddtemp.c:387
-msgid "numeric"
-msgstr ""
-
-#: hddtemp.c:391
-msgid "bDdf:hp:qs:vn"
-msgstr ""
-
-#: hddtemp.c:414
+#: src/hddtemp.c:453
 msgid "ERROR: invalid separator.\n"
 msgstr "ОШИБКА: неверный разделитель.\n"
 
-#: hddtemp.c:425
+#: src/hddtemp.c:464
 msgid "ERROR: invalid port number.\n"
 msgstr "ОЩИБКА: неверный номер порта.\n"
 
-#: hddtemp.c:432
-#, c-format
+#: src/hddtemp.c:473
+msgid "ERROR: invalid listen address.\n"
+msgstr ""
+
+#: src/hddtemp.c:479
+#, fuzzy, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
 "\n"
@@ -284,8 +133,9 @@ msgid ""
 "                        Useful to find a value that seems to match the\n"
 "                        temperature and/or to send me a report.\n"
 "                        (done for every drive supplied).\n"
-"  -d   --daemon      :  run hddtemp in daemon mode (port %d by default)\n"
+"  -d   --daemon      :  run hddtemp in daemon mode (port %d by default.)\n"
 "  -f   --file=FILE   :  specify database file to use.\n"
+"  -l   --listen=addr :  listen on a specific interface (in daemon mode).\n"
 "  -n   --numeric     :  print only the temperature.\n"
 "  -p   --port=#      :  port to listen to (in daemon mode).\n"
 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
@@ -300,7 +150,8 @@ msgstr ""
 "   Диски должны поддерживать S.M.A.R.T. и иметь датчик температуры\n"
 "\n"
 "  -b   --drivebase   :  показать содержимое базы по дискам, которая \n"
-"                        используется для определения поддерживаемых приводов.\n"
+"                        используется для определения поддерживаемых "
+"приводов.\n"
 "  -D   --debug       :  показывать поля S.M.A.R.T. и их значения.\n"
 "                        Полезно для нахождения значений-кандидатов на\n"
 "                        показания датчика температуры.\n"
@@ -316,13 +167,12 @@ msgstr ""
 "\n"
 "Сообщения об ошибках и данные для дисков отправляйте на <coredump@free.fr>.\n"
 
-
-#: hddtemp.c:454
+#: src/hddtemp.c:502
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "Версия hddtemp: %s\n"
 
-#: hddtemp.c:473
+#: src/hddtemp.c:521
 msgid ""
 "  ERROR: You must be root to run the command,\n"
 "  ERROR: or the root must set the suid bit for the executable.\n"
@@ -330,70 +180,76 @@ msgstr ""
 "  ОШИБКА: для запуска необходимы права root,\n"
 "  ОШИБКА: или администратор должен установить SUID-бит на исполняемый файл.\n"
 
-#: hddtemp.c:479
+#: src/hddtemp.c:527
 msgid "Too few arguments: you must specify one drive, at least.\n"
 msgstr ""
 
-#: hddtemp.c:489
+#: src/hddtemp.c:537
 msgid "ERROR: can't use --debug and --daemon options together.\n"
 msgstr "ОШИБКА: одновременное использование --debug и --daemon недопустимо.\n"
 
-#: hddtemp.c:508
-#, c-format
-msgid "open: %s\n"
-msgstr ""
-
-#: hddtemp.c:516
+#: src/hddtemp.c:564
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr "ОШИБКА: %s: невозможно определить тип шины\n"
 
-#: i18n.c:29
-msgid "UTF-8"
-msgstr ""
+#: src/ata.c:66 src/scsi.c:68
+msgid "unknown"
+msgstr "неизв."
 
-#: i18n.c:72 scsicmds.c:574 scsicmds.c:621 scsicmds.c:622 scsicmds.c:623
-msgid " "
-msgstr ""
+#: src/ata.c:98
+#, c-format
+msgid "field(%d)\t = %d\n"
+msgstr "поле(%d)\t = %d\n"
 
-#: scsi.c:121
+#: src/ata.c:125
+msgid "S.M.A.R.T. not available"
+msgstr "S.M.A.R.T. недоступен"
+
+#: src/db.c:180
+#, c-format
+msgid "hddtemp: can't open %1$s: %2$s\n"
+msgstr "hddtemp: не могу открыть %1$s: %2$s\n"
+
+#: src/db.c:194
+#, c-format
+msgid "ERROR: syntax error at line %1$d in %2$s\n"
+msgstr "Синтаксическая ОШИБКА в строке %1$d файла %2$s\n"
+
+#: src/db.c:201
+#, c-format
+msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
+msgstr "ОШИБКА: строка длиннее %1$d символов в %2$s.\n"
+
+#: src/scsi.c:136
 #, c-format
 msgid "%s: %s:  S.M.A.R.T. not available\n"
 msgstr "%s: %s:  S.M.A.R.T. отсутствует\n"
 
-#: scsi.c:151 scsi.c:191
+#: src/scsi.c:166 src/scsi.c:206
 #, c-format
 msgid "log sense failed : %s"
 msgstr ""
 
-#: scsicmds.c:502 scsicmds.c:524
-msgid "Log Sense failed"
-msgstr ""
-
-#: scsicmds.c:550
-msgid "Request Sense failed"
-msgstr ""
-
-#: scsicmds.c:575
+#: src/scsicmds.c:588
 msgid ""
 "The tape drive is having problems reading data. No data has been lost, but "
 "there has been a reduction in the performance of the tape."
 msgstr ""
-""
 
-#: scsicmds.c:576
+#: src/scsicmds.c:589
 msgid ""
 "The tape drive is having problems writing data. No data has been lost, but "
 "there has been a reduction in the performance of the tape."
 msgstr ""
 
-#: scsicmds.c:577
+#: src/scsicmds.c:590
 msgid ""
 "The operation has stopped because an error has occured while reading or "
 "writing data which the drive cannot correct."
 msgstr ""
 
-#: scsicmds.c:578
+#: src/scsicmds.c:591
 msgid ""
 "Your data is at risk:\n"
 "1. Copy any data you require from this tape. \n"
@@ -401,94 +257,94 @@ msgid ""
 "3. Restart the operation with a different tape."
 msgstr ""
 
-#: scsicmds.c:579
+#: src/scsicmds.c:592
 msgid ""
 "The tape is damaged or the drive is dault. Call the tape drive suppiler "
 "helpline."
 msgstr ""
 
-#: scsicmds.c:580
+#: src/scsicmds.c:593
 msgid ""
 "The tape is from a faulty batch or the tape drive is faulty:\n"
 "1. Use a good tape to test the drive.\n"
 "2. If problem persists, call the tape drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:581
+#: src/scsicmds.c:594
 msgid ""
 "The tape cartridge has reached the end of its calculated useful life: \n"
 "1. Copy data you need to another tape.\n"
 "2. Discard the old tape."
 msgstr ""
 
-#: scsicmds.c:582
+#: src/scsicmds.c:595
 msgid ""
 "The tape cartridge is not data-grade. Any data you back up to the tape is at "
 "risk. Replace the cartge with a data-grade tape."
 msgstr ""
 
-#: scsicmds.c:583
+#: src/scsicmds.c:596
 msgid ""
 "You are trying to write to a write-protected cartridge. Remove the write-"
 "protection or use another tape."
 msgstr ""
 
-#: scsicmds.c:584
+#: src/scsicmds.c:597
 msgid ""
 "You cannot eject the cartridge because the tape drive is in use. Wait until "
 "the operation is complete before ejecting the cartridge."
 msgstr ""
 
-#: scsicmds.c:585
+#: src/scsicmds.c:598
 msgid "The tape in the drive is a cleaning cartridge."
 msgstr ""
 
-#: scsicmds.c:586
+#: src/scsicmds.c:599
 msgid ""
 "You have tried to load a cartridge of a type which is not supported by this "
 "drive."
 msgstr ""
 
-#: scsicmds.c:587
+#: src/scsicmds.c:600
 msgid ""
 "The operation has failed because the tape in the drive has snapped:\n"
 "1. Discard the old tape.\n"
 "2. Restart the operation with a different tape."
 msgstr ""
 
-#: scsicmds.c:588
+#: src/scsicmds.c:601
 msgid ""
 "The operation has failed because the tape in the drive has snapped:\n"
 "1. Do not attept to extract the tape cartridge\n"
 "2. Call the tape drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:589
+#: src/scsicmds.c:602
 msgid ""
 "The memory in the tape cartridge has failed, which reduces performance. Do "
 "not use the cartridge for further backup operations."
 msgstr ""
 
-#: scsicmds.c:590
+#: src/scsicmds.c:603
 msgid ""
 "The operation has failed because the tape cartridge was manually ejected "
 "while the tape drive was actively writing or reading."
 msgstr ""
 
-#: scsicmds.c:591
+#: src/scsicmds.c:604
 msgid ""
 "You have loaded of a type that is read-only in this drive. The cartridge "
 "will appear as write-protected."
 msgstr ""
 
-#: scsicmds.c:592
+#: src/scsicmds.c:605
 msgid ""
 "The directory on the tape cartridge has been corruptrf. File search "
 "performance will be degraded. The tape directory can be rebuilt by reading "
 "all the data on the cartridge."
 msgstr ""
 
-#: scsicmds.c:593
+#: src/scsicmds.c:606
 msgid ""
 "The tape cartridge is newaring the end of its calculated life. It is "
 "recommended that you:\n"
@@ -496,7 +352,7 @@ msgid ""
 "2.Store this tape in a safe place in casse you need to restore data from it."
 msgstr ""
 
-#: scsicmds.c:594
+#: src/scsicmds.c:607
 msgid ""
 "The tape drive needs cleaning:\n"
 "1. If the operation has stopped, ejct the tape and clean the drive.\n"
@@ -505,7 +361,7 @@ msgid ""
 "instructions."
 msgstr ""
 
-#: scsicmds.c:595
+#: src/scsicmds.c:608
 msgid ""
 "The tape drive is due for routine cleaning:\n"
 "1. Wait for the cuurent operation to finish.\n"
@@ -513,7 +369,7 @@ msgid ""
 "device specific cleaning instructions."
 msgstr ""
 
-#: scsicmds.c:596
+#: src/scsicmds.c:609
 msgid ""
 "The last cleaning cartridge used in the tape drive has worn out:\n"
 "1. Discard the worn out cleaning cartridge.\n"
@@ -521,7 +377,7 @@ msgid ""
 " 3.Then use a new cleaning cartridge."
 msgstr ""
 
-#: scsicmds.c:597
+#: src/scsicmds.c:610
 msgid ""
 "The last cleaning cartridge used in the tape drive was an invalid type:\n"
 "1. Do not use this cleaning cartridge in this drive.\n"
@@ -529,37 +385,37 @@ msgid ""
 " 3.Then use a new cleaning cartridge."
 msgstr ""
 
-#: scsicmds.c:598
+#: src/scsicmds.c:611
 msgid "The tape drive has requested a retention operation"
 msgstr ""
 
-#: scsicmds.c:599
+#: src/scsicmds.c:612
 msgid "A redundant interface port on the tape drive has failed"
 msgstr ""
 
-#: scsicmds.c:600
+#: src/scsicmds.c:613
 msgid "A tape drive cooling fan has failed"
 msgstr ""
 
-#: scsicmds.c:601
+#: src/scsicmds.c:614
 msgid ""
 "A redundant power supply has dailed inside the tape drive enclosure. Check "
 "the enclosure users manual for instructions on replacing the failed power "
 "supply."
 msgstr ""
 
-#: scsicmds.c:602
+#: src/scsicmds.c:615
 msgid "The tape drive power consumption is outside the specified range."
 msgstr ""
 
-#: scsicmds.c:603
+#: src/scsicmds.c:616
 msgid ""
 "Preventive maintenance of the tape drive is requiired. Check the tape drive "
 "users manual for device specific perventive maintenance tasks or call the "
 "tape drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:604
+#: src/scsicmds.c:617
 msgid ""
 "The tape drive has a hardware fault:\n"
 "1. Eject the tape or magazine.\n"
@@ -567,7 +423,7 @@ msgid ""
 "3. Restart the operation."
 msgstr ""
 
-#: scsicmds.c:605
+#: src/scsicmds.c:618
 msgid ""
 "The tape drive has a hardware fault:\n"
 "1. Turn the tape drive off and then on again.\n"
@@ -577,14 +433,14 @@ msgid ""
 "turning the device power in and off."
 msgstr ""
 
-#: scsicmds.c:606
+#: src/scsicmds.c:619
 msgid ""
 "The tape drive has a problem with the host interface:\n"
 "1. Check the cables and calble connections.\n"
 "2. Restart the operation."
 msgstr ""
 
-#: scsicmds.c:607
+#: src/scsicmds.c:620
 msgid ""
 "The operation has failed:\n"
 "1. Eject the tape or magazine.\n"
@@ -592,35 +448,35 @@ msgid ""
 "3. Restart the operation."
 msgstr ""
 
-#: scsicmds.c:608
+#: src/scsicmds.c:621
 msgid ""
 "The firmware download has failed because you have tried to use the incorrect "
 "firmware for this tape drive. Obtain the correct firmware and try again."
 msgstr ""
 
-#: scsicmds.c:609
+#: src/scsicmds.c:622
 msgid ""
 "Environmental conditions inside the tape drive are outside the specified "
 "humidity range."
 msgstr ""
 
-#: scsicmds.c:610
+#: src/scsicmds.c:623
 msgid ""
 "Environmental conditions inside the tape drive are outside the specified "
 "temperature range."
 msgstr ""
 
-#: scsicmds.c:611
+#: src/scsicmds.c:624
 msgid "The voltage supply to the tape drive is outside the specified range."
 msgstr ""
 
-#: scsicmds.c:612
+#: src/scsicmds.c:625
 msgid ""
 "A hardware failure of the tape drive is predicted. Call the tape drive "
 "supplier helpline."
 msgstr ""
 
-#: scsicmds.c:613
+#: src/scsicmds.c:626
 msgid ""
 "The tape drive may have a fault. Check for availability of diagnostic "
 "information and run extended diagnostics if applicable. Check the tape drive "
@@ -628,7 +484,7 @@ msgid ""
 "retrieving diagnostic data"
 msgstr ""
 
-#: scsicmds.c:614
+#: src/scsicmds.c:627
 msgid ""
 "The changer mechanism is having difficulty communicating with the tape "
 "drive:\n"
@@ -637,7 +493,7 @@ msgid ""
 "3. If problem persists, call the tape drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:615
+#: src/scsicmds.c:628
 msgid ""
 "A tape has been left in the autoloader by a pervious hardware fault:\n"
 "1. Insert an empty magazine to clear the fault.\n"
@@ -645,11 +501,11 @@ msgid ""
 "3. If the problem persists, call the tape drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:616
+#: src/scsicmds.c:629
 msgid "There is a problem with the autoloader mechanism."
 msgstr ""
 
-#: scsicmds.c:617
+#: src/scsicmds.c:630
 msgid ""
 "The operation has failed because the autoloader door is open:\n"
 "1. Clear any obstructions from the autoloader door.\n"
@@ -658,7 +514,7 @@ msgid ""
 "4. If the problem persists, call the tape drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:618
+#: src/scsicmds.c:631
 msgid ""
 "The autoloader has a hardware fault:\n"
 "1. Turn the autoloader off and then on again.\n"
@@ -668,392 +524,386 @@ msgid ""
 "turning the device power on and off."
 msgstr ""
 
-#: scsicmds.c:619
+#: src/scsicmds.c:632
 msgid ""
 "The autoloader cannot operate without the magazine,\n"
 "1. Insert the magazine into the autoloader.\n"
 " 2. Restart the operation."
 msgstr ""
 
-#: scsicmds.c:620
+#: src/scsicmds.c:633
 msgid ""
 "A hardware failure of the changer mechanism is predicted. Call the tape "
 "drive supplier helpline."
 msgstr ""
 
-#: scsicmds.c:624
+#: src/scsicmds.c:637
 msgid "Media statistics have been lost at some time in the past"
 msgstr ""
 
-#: scsicmds.c:625
+#: src/scsicmds.c:638
 msgid ""
 "The tape directory on the tape cartridge just unloaded has been corrupted. "
 "File seach performance will be degraded. The tape directory can be rebuilt "
 "by reading all the data."
 msgstr ""
 
-#: scsicmds.c:626
+#: src/scsicmds.c:639
 msgid ""
 "The tape just unloaded could not write its system area successfully:\n"
 "1. Copy data to another tappe cartridge.\n"
 "2. Discard the old cartridge."
 msgstr ""
 
-#: scsicmds.c:627
+#: src/scsicmds.c:640
 msgid ""
 "The tape system are could not be read successfully at load time:\n"
 "1. Copy data to another tape cartridge.\n"
 "2. Discard the old cartridge."
 msgstr ""
 
-#: scsicmds.c:628
+#: src/scsicmds.c:641
 msgid ""
 "The start or data could not be found on the tape:\n"
 "1. Check you are using the correct format tape.\n"
 "2. Discard the tape or return the tape to you supploer"
 msgstr ""
 
-#: scsicmds.c:631
-msgid "Unknown Alert"
-msgstr ""
-
-#: scsicmds.c:639
+#: src/scsicmds.c:652
 msgid "FAILURE PREDICTION THRESHOLD EXCEEDED"
 msgstr ""
 
-#: scsicmds.c:640
+#: src/scsicmds.c:653
 msgid "MEDIA FAILURE PREDICTION THRESHOLD EXCEEDED"
 msgstr ""
 
-#: scsicmds.c:641
+#: src/scsicmds.c:654
 msgid "LOGICAL UNIT FAILURE PREDICTION THRESHOLD EXCEEDED"
 msgstr ""
 
-#: scsicmds.c:642 scsicmds.c:643 scsicmds.c:644 scsicmds.c:645 scsicmds.c:646
-#: scsicmds.c:647 scsicmds.c:648 scsicmds.c:649 scsicmds.c:650 scsicmds.c:651
-#: scsicmds.c:652 scsicmds.c:653 scsicmds.c:654 scsicmds.c:668 scsicmds.c:669
-#: scsicmds.c:670 scsicmds.c:684 scsicmds.c:685 scsicmds.c:686 scsicmds.c:700
-#: scsicmds.c:701 scsicmds.c:702 scsicmds.c:716 scsicmds.c:717 scsicmds.c:718
-#: scsicmds.c:732 scsicmds.c:733 scsicmds.c:734 scsicmds.c:754
+#: src/scsicmds.c:655 src/scsicmds.c:656 src/scsicmds.c:657 src/scsicmds.c:658
+#: src/scsicmds.c:659 src/scsicmds.c:660 src/scsicmds.c:661 src/scsicmds.c:662
+#: src/scsicmds.c:663 src/scsicmds.c:664 src/scsicmds.c:665 src/scsicmds.c:666
+#: src/scsicmds.c:667 src/scsicmds.c:681 src/scsicmds.c:682 src/scsicmds.c:683
+#: src/scsicmds.c:697 src/scsicmds.c:698 src/scsicmds.c:699 src/scsicmds.c:713
+#: src/scsicmds.c:714 src/scsicmds.c:715 src/scsicmds.c:729 src/scsicmds.c:730
+#: src/scsicmds.c:731 src/scsicmds.c:745 src/scsicmds.c:746 src/scsicmds.c:747
+#: src/scsicmds.c:767
 msgid "Unknown Failure"
 msgstr ""
 
-#: scsicmds.c:655
+#: src/scsicmds.c:668
 msgid "HARDWARE IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"
 msgstr ""
 
-#: scsicmds.c:656
+#: src/scsicmds.c:669
 msgid "HARDWARE IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:657
+#: src/scsicmds.c:670
 msgid "HARDWARE IMPENDING FAILURE DATA ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:658
+#: src/scsicmds.c:671
 msgid "HARDWARE IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:659
+#: src/scsicmds.c:672
 msgid "HARDWARE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"
 msgstr ""
 
-#: scsicmds.c:660
+#: src/scsicmds.c:673
 msgid "HARDWARE IMPENDING FAILURE ACCESS TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:661
+#: src/scsicmds.c:674
 msgid "HARDWARE IMPENDING FAILURE START UNIT TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:662
+#: src/scsicmds.c:675
 msgid "HARDWARE IMPENDING FAILURE CHANNEL PARAMETRICS"
 msgstr ""
 
-#: scsicmds.c:663
+#: src/scsicmds.c:676
 msgid "HARDWARE IMPENDING FAILURE CONTROLLER DETECTED"
 msgstr ""
 
-#: scsicmds.c:664
+#: src/scsicmds.c:677
 msgid "HARDWARE IMPENDING FAILURE THROUGHPUT PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:665
+#: src/scsicmds.c:678
 msgid "HARDWARE IMPENDING FAILURE SEEK TIME PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:666
+#: src/scsicmds.c:679
 msgid "HARDWARE IMPENDING FAILURE SPIN-UP RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:667
+#: src/scsicmds.c:680
 msgid "HARDWARE IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:671
+#: src/scsicmds.c:684
 msgid "CONTROLLER IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"
 msgstr ""
 
-#: scsicmds.c:672
+#: src/scsicmds.c:685
 msgid "CONTROLLER IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:673
+#: src/scsicmds.c:686
 msgid "CONTROLLER IMPENDING FAILURE DATA ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:674
+#: src/scsicmds.c:687
 msgid "CONTROLLER IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:675
+#: src/scsicmds.c:688
 msgid "CONTROLLER IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"
 msgstr ""
 
-#: scsicmds.c:676
+#: src/scsicmds.c:689
 msgid "CONTROLLER IMPENDING FAILURE ACCESS TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:677
+#: src/scsicmds.c:690
 msgid "CONTROLLER IMPENDING FAILURE START UNIT TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:678
+#: src/scsicmds.c:691
 msgid "CONTROLLER IMPENDING FAILURE CHANNEL PARAMETRICS"
 msgstr ""
 
-#: scsicmds.c:679
+#: src/scsicmds.c:692
 msgid "CONTROLLER IMPENDING FAILURE CONTROLLER DETECTED"
 msgstr ""
 
-#: scsicmds.c:680
+#: src/scsicmds.c:693
 msgid "CONTROLLER IMPENDING FAILURE THROUGHPUT PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:681
+#: src/scsicmds.c:694
 msgid "CONTROLLER IMPENDING FAILURE SEEK TIME PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:682
+#: src/scsicmds.c:695
 msgid "CONTROLLER IMPENDING FAILURE SPIN-UP RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:683
+#: src/scsicmds.c:696
 msgid "CONTROLLER IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:687
+#: src/scsicmds.c:700
 msgid "DATA CHANNEL IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"
 msgstr ""
 
-#: scsicmds.c:688
+#: src/scsicmds.c:701
 msgid "DATA CHANNEL IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:689
+#: src/scsicmds.c:702
 msgid "DATA CHANNEL IMPENDING FAILURE DATA ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:690
+#: src/scsicmds.c:703
 msgid "DATA CHANNEL IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:691
+#: src/scsicmds.c:704
 msgid "DATA CHANNEL IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"
 msgstr ""
 
-#: scsicmds.c:692
+#: src/scsicmds.c:705
 msgid "DATA CHANNEL IMPENDING FAILURE ACCESS TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:693
+#: src/scsicmds.c:706
 msgid "DATA CHANNEL IMPENDING FAILURE START UNIT TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:694
+#: src/scsicmds.c:707
 msgid "DATA CHANNEL IMPENDING FAILURE CHANNEL PARAMETRICS"
 msgstr ""
 
-#: scsicmds.c:695
+#: src/scsicmds.c:708
 msgid "DATA CHANNEL IMPENDING FAILURE CONTROLLER DETECTED"
 msgstr ""
 
-#: scsicmds.c:696
+#: src/scsicmds.c:709
 msgid "DATA CHANNEL IMPENDING FAILURE THROUGHPUT PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:697
+#: src/scsicmds.c:710
 msgid "DATA CHANNEL IMPENDING FAILURE SEEK TIME PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:698
+#: src/scsicmds.c:711
 msgid "DATA CHANNEL IMPENDING FAILURE SPIN-UP RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:699
+#: src/scsicmds.c:712
 msgid "DATA CHANNEL IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:703
+#: src/scsicmds.c:716
 msgid "SERVO IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"
 msgstr ""
 
-#: scsicmds.c:704
+#: src/scsicmds.c:717
 msgid "SERVO IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:705
+#: src/scsicmds.c:718
 msgid "SERVO IMPENDING FAILURE DATA ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:706
+#: src/scsicmds.c:719
 msgid "SERVO IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:707
+#: src/scsicmds.c:720
 msgid "SERVO IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"
 msgstr ""
 
-#: scsicmds.c:708
+#: src/scsicmds.c:721
 msgid "SERVO IMPENDING FAILURE ACCESS TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:709
+#: src/scsicmds.c:722
 msgid "SERVO IMPENDING FAILURE START UNIT TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:710
+#: src/scsicmds.c:723
 msgid "SERVO IMPENDING FAILURE CHANNEL PARAMETRICS"
 msgstr ""
 
-#: scsicmds.c:711
+#: src/scsicmds.c:724
 msgid "SERVO IMPENDING FAILURE CONTROLLER DETECTED"
 msgstr ""
 
-#: scsicmds.c:712
+#: src/scsicmds.c:725
 msgid "SERVO IMPENDING FAILURE THROUGHPUT PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:713
+#: src/scsicmds.c:726
 msgid "SERVO IMPENDING FAILURE SEEK TIME PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:714
+#: src/scsicmds.c:727
 msgid "SERVO IMPENDING FAILURE SPIN-UP RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:715
+#: src/scsicmds.c:728
 msgid "SERVO IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:719
+#: src/scsicmds.c:732
 msgid "SPINDLE IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"
 msgstr ""
 
-#: scsicmds.c:720
+#: src/scsicmds.c:733
 msgid "SPINDLE IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:721
+#: src/scsicmds.c:734
 msgid "SPINDLE IMPENDING FAILURE DATA ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:722
+#: src/scsicmds.c:735
 msgid "SPINDLE IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:723
+#: src/scsicmds.c:736
 msgid "SPINDLE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"
 msgstr ""
 
-#: scsicmds.c:724
+#: src/scsicmds.c:737
 msgid "SPINDLE IMPENDING FAILURE ACCESS TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:725
+#: src/scsicmds.c:738
 msgid "SPINDLE IMPENDING FAILURE START UNIT TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:726
+#: src/scsicmds.c:739
 msgid "SPINDLE IMPENDING FAILURE CHANNEL PARAMETRICS"
 msgstr ""
 
-#: scsicmds.c:727
+#: src/scsicmds.c:740
 msgid "SPINDLE IMPENDING FAILURE CONTROLLER DETECTED"
 msgstr ""
 
-#: scsicmds.c:728
+#: src/scsicmds.c:741
 msgid "SPINDLE IMPENDING FAILURE THROUGHPUT PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:729
+#: src/scsicmds.c:742
 msgid "SPINDLE IMPENDING FAILURE SEEK TIME PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:730
+#: src/scsicmds.c:743
 msgid "SPINDLE IMPENDING FAILURE SPIN-UP RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:731
+#: src/scsicmds.c:744
 msgid "SPINDLE IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:735
+#: src/scsicmds.c:748
 msgid "FIRMWARE IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"
 msgstr ""
 
-#: scsicmds.c:736
+#: src/scsicmds.c:749
 msgid "FIRMWARE IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:737
+#: src/scsicmds.c:750
 msgid "FIRMWARE IMPENDING FAILURE DATA ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:738
+#: src/scsicmds.c:751
 msgid "FIRMWARE IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:739
+#: src/scsicmds.c:752
 msgid "FIRMWARE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"
 msgstr ""
 
-#: scsicmds.c:740
+#: src/scsicmds.c:753
 msgid "FIRMWARE IMPENDING FAILURE ACCESS TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:741
+#: src/scsicmds.c:754
 msgid "FIRMWARE IMPENDING FAILURE START UNIT TIMES TOO HIGH"
 msgstr ""
 
-#: scsicmds.c:742
+#: src/scsicmds.c:755
 msgid "FIRMWARE IMPENDING FAILURE CHANNEL PARAMETRICS"
 msgstr ""
 
-#: scsicmds.c:743
+#: src/scsicmds.c:756
 msgid "FIRMWARE IMPENDING FAILURE CONTROLLER DETECTED"
 msgstr ""
 
-#: scsicmds.c:744
+#: src/scsicmds.c:757
 msgid "FIRMWARE IMPENDING FAILURE THROUGHPUT PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:745
+#: src/scsicmds.c:758
 msgid "FIRMWARE IMPENDING FAILURE SEEK TIME PERFORMANCE"
 msgstr ""
 
-#: scsicmds.c:746
+#: src/scsicmds.c:759
 msgid "FIRMWARE IMPENDING FAILURE SPIN-UP RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:747
+#: src/scsicmds.c:760
 msgid "FIRMWARE IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"
 msgstr ""
 
-#: scsicmds.c:750
+#: src/scsicmds.c:763
 msgid "SMART Sense: False Alarm"
-msgstr ""
-
-#: db.h:23
-msgid "/etc/hddtemp.db"
 msgstr ""

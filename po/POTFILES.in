@@ -1,0 +1,13 @@
+# List of source files containing translatable strings.
+# Copyright (C) 1995, 1996 Free Software Foundation, Inc.
+
+# Package source files
+src/hddtemp.c
+src/ata.c  
+src/db.c
+src/hddtemp.c
+src/scsi.c
+src/scsicmds.c
+src/utf8.c
+
+# end of file POTFILE.in

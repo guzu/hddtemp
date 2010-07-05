@@ -1,3 +1,10 @@
+v0.3 beta7 (from Aurelien Jarno <aurel32@debian.org>)
+=============================
+ * use autoconf/automake
+ * full internationalization support
+ * update fr.po
+
+
 v0.3 beta6
 =============================
  * fix SCSI model reading
@@ -7,7 +14,7 @@ v0.3 beta6
 v0.3 beta5
 =============================
  * adding ru.po file (from Michael Shigorin <mike@altlinux.ru>)
- * some fixes for internationalisation (from Aurelien Jarno <aurelien@aurel32.net>)
+ * some fixes for internationalization (from Aurelien Jarno <aurelien@aurel32.net>)
 
 
 v0.3 beta4
