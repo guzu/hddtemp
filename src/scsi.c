@@ -35,6 +35,7 @@
 
 // Standard includes
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -42,16 +43,11 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/ioctl.h>
-#include <linux/hdreg.h>
 #include <scsi/scsi.h>
 
 // Application specific includes
 #include "scsicmds.h"
 #include "hddtemp.h"
-
-#define GBUF_SIZE 65535
-
-static char gBuf[GBUF_SIZE];
 
 static int scsi_probe(int device) {
   int bus_num;
@@ -63,50 +59,19 @@ static int scsi_probe(int device) {
 }
 
 static const char *scsi_model (int device) {
-  memset(gBuf, 0, 1024);
-  if (stdinquiry (device, (char *) &gBuf) != 0)
+  unsigned char buf[36];
+
+  if (scsi_inquiry(device, buf) != 0)
     return strdup(_("unknown"));
   else {
-    gBuf[8+8+16] = '\0';
-    return strdup((char*) (gBuf + 8 ));
+    return strdup(buf + 8);
   }
 }
-
-/*
-static int scsi_enable_smart(int device)
-{
-  UINT8 smartsupport;
-  return scsiSmartSupport(device, (UINT8 *) &smartsupport);
-}
-*/
-
-/*
-static int scsi_get_smart_values(int device, unsigned char* buff)
-{
-  UINT8 tBuf[1024];
-  unsigned short pagesize;
-  int ret;
-
-  ret = logsense ( device , SMART_PAGE, (UINT8 *) &tBuf);
-  if(ret)
-    return ret;
-
-  pagesize = (unsigned short) (tBuf[2] << 8) | tBuf[3];
-  if ( !pagesize ) return 1;
-  if ( pagesize == 8 )
-  {
-    buff[2]=194;
-    buff[7]=tBuf[10];
-  }
-  return 0;
-}
-*/
-
 
 static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
   int              i;
-  int              tempPage = 0, smartPage = 0;
-  UINT8            smartsupport;
+  int              tempPage = 0;
+  unsigned char    buffer[1024];
 
   /*
     on triche un peu
@@ -123,17 +88,8 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
   dsk->db_entry->unit         = 'C';
   dsk->db_entry->next         = NULL;
 
-  /*
-  if(dsk->db_entry && dsk->db_entry->attribute_id == 0) {
-    close(dsk->fd);
-    dsk->fd = -1;
-    return GETTEMP_NOSENSOR;
-  }
-  */
-
-
-  if ( scsiSmartSupport(dsk->fd, (UINT8 *) &smartsupport) != 0 && (gBuf[0] & 0x1f) == 0 ) {
-    snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("%s: %s:  S.M.A.R.T. not available\n"), dsk->drive, dsk->model);
+  if (scsi_smartsupport(dsk->fd) == 0) {
+    snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("S.M.A.R.T. not available\n"));
     close(dsk->fd);
     dsk->fd = -1;
     return GETTEMP_NOT_APPLICABLE;
@@ -142,7 +98,7 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
   /*
     Enable SMART
   */
-  if (scsiSmartDEXCPTDisable(dsk->fd) != 0) {
+  if (scsi_smartDEXCPTdisable(dsk->fd) != 0) {
     snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, "%s", strerror(errno));
     close(dsk->fd);
     dsk->fd = -1;
@@ -150,47 +106,18 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
   }
 
   /*
-  if (scsiSmartEWASCEnable(dsk->device) != 0) {
-    printf(_("Temperature Warning not Supported\n"));
-  }
-  else {
-    printf(_("Temperature Warning Enabled\n"));  
-  }
-  */
-
-
-  /*
     Temp. capable 
   */  
-  if (logsense ( dsk->fd , SUPPORT_LOG_PAGES, (UINT8 *) &gBuf) != 0) {
+  if (scsi_logsense(dsk->fd , SUPPORT_LOG_PAGES, buffer, sizeof(buffer)) != 0) {
     snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("log sense failed : %s"), strerror(errno));
     close(dsk->fd);
     dsk->fd = -1;
     return GETTEMP_ERROR;
    }
 
-   for ( i = 4; i < gBuf[3] + LOGPAGEHDRSIZE ; i++) {
-     switch ( gBuf[i]) {
-     case TEMPERATURE_PAGE:
+   for ( i = 4; i < buffer[3] + LOGPAGEHDRSIZE ; i++) {
+     if (buffer[i] == TEMPERATURE_PAGE) {
        tempPage = 1;
-       break;
-     /*
-     case STARTSTOP_CYCLE_COUNTER_PAGE:
-       gStartStopPage = 1;
-       break;
-     case SELFTEST_RESULTS_PAGE:
-       gSelfTestPage = 1;
-       break;
-     */
-     case SMART_PAGE:
-       smartPage = 1;
-       break;
-     /*
-     case TAPE_ALERTS_PAGE:
-       gTapeAlertsPage = 1;
-       break;
-     */
-     default:
        break;
      }
    }
@@ -199,17 +126,14 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
       /* 
 	 get temperature (from scsiGetTemp (scsicmd.c))
       */
-
-      UINT8 tBuf[1024];
-
-      if (logsense ( dsk->fd , TEMPERATURE_PAGE, (UINT8 *) &tBuf) != 0) {
+      if (scsi_logsense(dsk->fd , TEMPERATURE_PAGE, buffer, sizeof(buffer)) != 0) {
 	snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("log sense failed : %s"), strerror(errno));
 	close(dsk->fd);
 	dsk->fd = -1;
 	return GETTEMP_ERROR;
       }
 
-      dsk->value = tBuf[9];
+      dsk->value = buffer[9];
 
       return GETTEMP_KNOWN;
    } else {

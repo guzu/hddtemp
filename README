@@ -28,11 +28,17 @@ $ ./configure --with-db-path=/etc/hddtemp.db
 
 INFORMATION
 ===========
-In deamon mode, hddtemp doesn't allow too much query at a time. If the interval
+hddtemp accesses to the SATA disks via ATA pass-through commands (defined in 
+T10/04-262r7). At the time of writing (kernel 2.6.11-rc5 has just been 
+released), kernels doesn't have support for ATA pass-through. You have to 
+update the libata driver with a newer version that could be found on:
+http://www.kernel.org/pub/linux/kernel/people/jgarzik/libata/
+
+In daemon mode, hddtemp doesn't allow too much query at a time. If the interval
 between two query is inferior to 1 minute, hddtemp will give the previous value
-(hddtemp query the disk every at each connection, if the period is superior to
-1 minute).
-After starting hddtemp in deamon mode, you can test it with a simple telnet
+(hddtemp query the disk for each connection, if the period is superior to 1
+minute).
+After starting hddtemp in daemon mode, you can test it with a simple telnet
 or netcat:
 
 $ telnet localhost 7634

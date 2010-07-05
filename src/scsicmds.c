@@ -1,8 +1,5 @@
-
 /*
- * scsicmds.c
- *
- * Copyright (C) 1999-2000 Michael Cornwell <cornwell@acm.org>
+ * Copyright (C) 2002  Emmanuel VARAGNAT <hddtemp@guzu.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,788 +26,128 @@
 
 // Standard includes
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <sys/ioctl.h>
-#include <linux/hdreg.h>
-
-#include <scsi/scsi_ioctl.h>
 #include <scsi/scsi.h>
+#include <scsi/sg.h>
 
 // Application specific includes
 #include "scsicmds.h"
 
-UINT8 logsense (int device, UINT8 pagenum, UINT8 *pBuf)
+static void scsi_fixstring(unsigned char *s, int bytecount)
 {
-  struct cdb10hdr *ioctlhdr;
-  UINT8 tBuf[1024 + CDB_12_HDR_SIZE];
-  UINT8 status;
+  unsigned char *p;
+  unsigned char *end;
 
-  
-  memset ( &tBuf, 0, 255);
-    
-  ioctlhdr = (struct cdb10hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 1024;
-   
-  ioctlhdr->cdb[0] = LOG_SENSE;
-  ioctlhdr->cdb[1] = 0x00;
-  ioctlhdr->cdb[2] = 0x40 | pagenum;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = 0x00;
-  ioctlhdr->cdb[5] = 0x00;
-  ioctlhdr->cdb[6] = 0x00;
-  ioctlhdr->cdb[7] = 0x04;
-  ioctlhdr->cdb[8] = 0x00;
-  ioctlhdr->cdb[9] = 0x00;
+  p = s;
+  end = s + bytecount;
 
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-	
-  memcpy ( pBuf, &tBuf[8], 1024); 
-
-  return status;  
-}
-
-
-
-
-UINT8 modesense (int device,  UINT8 pagenum, UINT8 *pBuf)
-{
-  
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
- 
-  struct cdb6hdr *ioctlhdr;
-  	
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-  
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 0xff;
-   
-  ioctlhdr->cdb[0] = MODE_SENSE;
-  ioctlhdr->cdb[1] = 0x00;
-  ioctlhdr->cdb[2] = pagenum;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = CDB_6_MAX_DATA_SIZE;
-  ioctlhdr->cdb[5] = 0x00;
-
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-  
-  memcpy ( pBuf, &tBuf[8], 256); 
-
-  return status;
-}
-
-
-
-
-UINT8 modeselect (int device,  UINT8 pagenum, UINT8 *pBuf)
-{
-  struct cdb6hdr *ioctlhdr;
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = pBuf[0] + 1;
-  ioctlhdr->outbufsize = 0;
-  
-  
-  ioctlhdr->cdb[0] = MODE_SELECT;
-  ioctlhdr->cdb[1] = 0x11;
-  ioctlhdr->cdb[2] = 0x00;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = pBuf[0] + 1;
-  ioctlhdr->cdb[5] = 0x00;
-  
-  tBuf[CDB_6_HDR_SIZE + 3]  = 0x08;
-  tBuf[CDB_6_HDR_SIZE + 10] = 0x02;
-  
-    
-  memcpy ( &tBuf[ CDB_6_HDR_SIZE + MODE_DATA_HDR_SIZE],
-			 pBuf +  MODE_DATA_HDR_SIZE,
-			pBuf[0] - MODE_DATA_HDR_SIZE + 1);
-
-  tBuf[26] &= 0x3f;		
- 
-  status = ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-
-  return status;
-}
-
-
-
-
-UINT8 modesense10 (int device, UINT8 pagenum, UINT8 *pBuf)
-{
-  
-    struct cdb10hdr *ioctlhdr;
-  UINT8 tBuf[1024];
-  UINT8 status;
-	
-  memset ( &tBuf, 0, 1024);
-    
-  ioctlhdr = (struct cdb10hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 0xff;
-   
-  ioctlhdr->cdb[0] = MODE_SELECT_10;
-  ioctlhdr->cdb[1] = 0x00;
-  ioctlhdr->cdb[2] = 0x11;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = 0x00;
-  ioctlhdr->cdb[5] = 0x00;
-  ioctlhdr->cdb[6] = 0x00;
-  ioctlhdr->cdb[7] = 0x00;
-  ioctlhdr->cdb[8] = 0xff;
-  ioctlhdr->cdb[9] = 0x00;
-
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
- 
-  memcpy ( pBuf, &tBuf[8], 0xff); 
-  
-  return status;
-
-}
-
-
-
-
-UINT8 modeselect10 (int device,  UINT8 pagenum, UINT8 *pBuf)
-{
-  struct cdb10hdr *ioctlhdr;
-  UINT8 tBuf[CDB_10_MAX_DATA_SIZE + CDB_10_HDR_SIZE ];
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_10_MAX_DATA_SIZE + CDB_10_HDR_SIZE );
-
-  ioctlhdr = (struct cdb10hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = pBuf[0] + 1;
-  ioctlhdr->outbufsize = 0;
-  
-  ioctlhdr->cdb[0] = MODE_SELECT_10;
-  ioctlhdr->cdb[1] = 0x00;
-  ioctlhdr->cdb[2] = pagenum;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = 0x00;
-  ioctlhdr->cdb[5] = 0x00;
-  ioctlhdr->cdb[6] = 0x00;
-  ioctlhdr->cdb[7] = 0x00;
-  ioctlhdr->cdb[8] = pBuf[0] + 1;
-  ioctlhdr->cdb[9] = 0x00;
-  
-  tBuf[CDB_10_HDR_SIZE + 3]  = 0x08;
-  tBuf[CDB_10_HDR_SIZE + 10] = 0x02;
-  
-    
-  memcpy ( &tBuf[ CDB_10_HDR_SIZE + MODE_DATA_HDR_SIZE],
-			 pBuf +  MODE_DATA_HDR_SIZE,
-			pBuf[0] - MODE_DATA_HDR_SIZE + 1);
-
-  tBuf[26] &= 0x3f;		
- 
-  status = ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-
-  return status;
-
-}
-
-
-
-
-UINT8 stdinquiry ( int device, UINT8 *pBuf)
-{
- 
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
- 
-  struct cdb6hdr *ioctlhdr;
-  	
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-  
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = CDB_6_MAX_DATA_SIZE;
-   
-  ioctlhdr->cdb[0] = INQUIRY;
-  ioctlhdr->cdb[1] = 0x00;
-  ioctlhdr->cdb[2] = 0x00;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = CDB_6_MAX_DATA_SIZE;
-  ioctlhdr->cdb[5] = 0x00;
-  
-  
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND, &tBuf );
-  
-  memcpy ( pBuf, &tBuf[8], 255); 
-
-  return status;
-
-}
-
-
-
-
-UINT8 inquiry ( int device, UINT8 pagenum, UINT8 *pBuf)
-{
- 
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
- 
-  struct cdb6hdr *ioctlhdr;
-  	
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-  
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 0xff;
-   
-  ioctlhdr->cdb[0] = INQUIRY;
-  ioctlhdr->cdb[1] = 0x01;
-  ioctlhdr->cdb[2] = 0x00;
-  ioctlhdr->cdb[3] = pagenum;
-  ioctlhdr->cdb[4] = CDB_6_MAX_DATA_SIZE;
-  ioctlhdr->cdb[5] = 0x00;
-  
-  
-  status =  ioctl( device, SCSI_IOCTL_STOP_UNIT , &tBuf);
-  /*status =  ioctl( device, 1 , &tBuf);*/
-  
-  memcpy ( pBuf, &tBuf[8], 255); 
-
-  return status;
-
-}
-
-
-
-
-UINT8 requestsense (int device, UINT8 *pBuf)
-{
-    
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
- 
-  struct cdb6hdr *ioctlhdr;
-  	
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-  
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 0xff;
-   
-  ioctlhdr->cdb[0] = REQUEST_SENSE;
-  ioctlhdr->cdb[1] = 0x00;
-  ioctlhdr->cdb[2] = 0x00;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = CDB_6_MAX_DATA_SIZE;
-  ioctlhdr->cdb[5] = 0x00;
-  
-  
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-  
-  memcpy ( pBuf, &tBuf[8], 255); 
-
-  return status;
-}
-
-
-UINT8 senddiagnostic (int device, UINT8 functioncode,  UINT8 *pBuf)
-{
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
- 
-  struct cdb6hdr *ioctlhdr;
-  	
-  UINT8 status;
-
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-  
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 0xff;
-   
-  ioctlhdr->cdb[0] = SEND_DIAGNOSTIC;
-  
-  if (functioncode != SCSI_DIAG_SELF_TEST)
-	ioctlhdr->cdb[1] = ( functioncode <<5 ) | 0x10;
-  
-  ioctlhdr->cdb[2] = 0x00;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = 0x00;
-  ioctlhdr->cdb[5] = 0x00;
-  
-  if (pBuf != NULL)
-  {
-	  ioctlhdr->inbufsize = pBuf[0];	
-      ioctlhdr->cdb[4] = pBuf[0];
-	  memcpy ( &tBuf[CDB_6_HDR_SIZE],
-				pBuf + 1,
-				pBuf[0]);
+  /* strip leading blanks */
+  while (s != end && *s == ' ')
+    ++s;
+  /* compress internal blanks and strip trailing blanks */
+  while (s != end && *s) {
+    if (*s++ != ' ' || (s != end && *s && *s != ' '))
+      *p++ = *(s-1);
   }
-
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-  
-  if (pBuf != NULL)
-  	memcpy ( pBuf, &tBuf[8], 256); 
-
-  return status;
+  /* wipe out trailing garbage */
+  while (p != end)
+    *p++ = '\0';
 }
 
+int scsi_SG_IO(int device, unsigned char *cdb, int cdb_len, unsigned char *buffer, int buffer_len, unsigned char *sense, unsigned char sense_len, int dxfer_direction) {
+  struct sg_io_hdr io_hdr;
 
+  memset(&io_hdr, 0, sizeof(struct sg_io_hdr));
+  io_hdr.interface_id = 'S';
+  io_hdr.cmdp = cdb;
+  io_hdr.cmd_len = cdb_len;
+  io_hdr.dxfer_len = buffer_len;
+  io_hdr.dxferp = buffer;
+  io_hdr.mx_sb_len = sense_len;
+  io_hdr.sbp = sense;
+  io_hdr.dxfer_direction = dxfer_direction;
+  io_hdr.timeout = 3000; /* 3 seconds should be ample */
 
-UINT8 receivediagnostic (int device, UINT8 pagenum,  UINT8 *pBuf)
+  return ioctl(device, SG_IO, &io_hdr);
+}
+
+int scsi_inquiry(int device, unsigned char *buffer)
 {
-  UINT8 tBuf[CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE ];
+  unsigned char cdb[6];
  
-  struct cdb6hdr *ioctlhdr;
-  	
-  UINT8 status;
+  memset(cdb, 0, sizeof(cdb));
+  cdb[0] = INQUIRY;
+  cdb[4] = 36;  /* should be 36 for unsafe devices (like USB mass storage stuff)
+                 *      otherwise they can lock up! SPC sections 7.4 and 8.6 */
 
-  memset ( &tBuf, 0, CDB_6_MAX_DATA_SIZE + CDB_6_HDR_SIZE );
-  
-  ioctlhdr = (struct cdb6hdr *) &tBuf;
-  
-  ioctlhdr->inbufsize = 0;
-  ioctlhdr->outbufsize = 0xff;
-   
-  ioctlhdr->cdb[0] = RECEIVE_DIAGNOSTIC;
-  
-  ioctlhdr->cdb[1] = 0x01;
-  
-  ioctlhdr->cdb[2] = pagenum;
-  ioctlhdr->cdb[3] = 0x00;
-  ioctlhdr->cdb[4] = 0x00;
-  ioctlhdr->cdb[5] = 0x00;
-  
-
-  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
-  
-  memcpy ( pBuf, &tBuf[8], 256); 
-
-  return status;
-}
-
-/*
-UINT8 testunitready (int device)
-{
-  return ioctl( device, SCSI_IOCTL_TEST_UNIT_READY , NULL);
-}
-*/
-
-
-
-/* ModePage1C Handler */
-
-#define SMART_SUPPORT	0x00	
-
-UINT8 scsiSmartModePage1CHandler (int device, UINT8 setting, UINT8 *retval)
-{
-	char tBuf[CDB_6_MAX_DATA_SIZE];
-	
-	if (modesense ( device, 0x1c, (UINT8 *) &tBuf) != 0)
-	{
-		return 1;
-	}
-	
-	switch (setting)
-	{
-		case DEXCPT_DISABLE:
- 			tBuf[14] &= 0xf7;
-			tBuf[15] = 0x04;
-			break;
-		case DEXCPT_ENABLE:
-			tBuf[14] |= 0x08;
-			break;
-		case EWASC_ENABLE:
-			tBuf[14] |= 0x10;
-			break;
-		case EWASC_DISABLE:
-			tBuf[14] &= 0xef;
-			break;
-		case SMART_SUPPORT:
-			*retval = tBuf[14] & 0x08;
-			return 0;
-			break;
-		default:
-			return 1;
-	}
-			
-	if (modeselect ( device, 0x1c, (UINT8 *) &tBuf ) != 0)
-	{
-		return 1;
-	}
-	
-	return 0;
-}
-
-
-
-
-UINT8 scsiSmartSupport (int device, UINT8 *retval)
-{
-	return scsiSmartModePage1CHandler( device, SMART_SUPPORT, retval);
-}
-
-
-
-
-UINT8 scsiSmartEWASCEnable (int device)
-{
-	return scsiSmartModePage1CHandler( device, EWASC_ENABLE, NULL);
-}
-
-
-
-
-UINT8 scsiSmartEWASCDisable (int device)
-{
-	return scsiSmartModePage1CHandler( device, EWASC_DISABLE, NULL);
-}
-
-
-
-
-UINT8 scsiSmartDEXCPTEnable (int device)
-{
-	return scsiSmartModePage1CHandler( device, DEXCPT_ENABLE, NULL);
-}
-
-
-
-
-UINT8 scsiSmartDEXCPTDisable (int device)
-{
-	return scsiSmartModePage1CHandler( device, DEXCPT_DISABLE, NULL);
-}
-
-UINT8 scsiGetTemp ( int device, UINT8 *currenttemp, UINT8 *triptemp)
-{
-    
-   UINT8 tBuf[1024];
-
-  if (logsense ( device , TEMPERATURE_PAGE, (UINT8 *) &tBuf) != 0)
-  {
-     perror ( "Log Sense failed");
-     exit (1);
+  if (scsi_SG_IO(device, cdb, sizeof(cdb), buffer, cdb[4], NULL, 0, SG_DXFER_FROM_DEV) != 0)
+    return 1;
+  else {
+    scsi_fixstring(buffer + 8, 24);
+    return 0;
   }
-  *currenttemp = tBuf[9];
-  *triptemp = tBuf[15];
-  return 0;
 }
 
-UINT8 scsiCheckSmart(int device, UINT8 method, UINT8 *retval,
-                     UINT8 *currenttemp, UINT8 *triptemp)
-{
-   UINT8 tBuf[1024];
-   UINT8 asc;
-   UINT8 ascq;
-   unsigned short pagesize;
- 
-   *currenttemp = *triptemp = 0;
+int scsi_modesense(int device, unsigned char pagenum, unsigned char *buffer, int buffer_len) {
+  unsigned char cdb[6];
   
-   if ( method == CHECK_SMART_BY_LGPG_2F)
-   {
-      if (logsense ( device , SMART_PAGE, (UINT8 *) &tBuf) != 0)
-      {
-	perror ( "Log Sense failed");
-	exit (1);
-      }
+  memset(cdb, 0, sizeof(cdb));
+  cdb[0] = MODE_SENSE;
+  cdb[2] = pagenum;
+  cdb[4] = 0xff;
 
-      pagesize = (unsigned short) (tBuf[2] << 8) | tBuf[3];
+  return scsi_SG_IO(device, cdb, sizeof(cdb), buffer, buffer_len, NULL, 0, SG_DXFER_FROM_DEV);
+}
 
-      if ( !pagesize )
-      {
-	/* failed read of page 2F\n */
-	return 1;
-      } 
+int scsi_modeselect(int device, char *buffer) {
+  unsigned char cdb[6];
+  
+  memset(cdb, 0, sizeof(cdb));
+  cdb[0] = MODE_SELECT;
+  cdb[1] = 0x11;
+  cdb[4] = buffer[0] + 1;
+  
+  buffer[3]  = 0x08;
+  buffer[10] = 0x02;
+  buffer[20] &= 0x3f;
+	  
+  return scsi_SG_IO(device, cdb, sizeof(cdb), buffer, cdb[4], NULL, 0, SG_DXFER_TO_DEV);
+}
 
-      asc  = tBuf[8]; 
-      ascq = tBuf[9];
+int scsi_logsense(int device, int pagenum, unsigned char *buffer, int buffer_len) {
+  unsigned char cdb[10];
+  
+  memset(cdb, 0, sizeof(cdb));
+  cdb[0] = LOG_SENSE;
+  cdb[2] = 0x40 | pagenum;
+  cdb[7] = 0x04;
+  
+  return scsi_SG_IO(device, cdb, sizeof(cdb), buffer, buffer_len, NULL, 0, SG_DXFER_FROM_DEV);
+}
 
-      if ( pagesize == 8 && (currenttemp != NULL) && (triptemp != NULL) )
-      {
-	*currenttemp = tBuf[10];
-	*triptemp =  tBuf[11];
-      }	
-
-   }
-   else
-   {
-      if (requestsense ( device , (UINT8 *) &tBuf) != 0)
-      {
-	perror ( "Request Sense failed");
-	exit (1);
-      }
-      
-      asc = tBuf[12]; 
-      ascq = tBuf[13];
+int scsi_smartsupport(int device) {
+  unsigned char buf[255];
 	
-   }
-
-   if ( asc == 0x5d )
-	*retval = ascq;
-   else
-         *retval = 0;
-
-   return 0;
+  if (scsi_modesense (device, EXCEPTIONS_CONTROL_PAGE, buf, sizeof(buf)) != 0)
+    return 0;
+  else
+    return (buf[14] & 0x08) == 0;
 }
 
+int scsi_smartDEXCPTdisable(int device) {
+  unsigned char buf[255];
 
-char* scsiTapeAlertsTapeDevice ( unsigned short code)
-{
+  if (scsi_modesense (device, EXCEPTIONS_CONTROL_PAGE, buf, sizeof(buf)) != 0)
+    return 1;
 
-#define NUMENTRIESINTAPEALERTSTABLE 54
+  buf[14] &= 0xf7;
+  buf[15] = 0x04;
 
-    char *TapeAlertsMessageTable[]=
-    {  " ",
-   _("The tape drive is having problems reading data. No data has been lost, but there has been a reduction in the performance of the tape."),
-   _("The tape drive is having problems writing data. No data has been lost, but there has been a reduction in the performance of the tape."),
-   _("The operation has stopped because an error has occured while reading or writing data which the drive cannot correct."),
-   _("Your data is at risk:\n1. Copy any data you require from this tape. \n2. Do not use this tape again.\n3. Restart the operation with a different tape."),
-   _("The tape is damaged or the drive is dault. Call the tape drive suppiler helpline."),
-   _("The tape is from a faulty batch or the tape drive is faulty:\n1. Use a good tape to test the drive.\n2. If problem persists, call the tape drive supplier helpline."),
-   _("The tape cartridge has reached the end of its calculated useful life: \n1. Copy data you need to another tape.\n2. Discard the old tape."),
-   _("The tape cartridge is not data-grade. Any data you back up to the tape is at risk. Replace the cartge with a data-grade tape."),
-   _("You are trying to write to a write-protected cartridge. Remove the write-protection or use another tape."),
-   _("You cannot eject the cartridge because the tape drive is in use. Wait until the operation is complete before ejecting the cartridge."),
-   _("The tape in the drive is a cleaning cartridge."),
-   _("You have tried to load a cartridge of a type which is not supported by this drive."),
-   _("The operation has failed because the tape in the drive has snapped:\n1. Discard the old tape.\n2. Restart the operation with a different tape."),
-   _("The operation has failed because the tape in the drive has snapped:\n1. Do not attept to extract the tape cartridge\n2. Call the tape drive supplier helpline."),
-   _("The memory in the tape cartridge has failed, which reduces performance. Do not use the cartridge for further backup operations."),
-   _("The operation has failed because the tape cartridge was manually ejected while the tape drive was actively writing or reading."),
-   _("You have loaded of a type that is read-only in this drive. The cartridge will appear as write-protected."),
-   _("The directory on the tape cartridge has been corruptrf. File search performance will be degraded. The tape directory can be rebuilt by reading all the data on the cartridge."),
-   _("The tape cartridge is newaring the end of its calculated life. It is recommended that you:\n1. Use another tape cartridge for your next backup.\n2.Store this tape in a safe place in casse you need to restore data from it."),
-   _("The tape drive needs cleaning:\n1. If the operation has stopped, ejct the tape and clean the drive.\n2. If the operation has not stopped, wait for it ti finish and then clean the drive. Check the tape drive users manual for device specific cleanning instructions."),
-   _("The tape drive is due for routine cleaning:\n1. Wait for the cuurent operation to finish.\n2. The use a cleaning cartridge. Check the tape drive users manual for device specific cleaning instructions."),
-   _("The last cleaning cartridge used in the tape drive has worn out:\n1. Discard the worn out cleaning cartridge.\n2. Wait for the current operation to finish.\n 3.Then use a new cleaning cartridge."),
-   _("The last cleaning cartridge used in the tape drive was an invalid type:\n1. Do not use this cleaning cartridge in this drive.\n2. Wait for the current operation to finish.\n 3.Then use a new cleaning cartridge."),
-   _("The tape drive has requested a retention operation"),
-   _("A redundant interface port on the tape drive has failed"),
-   _("A tape drive cooling fan has failed"),
-   _("A redundant power supply has dailed inside the tape drive enclosure. Check the enclosure users manual for instructions on replacing the failed power supply."),
-   _("The tape drive power consumption is outside the specified range."),
-   _("Preventive maintenance of the tape drive is requiired. Check the tape drive users manual for device specific perventive maintenance tasks or call the tape drive supplier helpline."),
-   _("The tape drive has a hardware fault:\n1. Eject the tape or magazine.\n2. Reset the drive.\n3. Restart the operation."),
-   _("The tape drive has a hardware fault:\n1. Turn the tape drive off and then on again.\n2. Restart the operation.\n3. If the problem persists, call the tape drive supplier helpline.\n Check the tape drive users manual for device specific instructions on turning the device power in and off."),
-   _("The tape drive has a problem with the host interface:\n1. Check the cables and calble connections.\n2. Restart the operation."),
-   _("The operation has failed:\n1. Eject the tape or magazine.\n2. Insert the tape or magazine again.\n3. Restart the operation."),
-   _("The firmware download has failed because you have tried to use the incorrect firmware for this tape drive. Obtain the correct firmware and try again."),
-   _("Environmental conditions inside the tape drive are outside the specified humidity range."),
-   _("Environmental conditions inside the tape drive are outside the specified temperature range."),
-   _("The voltage supply to the tape drive is outside the specified range."),
-   _("A hardware failure of the tape drive is predicted. Call the tape drive supplier helpline."),
-   _("The tape drive may have a fault. Check for availability of diagnostic information and run extended diagnostics if applicable. Check the tape drive users manual for instruction on running extended diagnostic tests and retrieving diagnostic data"),
-   _("The changer mechanism is having difficulty communicating with the tape drive:\n1. Turn the autoloader off then on.\n2. Restart the operation.\n3. If problem persists, call the tape drive supplier helpline."),
-   _("A tape has been left in the autoloader by a pervious hardware fault:\n1. Insert an empty magazine to clear the fault.\n2. If the fault does not clear, turn the autoloader off and then on again.\n3. If the problem persists, call the tape drive supplier helpline."),
-   _("There is a problem with the autoloader mechanism."),
-   _("The operation has failed because the autoloader door is open:\n1. Clear any obstructions from the autoloader door.\n2. Eject the magazine and then insert it again.\n3. If the fault does not clear, turn the autoloader off and then on again.\n4. If the problem persists, call the tape drive supplier helpline."),
-   _("The autoloader has a hardware fault:\n1. Turn the autoloader off and then on again.\n2. Restart the operation.\n3. If the problem persists, call the tape drive supplier helpline.\n Check the autoloader users manual for device specific instrictions on turning the device power on and off."),
-   _("The autoloader cannot operate without the magazine,\n1. Insert the magazine into the autoloader.\n 2. Restart the operation."),
-   _("A hardware failure of the changer mechanism is predicted. Call the tape drive supplier helpline."),
-   " ",
-   " ",
-   " ",
-   _("Media statistics have been lost at some time in the past"),
-   _("The tape directory on the tape cartridge just unloaded has been corrupted. File seach performance will be degraded. The tape directory can be rebuilt by reading all the data."),
-   _("The tape just unloaded could not write its system area successfully:\n1. Copy data to another tappe cartridge.\n2. Discard the old cartridge."),
-   _("The tape system are could not be read successfully at load time:\n1. Copy data to another tape cartridge.\n2. Discard the old cartridge."),
-   _("The start or data could not be found on the tape:\n1. Check you are using the correct format tape.\n2. Discard the tape or return the tape to you supploer"),
-    };
-            
-    return ( code > NUMENTRIESINTAPEALERTSTABLE)? "Unknown Alert" : TapeAlertsMessageTable[code];
+  return scsi_modeselect (device, buf);
 }
 
-
-char* scsiSmartGetSenseCode ( UINT8 ascq)
-{
-
- char *smartsensetable [] =   {
-	_("FAILURE PREDICTION THRESHOLD EXCEEDED"),
-	_("MEDIA FAILURE PREDICTION THRESHOLD EXCEEDED"),
-	_("LOGICAL UNIT FAILURE PREDICTION THRESHOLD EXCEEDED"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("HARDWARE IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"),
-	_("HARDWARE IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"),
-	_("HARDWARE IMPENDING FAILURE DATA ERROR RATE TOO HIGH"),
-	_("HARDWARE IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"),
-	_("HARDWARE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"),
-	_("HARDWARE IMPENDING FAILURE ACCESS TIMES TOO HIGH"),
-	_("HARDWARE IMPENDING FAILURE START UNIT TIMES TOO HIGH"),
-	_("HARDWARE IMPENDING FAILURE CHANNEL PARAMETRICS"),
-	_("HARDWARE IMPENDING FAILURE CONTROLLER DETECTED"),
-	_("HARDWARE IMPENDING FAILURE THROUGHPUT PERFORMANCE"),
-	_("HARDWARE IMPENDING FAILURE SEEK TIME PERFORMANCE"),
-	_("HARDWARE IMPENDING FAILURE SPIN-UP RETRY COUNT"),
-	_("HARDWARE IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("CONTROLLER IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"),
-	_("CONTROLLER IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"),
-	_("CONTROLLER IMPENDING FAILURE DATA ERROR RATE TOO HIGH"),
-	_("CONTROLLER IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"),
-	_("CONTROLLER IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"),
-	_("CONTROLLER IMPENDING FAILURE ACCESS TIMES TOO HIGH"),
-	_("CONTROLLER IMPENDING FAILURE START UNIT TIMES TOO HIGH"),
-	_("CONTROLLER IMPENDING FAILURE CHANNEL PARAMETRICS"),
-	_("CONTROLLER IMPENDING FAILURE CONTROLLER DETECTED"),
-	_("CONTROLLER IMPENDING FAILURE THROUGHPUT PERFORMANCE"),
-	_("CONTROLLER IMPENDING FAILURE SEEK TIME PERFORMANCE"),
-	_("CONTROLLER IMPENDING FAILURE SPIN-UP RETRY COUNT"),
-	_("CONTROLLER IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("DATA CHANNEL IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"),
-	_("DATA CHANNEL IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"),
-	_("DATA CHANNEL IMPENDING FAILURE DATA ERROR RATE TOO HIGH"),
-	_("DATA CHANNEL IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"),
-	_("DATA CHANNEL IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"),
-	_("DATA CHANNEL IMPENDING FAILURE ACCESS TIMES TOO HIGH"),
-	_("DATA CHANNEL IMPENDING FAILURE START UNIT TIMES TOO HIGH"),
-	_("DATA CHANNEL IMPENDING FAILURE CHANNEL PARAMETRICS"),
-	_("DATA CHANNEL IMPENDING FAILURE CONTROLLER DETECTED"),
-	_("DATA CHANNEL IMPENDING FAILURE THROUGHPUT PERFORMANCE"),
-	_("DATA CHANNEL IMPENDING FAILURE SEEK TIME PERFORMANCE"),
-	_("DATA CHANNEL IMPENDING FAILURE SPIN-UP RETRY COUNT"),
-	_("DATA CHANNEL IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("SERVO IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"),
-	_("SERVO IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"),
-	_("SERVO IMPENDING FAILURE DATA ERROR RATE TOO HIGH"),
-	_("SERVO IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"),
-	_("SERVO IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"),
-	_("SERVO IMPENDING FAILURE ACCESS TIMES TOO HIGH"),
-	_("SERVO IMPENDING FAILURE START UNIT TIMES TOO HIGH"),
-	_("SERVO IMPENDING FAILURE CHANNEL PARAMETRICS"),
-	_("SERVO IMPENDING FAILURE CONTROLLER DETECTED"),
-	_("SERVO IMPENDING FAILURE THROUGHPUT PERFORMANCE"),
-	_("SERVO IMPENDING FAILURE SEEK TIME PERFORMANCE"),
-	_("SERVO IMPENDING FAILURE SPIN-UP RETRY COUNT"),
-	_("SERVO IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("SPINDLE IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"),
-	_("SPINDLE IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"),
-	_("SPINDLE IMPENDING FAILURE DATA ERROR RATE TOO HIGH"),
-	_("SPINDLE IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"),
-	_("SPINDLE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"),
-	_("SPINDLE IMPENDING FAILURE ACCESS TIMES TOO HIGH"),
-	_("SPINDLE IMPENDING FAILURE START UNIT TIMES TOO HIGH"),
-	_("SPINDLE IMPENDING FAILURE CHANNEL PARAMETRICS"),
-	_("SPINDLE IMPENDING FAILURE CONTROLLER DETECTED"),
-	_("SPINDLE IMPENDING FAILURE THROUGHPUT PERFORMANCE"),
-	_("SPINDLE IMPENDING FAILURE SEEK TIME PERFORMANCE"),
-	_("SPINDLE IMPENDING FAILURE SPIN-UP RETRY COUNT"),
-	_("SPINDLE IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("Unknown Failure"),
-	_("FIRMWARE IMPENDING FAILURE GENERAL HARD DRIVE FAILURE"),
-	_("FIRMWARE IMPENDING FAILURE DRIVE ERROR RATE TOO HIGH"),
-	_("FIRMWARE IMPENDING FAILURE DATA ERROR RATE TOO HIGH"),
-	_("FIRMWARE IMPENDING FAILURE SEEK ERROR RATE TOO HIGH"),
-	_("FIRMWARE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS"),
-	_("FIRMWARE IMPENDING FAILURE ACCESS TIMES TOO HIGH"),
-	_("FIRMWARE IMPENDING FAILURE START UNIT TIMES TOO HIGH"),
-	_("FIRMWARE IMPENDING FAILURE CHANNEL PARAMETRICS"),
-	_("FIRMWARE IMPENDING FAILURE CONTROLLER DETECTED"),
-	_("FIRMWARE IMPENDING FAILURE THROUGHPUT PERFORMANCE"),
-	_("FIRMWARE IMPENDING FAILURE SEEK TIME PERFORMANCE"),
-	_("FIRMWARE IMPENDING FAILURE SPIN-UP RETRY COUNT"),
-	_("FIRMWARE IMPENDING FAILURE DRIVE CALIBRATION RETRY COUNT")};
-
-	if ( ascq == 0xff)
-		return _("SMART Sense: False Alarm");
-	else if ( ascq <= SMART_SENSE_MAX_ENTRY)
-		return smartsensetable[ascq];
-	else
-		return _("Unknown Failure");
-
-}
-
-
-
-
-UINT8 scsiSmartOfflineTest (int device)
-{	
-	UINT8 tBuf[256];
-	
-	memset ( &tBuf, 0, 256);
-
-	/* Build SMART Off-line Immediate Diag Header */
-	tBuf[0] = 8;    /* Buffer Length n-1 */
-	tBuf[1] = 0x80; /* Page Code */
-	tBuf[2] = 0x00; /* Reserved */
-	tBuf[3] = 0x00; /* Page Length MSB */
-	tBuf[4] = 0x04; /* Page Length LSB */
-	tBuf[5] = 0x03; /* SMART REvision */
-	tBuf[6] = 0x00; /* Reservved */
-	tBuf[7] = 0x00; /* Off-line Immediate Time MSB */
-	tBuf[8] = 0x00; /* Off-line Immediate Time LSB */
-
-	return senddiagnostic (device, SCSI_DIAG_NO_SELF_TEST, (UINT8 *) &tBuf);
-}
-
-
-UINT8 scsiSmartShortSelfTest (int device)
-{	
-	return senddiagnostic (device, SCSI_DIAG_BG_SHORT_SELF_TEST, NULL);
-}
-
-
-UINT8 scsiSmartExtendSelfTest (int device)
-{	
-	return senddiagnostic (device, SCSI_DIAG_BG_EXTENDED_SELF_TEST, NULL);
-}
-
-
-UINT8 scsiSmartShortCapSelfTest (int device)
-{	
-	return senddiagnostic (device, SCSI_DIAG_FG_SHORT_SELF_TEST, NULL);
-}
-
-
-UINT8 scsiSmartExtendCapSelfTest (int device)
-{
-	return senddiagnostic (device, SCSI_DIAG_FG_EXTENDED_SELF_TEST, NULL);
-}
-
-
-UINT8 scsiSmartSelfTestAbort (int device)
-{
-	return senddiagnostic (device, SCSI_DIAG_ABORT_SELF_TEST, NULL);
-}

@@ -62,8 +62,13 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
+GLIBC2 = @GLIBC2@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
+HAVE_ASPRINTF = @HAVE_ASPRINTF@
+HAVE_POSIX_PRINTF = @HAVE_POSIX_PRINTF@
+HAVE_SNPRINTF = @HAVE_SNPRINTF@
+HAVE_WPRINTF = @HAVE_WPRINTF@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -73,6 +78,7 @@ INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
@@ -142,12 +148,16 @@ CLEANFILES = *~
 sbin_PROGRAMS = hddtemp
 
 hddtemp_SOURCES = ata.c ata.h \
+		  atacmds.c atacmds.h \
+		  daemon.c daemon.h \
                   db.c db.h \
 		  hddtemp.c hddtemp.h \
+		  sata.c sata.h \
+		  satacmds.c statcmds.h \
 		  scsi.c scsi.h \
 		  scsicmds.c scsicmds.h \
 		  backtrace.c backtrace.h \
-		  utf8.c utf8.h 
+		  utf8.c utf8.h
 
 
 hddtemp_CFLAGS = -Wall -W -rdynamic
@@ -165,8 +175,10 @@ CONFIG_CLEAN_FILES =
 sbin_PROGRAMS = hddtemp$(EXEEXT)
 PROGRAMS = $(sbin_PROGRAMS)
 
-am_hddtemp_OBJECTS = hddtemp-ata.$(OBJEXT) hddtemp-db.$(OBJEXT) \
-	hddtemp-hddtemp.$(OBJEXT) hddtemp-scsi.$(OBJEXT) \
+am_hddtemp_OBJECTS = hddtemp-ata.$(OBJEXT) hddtemp-atacmds.$(OBJEXT) \
+	hddtemp-daemon.$(OBJEXT) hddtemp-db.$(OBJEXT) \
+	hddtemp-hddtemp.$(OBJEXT) hddtemp-sata.$(OBJEXT) \
+	hddtemp-satacmds.$(OBJEXT) hddtemp-scsi.$(OBJEXT) \
 	hddtemp-scsicmds.$(OBJEXT) hddtemp-backtrace.$(OBJEXT) \
 	hddtemp-utf8.$(OBJEXT)
 hddtemp_OBJECTS = $(am_hddtemp_OBJECTS)
@@ -177,9 +189,13 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/hddtemp-ata.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hddtemp-atacmds.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-backtrace.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hddtemp-daemon.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-db.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-hddtemp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hddtemp-sata.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hddtemp-satacmds.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-scsi.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-scsicmds.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-utf8.Po
@@ -235,9 +251,13 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-ata.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-atacmds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-backtrace.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-daemon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-hddtemp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-sata.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-satacmds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-scsi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-scsicmds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-utf8.Po@am__quote@
@@ -286,6 +306,50 @@ hddtemp-ata.obj: ata.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-ata.obj `if test -f 'ata.c'; then $(CYGPATH_W) 'ata.c'; else $(CYGPATH_W) '$(srcdir)/ata.c'; fi`
 
+hddtemp-atacmds.o: atacmds.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-atacmds.o -MD -MP -MF "$(DEPDIR)/hddtemp-atacmds.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-atacmds.o `test -f 'atacmds.c' || echo '$(srcdir)/'`atacmds.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-atacmds.Tpo" "$(DEPDIR)/hddtemp-atacmds.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-atacmds.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='atacmds.c' object='hddtemp-atacmds.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-atacmds.Po' tmpdepfile='$(DEPDIR)/hddtemp-atacmds.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-atacmds.o `test -f 'atacmds.c' || echo '$(srcdir)/'`atacmds.c
+
+hddtemp-atacmds.obj: atacmds.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-atacmds.obj -MD -MP -MF "$(DEPDIR)/hddtemp-atacmds.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-atacmds.obj `if test -f 'atacmds.c'; then $(CYGPATH_W) 'atacmds.c'; else $(CYGPATH_W) '$(srcdir)/atacmds.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-atacmds.Tpo" "$(DEPDIR)/hddtemp-atacmds.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-atacmds.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='atacmds.c' object='hddtemp-atacmds.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-atacmds.Po' tmpdepfile='$(DEPDIR)/hddtemp-atacmds.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-atacmds.obj `if test -f 'atacmds.c'; then $(CYGPATH_W) 'atacmds.c'; else $(CYGPATH_W) '$(srcdir)/atacmds.c'; fi`
+
+hddtemp-daemon.o: daemon.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-daemon.o -MD -MP -MF "$(DEPDIR)/hddtemp-daemon.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-daemon.o `test -f 'daemon.c' || echo '$(srcdir)/'`daemon.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-daemon.Tpo" "$(DEPDIR)/hddtemp-daemon.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-daemon.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='daemon.c' object='hddtemp-daemon.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-daemon.Po' tmpdepfile='$(DEPDIR)/hddtemp-daemon.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-daemon.o `test -f 'daemon.c' || echo '$(srcdir)/'`daemon.c
+
+hddtemp-daemon.obj: daemon.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-daemon.obj -MD -MP -MF "$(DEPDIR)/hddtemp-daemon.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-daemon.obj `if test -f 'daemon.c'; then $(CYGPATH_W) 'daemon.c'; else $(CYGPATH_W) '$(srcdir)/daemon.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-daemon.Tpo" "$(DEPDIR)/hddtemp-daemon.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-daemon.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='daemon.c' object='hddtemp-daemon.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-daemon.Po' tmpdepfile='$(DEPDIR)/hddtemp-daemon.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-daemon.obj `if test -f 'daemon.c'; then $(CYGPATH_W) 'daemon.c'; else $(CYGPATH_W) '$(srcdir)/daemon.c'; fi`
+
 hddtemp-db.o: db.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-db.o -MD -MP -MF "$(DEPDIR)/hddtemp-db.Tpo" \
 @am__fastdepCC_TRUE@	  -c -o hddtemp-db.o `test -f 'db.c' || echo '$(srcdir)/'`db.c; \
@@ -329,6 +393,50 @@ hddtemp-hddtemp.obj: hddtemp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-hddtemp.Po' tmpdepfile='$(DEPDIR)/hddtemp-hddtemp.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-hddtemp.obj `if test -f 'hddtemp.c'; then $(CYGPATH_W) 'hddtemp.c'; else $(CYGPATH_W) '$(srcdir)/hddtemp.c'; fi`
+
+hddtemp-sata.o: sata.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-sata.o -MD -MP -MF "$(DEPDIR)/hddtemp-sata.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-sata.o `test -f 'sata.c' || echo '$(srcdir)/'`sata.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-sata.Tpo" "$(DEPDIR)/hddtemp-sata.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-sata.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sata.c' object='hddtemp-sata.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-sata.Po' tmpdepfile='$(DEPDIR)/hddtemp-sata.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-sata.o `test -f 'sata.c' || echo '$(srcdir)/'`sata.c
+
+hddtemp-sata.obj: sata.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-sata.obj -MD -MP -MF "$(DEPDIR)/hddtemp-sata.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-sata.obj `if test -f 'sata.c'; then $(CYGPATH_W) 'sata.c'; else $(CYGPATH_W) '$(srcdir)/sata.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-sata.Tpo" "$(DEPDIR)/hddtemp-sata.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-sata.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sata.c' object='hddtemp-sata.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-sata.Po' tmpdepfile='$(DEPDIR)/hddtemp-sata.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-sata.obj `if test -f 'sata.c'; then $(CYGPATH_W) 'sata.c'; else $(CYGPATH_W) '$(srcdir)/sata.c'; fi`
+
+hddtemp-satacmds.o: satacmds.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-satacmds.o -MD -MP -MF "$(DEPDIR)/hddtemp-satacmds.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-satacmds.o `test -f 'satacmds.c' || echo '$(srcdir)/'`satacmds.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-satacmds.Tpo" "$(DEPDIR)/hddtemp-satacmds.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-satacmds.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='satacmds.c' object='hddtemp-satacmds.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-satacmds.Po' tmpdepfile='$(DEPDIR)/hddtemp-satacmds.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-satacmds.o `test -f 'satacmds.c' || echo '$(srcdir)/'`satacmds.c
+
+hddtemp-satacmds.obj: satacmds.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-satacmds.obj -MD -MP -MF "$(DEPDIR)/hddtemp-satacmds.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-satacmds.obj `if test -f 'satacmds.c'; then $(CYGPATH_W) 'satacmds.c'; else $(CYGPATH_W) '$(srcdir)/satacmds.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-satacmds.Tpo" "$(DEPDIR)/hddtemp-satacmds.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-satacmds.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='satacmds.c' object='hddtemp-satacmds.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-satacmds.Po' tmpdepfile='$(DEPDIR)/hddtemp-satacmds.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-satacmds.obj `if test -f 'satacmds.c'; then $(CYGPATH_W) 'satacmds.c'; else $(CYGPATH_W) '$(srcdir)/satacmds.c'; fi`
 
 hddtemp-scsi.o: scsi.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-scsi.o -MD -MP -MF "$(DEPDIR)/hddtemp-scsi.Tpo" \

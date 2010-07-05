@@ -32,7 +32,13 @@ typedef __u16 u16;
 #define MAX_ERRORMSG_SIZE      128
 #define DEFAULT_ATTRIBUTE_ID   194
 
-enum e_bustype { ERROR, BUS_UNKNOWN, BUS_ATA, BUS_SCSI, BUS_TYPE_MAX };
+#define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
+#define C_to_F(val) (int)(((double)(val)*1.8)+32)
+
+#define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
+#define C_to_F(val) (int)(((double)(val)*1.8)+32)
+
+enum e_bustype { ERROR, BUS_UNKNOWN, BUS_SATA, BUS_ATA, BUS_SCSI, BUS_TYPE_MAX };
 enum e_gettemp {
   GETTEMP_ERROR,            /* Error */
   GETTEMP_NOT_APPLICABLE,   /* */
@@ -75,7 +81,10 @@ struct bustype {
 
 extern struct bustype *   bus[BUS_TYPE_MAX];
 extern char               errormsg[MAX_ERRORMSG_SIZE];
-extern int                daemon_mode, debug, quiet, wakeup;
+extern int                tcp_daemon, debug, quiet, wakeup, af_hint;
+extern char               separator;
+extern long               portnum, syslog_interval;
+extern char *             listen_addr;
 
 
 #endif

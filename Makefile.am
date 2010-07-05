@@ -5,7 +5,7 @@ ACLOCAL_AMFLAGS = -I m4
 MAINT_CHARSET = latin1
 
 
-EXTRA_DIST = autogen.sh \
+EXTRA_DIST = config.rpath  autogen.sh \
              contribs \
              COPYING \
              ChangeLog \

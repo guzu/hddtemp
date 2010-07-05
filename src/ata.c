@@ -41,6 +41,7 @@
 
 // Application specific includes
 #include "hddtemp.h"
+#include "atacmds.h"
 
 
 #define SBUFF_SIZE 512
@@ -69,84 +70,13 @@ static const char *ata_model (int device) {
 }
 
 
-static int ata_enable_smart(int device) {
-  unsigned char cmd[4] = { WIN_SMART, 0, SMART_ENABLE, 0 };
-
-  return ioctl(device, HDIO_DRIVE_CMD, cmd);
-}
-
-
-static int ata_get_smart_values(int device, unsigned char* buff) {
-  unsigned char  cmd[516] = { WIN_SMART, 0, SMART_READ_VALUES, 1 };
-  int            ret;
-
-  ret = ioctl(device, HDIO_DRIVE_CMD, cmd);
-  if(ret)
-    return ret;
-  memcpy(buff, cmd+4, 512);
-  return 0;
-}
-
-
-static unsigned char* ata_search_temperature(const unsigned char* smart_data, int attribute_id) {
-  int i, n;
-
-  n = 3;
-  i = 0;
-  while((debug || *(smart_data + n) != attribute_id) && i < 30) {
-    if(debug && *(smart_data + n))
-      printf(_("field(%d)\t = %d\n"), *(smart_data + n), *(smart_data + n + 3));
-
-    n += 12;
-    i++;
-  }
-
-  if(i >= 30)
-    return NULL;
-  else
-    return (unsigned char*)(smart_data + n);
-}
-
-static
-enum e_powermode ata_get_powermode(struct disk *dsk) {
-#ifndef WIN_CHECKPOWERMODE1
-#define WIN_CHECKPOWERMODE1 0xE5
-#endif
-#ifndef WIN_CHECKPOWERMODE2
-#define WIN_CHECKPOWERMODE2 0x98
-#endif
-  unsigned char args[4] = { WIN_CHECKPOWERMODE1, 0, 0, 0 };
-  enum e_powermode state;
-
-  /*
-    After ioctl:
-      args[0] = status;
-      args[1] = error;
-      args[2] = nsector_reg;
-  */
-
-  if (ioctl(dsk->fd, HDIO_DRIVE_CMD, &args)
-      && (args[0] = WIN_CHECKPOWERMODE2) /* try again with 0x98 */
-      && ioctl(dsk->fd, HDIO_DRIVE_CMD, &args))
-    {
-       if (errno != EIO || args[0] != 0 || args[1] != 0)
-         state = PWM_UNKNOWN;
-       else
-         state = PWM_SLEEPING;
-    } else {
-       state = ( (args[2] == 0xFF) ? PWM_ACTIVE : PWM_STANDBY );
-    }
-
-  return state;
-}
-
 static enum e_gettemp ata_get_temperature(struct disk *dsk) {   
   unsigned char    values[512]/*, thresholds[512]*/;
   unsigned char *  field;
   int              i;
   u16 *            p;
 
-  switch(ata_get_powermode(dsk)) {
+  switch(ata_get_powermode(dsk->fd)) {
   case PWM_STANDBY:
   case PWM_SLEEPING:
     if (!wakeup)

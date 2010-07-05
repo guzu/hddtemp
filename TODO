@@ -3,6 +3,10 @@
 
 * In daemon mode, restrict listening interface.
 
+* chrooting to /var/empty
+   if (chroot("/var/empty")==-1) perror("chroot");
+   if (chdir("/")==-1) perror("security chdir");
+
 * Look at static buffers in scsi.c
 
 

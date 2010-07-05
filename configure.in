@@ -1,13 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 
 # Initialization
-AC_INIT(Makefile.am)
-AM_CONFIG_HEADER(config.h)
+AC_INIT
+AC_CONFIG_SRCDIR([Makefile.am])
+AC_CONFIG_HEADERS([config.h])
 
 # Determine the host and build type. The target is always a PIC.
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(hddtemp, 0.3-beta12)
+AM_INIT_AUTOMAKE(hddtemp, 0.3-beta13)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -24,7 +25,9 @@ AC_C_CONST
 AC_STRUCT_TM
 
 dnl internationalization macros
+AM_GNU_GETTEXT_VERSION
 AM_GNU_GETTEXT
+#AM_GNU_GETTEXT([external])
 
 dnl reasonable guesses for where stuff is installed
 dnl if we don't do that now, the config.h will use ${prefix}
@@ -56,14 +59,13 @@ AC_DEFINE_UNQUOTED([DEFAULT_DATABASE_PATH], [$DEFAULT_DATABASE_PATH], [Default l
 CFLAGS="$CFLAGS -Wall -W -Wcast-align"
 
 # Substitute configuration variables
-AC_OUTPUT(
-Makefile \
-intl/Makefile \
+AC_CONFIG_FILES([Makefile  intl/Makefile \
 po/Makefile.in \
 m4/Makefile \
 src/Makefile \
 doc/Makefile \
-)
+])
+AC_OUTPUT
 
 AC_MSG_RESULT([
 

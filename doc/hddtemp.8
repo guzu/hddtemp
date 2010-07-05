@@ -44,7 +44,7 @@ Useful to find a value that seems to match the  temperature and/or to send a rep
 (done for every drive supplied).
 .TP
 .B \-d, \-\-daemon
-Execute hddtemp in daemon mode (port 7634 by default).
+Execute hddtemp in TCP/IP daemon mode (port 7634 by default).
 .TP
 .B \-f, \-\-file=FILE
 Specify the database file to use.
@@ -58,10 +58,13 @@ address or an IPv6 hex address.
 Print only the temperature (without unit).
 .TP
 .B \-p, \-\-port=#
-Port number to listen to (in daemon mode).
+Port number to listen to (in TCP/IP daemon mode).
 .TP
 .B \-s, \-\-separator=C
-Separator to use between fields (in daemon mode). The default separator is '|'.
+Separator to use between fields (in TCP/IP daemon mode). The default separator is '|'.
+.TP
+.B \-s, \-\-syslog=s
+Switch do daemon mode and log temperatures to syslog every s seconds.
 .TP
 .B \-q, \-\-quiet
 Doesn't check if the drive drive is supported.
@@ -72,10 +75,10 @@ Display hddtemp version number.
 .B \-w, \-\-wake-up
 Wake-up the drive if need (ATA drives only).
 .TP
--B \-4
+.B \-4
 listen on IPv4 sockets only.
 .TP
--B \-6
+.B \-6
 listen on IPv6 sockets only.
 
 
@@ -95,7 +98,7 @@ either a commentary, a blank line or a line containing:
 .PP
 Feedback is welcome (see section REPORT below).
 
-.SH "DAEMON MODE"
+.SH "TCP/IP DAEMON MODE"
 To test
 .B hddtemp
 in daemon mode, start
@@ -139,7 +142,7 @@ If hddtemp crashes (yes, it is able to) for some unknown reasons, take a look in
 Then you can then send me this file and the hddtemp binary. This function is currently supported on i386 architectures only.
 
 .SH "SEE ALSO"
-.BR smartctl (1)
+.BR smartctl(1), syslog(3), syslogd(8)
 
 .SH "AUTHOR"
 .PP

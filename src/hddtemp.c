@@ -49,6 +49,7 @@
 #include <getopt.h>
 #include <signal.h>
 #include <errno.h>
+#include <locale.h>
 #include <time.h>
 #include <netinet/in.h>
 #include <linux/hdreg.h>
@@ -56,33 +57,30 @@
 // Application specific includes
 #include "ata.h"
 #include "utf8.h"
+#include "sata.h"
 #include "scsi.h"
 #include "db.h"
 #include "hddtemp.h"
 #include "backtrace.h"
+#include "daemon.h"
 
-
-#define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
-#define C_to_F(val) (int)(((double)(val)*1.8)+32)
 
 #define PORT_NUMBER            7634
 #define SEPARATOR              '|'
-#define DELAY                  60.0
 
 char *             database_path = DEFAULT_DATABASE_PATH;
-long               portnum;
+long               portnum, syslog_interval;
 char *             listen_addr;
 char               separator = SEPARATOR;
-int *              sks_serv;
-int                sks_serv_num;
 
 struct bustype *   bus[BUS_TYPE_MAX];
-int                daemon_mode, debug, quiet, numeric, wakeup, af_hint;
+int                tcp_daemon, debug, quiet, numeric, wakeup, af_hint;
 
 /*******************************************************
  *******************************************************/
 
 static void init_bus_types() {
+  bus[BUS_SATA] = &sata_bus;
   bus[BUS_ATA] = &ata_bus;
   bus[BUS_SCSI] = &scsi_bus;
 }
@@ -129,9 +127,12 @@ static void show_supported_drives() {
 
 
 static enum e_bustype probe_bus_type(struct disk *dsk) {
-  
-  if(bus[BUS_ATA]->probe(dsk->fd))
-    return BUS_ATA;
+  /* SATA disks answer to both ATA and SCSI commands so
+     they have to be probed first in order to be detected */
+  if(bus[BUS_SATA]->probe(dsk->fd))
+    return BUS_SATA;
+  else if(bus[BUS_ATA]->probe(dsk->fd))
+    return BUS_ATA;	  
   else if(bus[BUS_SCSI]->probe(dsk->fd))
     return BUS_SCSI;
   else
@@ -240,239 +241,6 @@ void do_direct_mode(struct disk *ldisks) {
 }
 
 
-void daemon_stop(int n) {
-  int i;
-	
-  for (i = 0 ; i < sks_serv_num; i++)
-    close(sks_serv[i]);
-}
-
-
-void do_daemon_mode(struct disk *ldisks) {
-  struct disk *      dsk;
-  int                cfd;
-  /*char               sepsep[2] = { separator, separator };*/
-  int                i, j, ret, maxfd;
-  struct tm *        time_st;
-  int                on = 1;
-  struct addrinfo    hints;
-  struct addrinfo*   all_ai;
-  struct addrinfo*   resp;
-  char               portbuf[10];
-  fd_set             deffds;
-
-  memset(&hints, 0, sizeof hints);
-  hints.ai_family = af_hint;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_PASSIVE;
-  snprintf(portbuf, sizeof(portbuf), "%ld", portnum);
-  ret = getaddrinfo(listen_addr, portbuf, &hints, &all_ai);
-  if (ret != 0) {
-    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(ret));
-    exit(1);
-  }
-
-  FD_ZERO(&deffds);
-  maxfd = -1;
-
-  /* Count max number of sockets we might open. */
-  for (sks_serv_num = 0, resp = all_ai ; resp ; resp = resp->ai_next)
-    sks_serv_num++;
-  sks_serv = malloc(sizeof(int) * sks_serv_num);
-  if (!sks_serv) {
-    perror("malloc");
-    freeaddrinfo(all_ai);
-    exit(1);
-  }
-
-  /* We may not be able to create the socket, if for example the
-   * machine knows about IPv6 in the C library, but not in the
-   * kernel. */
-  for (sks_serv_num = 0, resp = all_ai; resp; resp = resp->ai_next) {
-    sks_serv[sks_serv_num] = socket(resp->ai_family, resp->ai_socktype, resp->ai_protocol); 
-    if (sks_serv[sks_serv_num] == -1)
-      /* See if there's another address that will work... */
-      continue;
-
-    /* Allow local port reuse in TIME_WAIT */
-    setsockopt(sks_serv[sks_serv_num], SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-
-    /* Now we've got a socket - we need to bind it. */
-    if (bind(sks_serv[sks_serv_num], resp->ai_addr, resp->ai_addrlen) < 0) {
-      /* Nope, try another */
-      close(sks_serv[sks_serv_num]);
-      continue;
-    }
-
-    /* Ready to listen */
-    if (listen(sks_serv[sks_serv_num], 5) == -1) {
-      perror("listen");
-      for (sks_serv_num-- ; sks_serv_num > 0 ; sks_serv_num--)
-        close(sks_serv[sks_serv_num]);	      
-      freeaddrinfo(all_ai);
-      free(sks_serv);
-      exit(1);	      
-    }
-    
-    FD_SET(sks_serv[sks_serv_num], &deffds);
-    if (maxfd < sks_serv[sks_serv_num])
-      maxfd = sks_serv[sks_serv_num];
-    sks_serv_num++;
-  }
-  
-  if (sks_serv_num == 0) {
-    perror("socket");
-    free(sks_serv);
-    freeaddrinfo(all_ai);
-    exit(1);
-  }
-    
-  freeaddrinfo(all_ai);
-  
-  switch(fork()) {
-  case -1:
-    perror("fork");
-    exit(2);
-    break;
-  case 0:
-    break;
-  default:
-    exit(0);
-  }
-
-  /* close standard input and output */
-  for(i = 0; i < 3; i++) {  
-    for (j = 0 ; j < sks_serv_num ; j++)
-      if (i == sks_serv[j])
-        break;	      
-      if (j != sks_serv_num)
-        close(i);
-  }
-
-  /* redirect signals */
-  for(i = 0; i <= _NSIG; i++) {
-    switch(i) {
-    case SIGSEGV: /* still done */
-    case SIGBUS:
-    case SIGILL:
-      break;
-    case SIGPIPE:
-      signal(SIGPIPE, SIG_IGN);
-      break;
-    default:
-      signal(i, daemon_stop);
-      break;
-    }
-  }
-
-  /* timer initialisation */
-  for(dsk = ldisks; dsk; dsk = dsk->next) {
-    time(&dsk->last_time);
-    time_st = gmtime(&dsk->last_time);
-    time_st->tm_year -= 1;
-    dsk->last_time = mktime(time_st);
-  }
-
-  /* start to serve */
-  while(1) {
-    struct sockaddr_storage caddr;
-    fd_set fds;
-    socklen_t sz_caddr;
-    
-    fds = deffds;
-    
-    ret = select(maxfd + 1, &fds, NULL, NULL, NULL);
-    if (ret == -1) 
-      break;
-    else if (ret == 0)
-      continue;	    
-    
-    sz_caddr = sizeof(struct sockaddr_storage);
-    for (i = 0 ; i < sks_serv_num; i++) {
-      if (FD_ISSET(sks_serv[i], &fds))
- 	break;
-    }
-    if (i == sks_serv_num)
-      continue;
-    
-    if ((cfd = accept(sks_serv[i], (struct sockaddr *)&caddr, &sz_caddr)) == -1)
-      continue;
-    
-    for(dsk = ldisks; dsk; dsk = dsk->next) {
-      char msg[128];
-      int n;
-
-      if(difftime(time(NULL), dsk->last_time) > DELAY) {
-	dsk->value = -1;
-
-	if(dsk->type == ERROR)
-	  dsk->ret = GETTEMP_ERROR;
-	else 
-	  dsk->ret = bus[dsk->type]->get_temperature(dsk);
-
-	time(&dsk->last_time);
-      }
-
-      switch(dsk->ret) {
-      case GETTEMP_NOT_APPLICABLE:
-	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
-		     dsk->drive, separator,
-		     dsk->model, separator,
-		     "NA",       separator,
-		     '*');
-	break;
-      case GETTEMP_GUESS:
-      case GETTEMP_UNKNOWN:
-	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
-		     dsk->drive, separator,
-		     dsk->model, separator,
-		     "UNK",     separator,
-		     '*');
-	break;
-      case GETTEMP_KNOWN:
-	n = snprintf(msg, sizeof(msg), "%s%c%s%c%d%c%c",
-		     dsk->drive,                                                     separator,
-		     dsk->model,                                                     separator,
-		     (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), separator,
-		     dsk->db_entry->unit);
-	break;
-      case GETTEMP_NOSENSOR:
-	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
-		     dsk->drive, separator,
-		     dsk->model, separator,
-		     "NOS",      separator,
-		     '*');
-	break;
-      case GETTEMP_DRIVE_SLEEP:
-	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
-		     dsk->drive, separator,
-		     dsk->model, separator,
-		     "SLP",      separator,
-		     '*');
-	break;
-      case GETTEMP_ERROR:
-      default:
-	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
-		     dsk->drive,                        separator,
-		     (dsk->model) ? dsk->model : "???", separator,
-		     "ERR",                             separator,
-		     '*');
-	break;
-      }
-      
-      write(cfd,&separator, 1);
-      write(cfd, &msg, n);
-      write(cfd,&separator, 1);
-    }
-    close(cfd);
-  }
-
-  for (i = 0 ; i < sks_serv_num; i++)
-    close(sks_serv[sks_serv_num]);
-  free(sks_serv);
-}
-
-
 int main(int argc, char* argv[]) {
   int           i, c, lindex = 0, db_loaded = 0;
   int           show_db;
@@ -486,7 +254,7 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
   
-  show_db = debug = numeric = quiet = wakeup = af_hint = 0;
+  show_db = debug = numeric = quiet = wakeup = af_hint = syslog_interval = 0;
   portnum = PORT_NUMBER;
   listen_addr = NULL;
 
@@ -505,11 +273,12 @@ int main(int argc, char* argv[]) {
       {"port",      1, NULL, 'p'},
       {"separator", 1, NULL, 's'},
       {"numeric",   0, NULL, 'n'},
+      {"syslog",    1, NULL, 'S'},
       {"wake-up",   0, NULL, 'w'},
       {0, 0, 0, 0}
     };
  
-    c = getopt_long (argc, argv, "bDdf:l:hp:qs:vnw46", long_options, &lindex);
+    c = getopt_long (argc, argv, "bDdf:l:hp:qs:vnw46S:", long_options, &lindex);
     if (c == -1)
       break;
     
@@ -527,7 +296,7 @@ int main(int argc, char* argv[]) {
 	show_db = 1;
 	break;
       case 'd':
-	daemon_mode = 1;
+	tcp_daemon = 1;
 	break;
       case 'D':
 	debug = 1;
@@ -570,12 +339,13 @@ int main(int argc, char* argv[]) {
 		 "                        Useful to find a value that seems to match the\n"
 		 "                        temperature and/or to send me a report.\n"
 		 "                        (done for every drive supplied).\n"
-		 "  -d   --daemon      :  run hddtemp in daemon mode (port %d by default.)\n"
+		 "  -d   --daemon      :  run hddtemp in TCP/IP daemon mode (port %d by default.)\n"
 		 "  -f   --file=FILE   :  specify database file to use.\n"
-		 "  -l   --listen=addr :  listen on a specific interface (in daemon mode).\n"
+		 "  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon mode).\n"
                  "  -n   --numeric     :  print only the temperature.\n"
-		 "  -p   --port=#      :  port to listen to (in daemon mode).\n"
-		 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
+		 "  -p   --port=#      :  port to listen to (in TCP/IP daemon mode).\n"
+		 "  -s   --separator=C :  separator to use between fields (in TCP/IP daemon mode).\n"
+		 "  -S   --syslog=s    :  log temperature to syslog every s seconds.\n"
 		 "  -q   --quiet       :  do not check if the drive is supported.\n"
 		 "  -v   --version     :  display hddtemp version number.\n"
 		 "  -w   --wake-up     :  wake-up the drive if need.\n"
@@ -593,6 +363,18 @@ int main(int argc, char* argv[]) {
         break;
       case 'w':
 	wakeup = 1;
+	break;
+      case 'S':
+	{
+	  char *end = NULL;
+
+	  syslog_interval = strtol(optarg, &end, 10);
+
+	  if(errno == ERANGE || end == optarg || *end != '\0' || syslog_interval < 1) {
+	    fprintf(stderr, _("ERROR: invalid interval.\n"));
+	    exit(1);
+	  }
+        }
 	break;
       default:
 	exit(1);
@@ -615,8 +397,8 @@ int main(int argc, char* argv[]) {
     quiet = 1;
   }
 
-  if(debug && daemon_mode) {
-    fprintf(stderr, _("ERROR: can't use --debug and --daemon options together.\n"));
+  if(debug && (tcp_daemon || syslog_interval != 0)) {
+    fprintf(stderr, _("ERROR: can't use --debug and --daemon or --syslog options together.\n"));
     exit(1);
   }
 
@@ -660,7 +442,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  if(daemon_mode) {
+  if(tcp_daemon || syslog_interval != 0) {
     /*    cleanup_database(ldisks);*/
     do_daemon_mode(ldisks);
   }

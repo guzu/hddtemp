@@ -1,3 +1,16 @@
+
+v0.3 beta13
+=============================
+ * fix backtracing
+ * big thanks to Aurelien Jarno, maintainer from the Debian project for all
+  the following contributions:
+  * fix SCSI with 2.6.x kernels (use the SG_IO iotcl)
+  * fix manpage and README files
+  * add syslog feature
+  * add SATA support via ATA pass-through API
+  * and some code cleanups
+
+
 v0.3 beta12
 =============================
  * IPv6 support

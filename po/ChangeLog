@@ -1,0 +1,9 @@
+2005-03-22  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* boldquot.sed: New file, from gettext-0.14.2.
+	* en@boldquot.header: New file, from gettext-0.14.2.
+	* en@quot.header: New file, from gettext-0.14.2.
+	* insert-header.sin: New file, from gettext-0.14.2.
+	* quot.sed: New file, from gettext-0.14.2.
+	* Rules-quot: New file, from gettext-0.14.2.
+
