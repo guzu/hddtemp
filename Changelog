@@ -1,0 +1,8 @@
+v3.0 beta3
+=============================
+ * fix a problem with GCC 3.2
+ * include a patch for only displaying the temperature
+ * correct some messages
+ * start a the Changelog :o)
+
+

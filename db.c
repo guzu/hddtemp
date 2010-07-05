@@ -183,7 +183,7 @@ void load_database(const char* filename) {
     }
 
     if(s == buff) {
-      fprintf(stderr, _("  ERROR: a line exceed %1$d characters in %2$s.\n"), MAX_LINE_LEN, filename);
+      fprintf(stderr, _("  ERROR: line exceed %1$d characters in %2$s.\n"), MAX_LINE_LEN, filename);
       close(fd);
       exit(2);
     }

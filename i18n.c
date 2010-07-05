@@ -2,6 +2,7 @@
 #include <iconv.h>
 #include <langinfo.h>
 #include <locale.h>
+#include <string.h>
 #include <errno.h>
 
 static char *iconv_from_utf8_to_locale(char *string, char* fallback_string)

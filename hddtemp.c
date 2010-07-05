@@ -46,7 +46,7 @@
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
 #define C_to_F(val) (int)(((double)(val)*1.8)+32)
 
-#define HDDTEMP_VERSION        "0.3 beta2"
+#define HDDTEMP_VERSION        "0.3 beta3"
 #define PORT_NUMBER            7634
 #define SEPARATOR              '|'
 #define DELAY                  60.0
@@ -57,7 +57,7 @@ char               separator = SEPARATOR;
 int                sk_serv;
 
 struct bustype *   bus[BUS_TYPE_MAX];
-int                daemon_mode, debug, quiet;
+int                daemon_mode, debug, quiet, numeric;
 
 /*******************************************************
  *******************************************************/
@@ -179,13 +179,16 @@ static void display_temperature(struct disk *dsk) {
     printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree_sign(), degree_sign());
     break;
   case GETTEMP_KNOWN:
-    printf("%s: %s: %d%sC\n",
-           dsk->drive,
-           dsk->model,
-           (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), degree_sign());
+    if (! numeric)
+       printf("%s: %s: %d%sC\n",
+              dsk->drive,
+              dsk->model,
+              (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), degree_sign());
+    else
+       printf("%d\n", (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value));
     break;
   case GETTEMP_NOSENSOR:
-    printf(_("%s: %s:  known (found in database) to do not have temperature sensor.\n"), dsk->drive, dsk->model);
+    printf(_("%s: %s:  known drive, but it doesn't have a temperature sensor.\n"), dsk->drive, dsk->model);
     break;
   default:
     fprintf(stderr, _("ERROR: %s: %s: unknown returned status\n"), dsk->drive, dsk->model);
@@ -365,7 +368,7 @@ int main(int argc, char* argv[]) {
   int           show_db;
   struct disk * ldisks;
 
-  show_db = debug = quiet = 0;
+  show_db = debug = numeric = quiet = 0;
   portnum = PORT_NUMBER;
 
   /* Parse command line */
@@ -381,10 +384,11 @@ int main(int argc, char* argv[]) {
       {"version",   0, NULL, 'v'},
       {"port",      1, NULL, 'p'},
       {"separator", 1, NULL, 's'},
+      {"numeric",   0, NULL, 'n'},
       {0, 0, 0, 0}
     };
  
-    c = getopt_long (argc, argv, "bDdf:hp:qs:v", long_options, &lindex);
+    c = getopt_long (argc, argv, "bDdf:hp:qs:vn", long_options, &lindex);
     if (c == -1)
       break;
     
@@ -418,7 +422,7 @@ int main(int argc, char* argv[]) {
 	  portnum = strtol(optarg, &end, 10);
 
 	  if(errno == ERANGE || end == optarg || *end != '\0' || portnum < 1) {
-	    fprintf(stderr, "ERROR: port number value is not valid.\n");
+	    fprintf(stderr, "ERROR: invalid port number.\n");
 	    exit(1);
 	  }
 	}
@@ -427,7 +431,7 @@ int main(int argc, char* argv[]) {
       case 'h':
 	printf(_(" Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
 		 "\n"
-		 "   hddtemp display the temperature of drives supplied in argument.\n"
+		 "   hddtemp displays the temperature of drives supplied in argument.\n"
 		 "   Drives must support S.M.A.R.T.\n"
 		 "\n"
 		 "  -b   --drivebase   :  display database file content that allow hddtemp to\n"
@@ -436,11 +440,12 @@ int main(int argc, char* argv[]) {
 		 "                        Useful to find a value that seems to match the\n"
 		 "                        temperature and/or to send me a report.\n"
 		 "                        (done for every drive supplied).\n"
-		 "  -d   --daemon      :  put hddtemp in daemon mode (port %d by default)\n"
+		 "  -d   --daemon      :  run hddtemp in daemon mode (port %d by default)\n"
 		 "  -f   --file=FILE   :  specify database file to use.\n"
+                 "  -n   --numeric     :  print only the temperature.\n"
 		 "  -p   --port=#      :  port to listen to (in daemon mode).\n"
 		 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
-		 "  -q   --quiet       :  doesn't check if the drive drive is supported.\n"
+		 "  -q   --quiet       :  do not check if the drive is supported.\n"
 		 "  -v   --version     :  display hddtemp version number.\n"
 		 "\n"
 		 "Report bugs or new drives to <coredump@free.fr>.\n"),
@@ -448,7 +453,10 @@ int main(int argc, char* argv[]) {
       case 'v':
 	printf("hddtemp version %s\n", HDDTEMP_VERSION);
 	exit(0);
-	break;
+	break; 
+      case 'n':
+        numeric = 1;
+        break;
       default:
 	exit(1);
       }
