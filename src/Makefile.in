@@ -146,10 +146,12 @@ hddtemp_SOURCES = ata.c ata.h \
 		  hddtemp.c hddtemp.h \
 		  scsi.c scsi.h \
 		  scsicmds.c scsicmds.h \
+		  backtrace.c backtrace.h \
 		  utf8.c utf8.h 
 
 
-hddtemp_CFLAGS = -Wall -fomit-frame-pointer
+hddtemp_CFLAGS = -Wall -W -rdynamic
+#hddtemp_CFLAGS = -Wall -fomit-frame-pointer -rdynamic
 hddtemp_LDADD = @LIBINTL@
 
 localedir = $(datadir)/locale
@@ -165,7 +167,8 @@ PROGRAMS = $(sbin_PROGRAMS)
 
 am_hddtemp_OBJECTS = hddtemp-ata.$(OBJEXT) hddtemp-db.$(OBJEXT) \
 	hddtemp-hddtemp.$(OBJEXT) hddtemp-scsi.$(OBJEXT) \
-	hddtemp-scsicmds.$(OBJEXT) hddtemp-utf8.$(OBJEXT)
+	hddtemp-scsicmds.$(OBJEXT) hddtemp-backtrace.$(OBJEXT) \
+	hddtemp-utf8.$(OBJEXT)
 hddtemp_OBJECTS = $(am_hddtemp_OBJECTS)
 hddtemp_DEPENDENCIES =
 hddtemp_LDFLAGS =
@@ -174,6 +177,7 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/hddtemp-ata.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/hddtemp-backtrace.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-db.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-hddtemp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/hddtemp-scsi.Po \
@@ -231,6 +235,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-ata.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-backtrace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-hddtemp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hddtemp-scsi.Po@am__quote@
@@ -371,6 +376,28 @@ hddtemp-scsicmds.obj: scsicmds.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-scsicmds.Po' tmpdepfile='$(DEPDIR)/hddtemp-scsicmds.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-scsicmds.obj `if test -f 'scsicmds.c'; then $(CYGPATH_W) 'scsicmds.c'; else $(CYGPATH_W) '$(srcdir)/scsicmds.c'; fi`
+
+hddtemp-backtrace.o: backtrace.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-backtrace.o -MD -MP -MF "$(DEPDIR)/hddtemp-backtrace.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-backtrace.o `test -f 'backtrace.c' || echo '$(srcdir)/'`backtrace.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-backtrace.Tpo" "$(DEPDIR)/hddtemp-backtrace.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-backtrace.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='backtrace.c' object='hddtemp-backtrace.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-backtrace.Po' tmpdepfile='$(DEPDIR)/hddtemp-backtrace.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-backtrace.o `test -f 'backtrace.c' || echo '$(srcdir)/'`backtrace.c
+
+hddtemp-backtrace.obj: backtrace.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-backtrace.obj -MD -MP -MF "$(DEPDIR)/hddtemp-backtrace.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o hddtemp-backtrace.obj `if test -f 'backtrace.c'; then $(CYGPATH_W) 'backtrace.c'; else $(CYGPATH_W) '$(srcdir)/backtrace.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/hddtemp-backtrace.Tpo" "$(DEPDIR)/hddtemp-backtrace.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/hddtemp-backtrace.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='backtrace.c' object='hddtemp-backtrace.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/hddtemp-backtrace.Po' tmpdepfile='$(DEPDIR)/hddtemp-backtrace.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -c -o hddtemp-backtrace.obj `if test -f 'backtrace.c'; then $(CYGPATH_W) 'backtrace.c'; else $(CYGPATH_W) '$(srcdir)/backtrace.c'; fi`
 
 hddtemp-utf8.o: utf8.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hddtemp_CFLAGS) $(CFLAGS) -MT hddtemp-utf8.o -MD -MP -MF "$(DEPDIR)/hddtemp-utf8.Tpo" \

@@ -119,9 +119,13 @@ So you can try to guess which field by is the good one by running hddtemp at reg
  - what ever you can think of...
 .PP
 and looking for a field's value that would increase or decrease depending on what effect you want to induce.
-Be carefull, field 4, 9 and 12 are often reported to match a temperature field but after some investigation they do not. But fields 194 (which is the standard field for temperature) and 231 are good candidate.
+Be careful, field 4, 9 and 12 are often reported to match a temperature field but after some investigation they do not. But fields 194 (which is the standard field for temperature) and 231 are good candidate.
 .PP
 Then, you can send me a report with ouputs from 'hddtemp --debug ...', smartcl or 'hdparm -i ...', and/or add an entry in hddtemp.db yourself.
+
+.SH "BUGS"
+If hddtemp crashes (yes, it is able to) for some unknown reasons, take a look into /tmp directory for a file named hddtemp.backtrace.<PID>.XXXXXX (where XXXXXX is a random number generated a runtime).
+Then you can then send me this file and the hddtemp binary. This function is currently supported on i386 architectures only.
 
 .SH "SEE ALSO"
 .BR smartctl (1)

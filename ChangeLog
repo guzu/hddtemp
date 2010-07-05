@@ -1,3 +1,17 @@
+v0.3 beta11
+=============================
+ * fix a security problem related to the generation of the backtrace/stacktrace file
+   (from Ville Skytta <ville.skytta@iki.fi>).
+ * fix a little problem about backtracing architectures different than i386.
+
+
+v0.3 beta10
+=============================
+ * fix daemon mode problem from beta 9
+ * correct some typo in man page and in french .po file (from Aurelien Jarno <aurelien@aurel32.net>)
+ * add backtracing facilities
+
+
 v0.3 beta9
 =============================
  * remove listen function from the loop in daemon mode.

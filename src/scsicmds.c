@@ -65,12 +65,10 @@ UINT8 logsense (int device, UINT8 pagenum, UINT8 *pBuf)
   ioctlhdr->cdb[9] = 0x00;
 
   status =  ioctl( device, 1 , &tBuf);
-
 	
   memcpy ( pBuf, &tBuf[8], 1024); 
 
-  return status;
-  
+  return status;  
 }
 
 
@@ -98,14 +96,12 @@ UINT8 modesense (int device,  UINT8 pagenum, UINT8 *pBuf)
   ioctlhdr->cdb[3] = 0x00;
   ioctlhdr->cdb[4] = CDB_6_MAX_DATA_SIZE;
   ioctlhdr->cdb[5] = 0x00;
-  
-  
+
   status =  ioctl( device, 1 , &tBuf);
   
   memcpy ( pBuf, &tBuf[8], 256); 
 
   return status;
-
 }
 
 
@@ -145,7 +141,6 @@ UINT8 modeselect (int device,  UINT8 pagenum, UINT8 *pBuf)
   status = ioctl( device, 1 , &tBuf);
 
   return status;
-
 }
 
 
@@ -373,7 +368,6 @@ UINT8 senddiagnostic (int device, UINT8 functioncode,  UINT8 *pBuf)
   	memcpy ( pBuf, &tBuf[8], 256); 
 
   return status;
-
 }
 
 
@@ -408,14 +402,12 @@ UINT8 receivediagnostic (int device, UINT8 pagenum,  UINT8 *pBuf)
   memcpy ( pBuf, &tBuf[8], 256); 
 
   return status;
-
 }
 
 
 UINT8 testunitready (int device)
 {
   return ioctl( device, 2 , NULL);
-
 }
 
 

@@ -59,6 +59,7 @@
 #include "scsi.h"
 #include "db.h"
 #include "hddtemp.h"
+#include "backtrace.h"
 
 
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
@@ -308,8 +309,12 @@ void do_daemon_mode(struct disk *ldisks) {
   /* redirect signals */
   for(i = 0; i <= _NSIG; i++) {
     switch(i) {
+    case SIGSEGV: /* still done */
+    case SIGBUS:
+    case SIGILL:
+      break;
     case SIGPIPE:
-      signal(i, SIGPIPE);
+      break;
     default:
       signal(i, daemon_stop);
       break;
@@ -329,6 +334,7 @@ void do_daemon_mode(struct disk *ldisks) {
     struct sockaddr_in caddr;
     socklen_t sz_caddr;
     
+    errno = 0;
     memset(&caddr, 0, sizeof(struct sockaddr_in));
     sz_caddr = sizeof(struct sockaddr_in);
     if((cfd = accept(sk_serv, (struct sockaddr *)&caddr, &sz_caddr)) == -1)
@@ -396,9 +402,9 @@ void do_daemon_mode(struct disk *ldisks) {
 	break;
       }
       
-      write(cfd,&separator, 1) || 
-	write(cfd, &msg, n) ||
-	write(cfd,&separator, 1);
+      write(cfd,&separator, 1);
+      write(cfd, &msg, n);
+      write(cfd,&separator, 1);
     }
     close(cfd);
   }
@@ -410,6 +416,10 @@ int main(int argc, char* argv[]) {
   int           i, c, lindex = 0, db_loaded = 0;
   int           show_db;
   struct disk * ldisks;
+
+  backtrace_sigsegv();
+  backtrace_sigill();
+  backtrace_sigbus();
 
   setlocale (LC_ALL, "");
   bindtextdomain (PACKAGE, LOCALEDIR);
