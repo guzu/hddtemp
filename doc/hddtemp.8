@@ -1,0 +1,149 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH HDDTEMP 8 "July 21, 2003"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH "NAME"
+hddtemp \- Utility to monitor hard drive temperature
+.SH SYNOPSIS
+.B hddtemp
+.RI [ options ] " disk1" ...
+.SH "DESCRIPTION"
+.PP
+.B hddtemp 
+will give you the temperature of your hard drive by reading
+Self-Monitoring Analysis and Reporting Technology (S.M.A.R.T) information (on
+drives that support this feature). Only modern hard drives have a temperature
+sensor. hddtemp now support reading S.M.A.R.T information from SCSI drives.
+.B hddtemp
+can work as simple command line tool or as a daemon.
+
+.SH "OPTIONS"
+The programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options are included below.
+.TP
+.B \-b, \-\-drivebase
+Display the database file that allow hddtemp to recognize a supported drive.
+.TP
+.B \-D, \-\-debug
+Display various S.M.A.R.T. fields and their values.
+Useful to find a value that seems to match the  temperature and/or to send a report.
+(done for every drive supplied).
+.TP
+.B \-d, \-\-daemon
+Execute hddtemp in daemon mode (port 7634 by default).
+.TP
+.B \-f, \-\-file=FILE
+Specify the database file to use.
+.TP
+.B \-l, \-\-listen=addr
+Listen on a specific address. addr is a string containing a host name or a numeric
+host address string. The numeric host address string is a dotted-decimal IPv4 
+address or an IPv6 hex address.
+.TP
+.B \-n, \-\-numeric
+Print only the temperature (without unit).
+.TP
+.B \-p, \-\-port=#
+Port number to listen to (in daemon mode).
+.TP
+.B \-s, \-\-separator=C
+Separator to use between fields (in daemon mode). The default separator is '|'.
+.TP
+.B \-q, \-\-quiet
+Doesn't check if the drive drive is supported.
+.TP
+.B \-v, \-\-version
+Display hddtemp version number.
+.TP
+.B \-w, \-\-wake-up
+Wake-up the drive if need (ATA drives only).
+.TP
+-B \-4
+listen on IPv4 sockets only.
+.TP
+-B \-6
+listen on IPv6 sockets only.
+
+
+.SH "DRIVE DATABASE"
+If you know that your drive has a temperature sensor and is reported to be
+unsupported tell me which model and which manufacturer it is, and/or just
+add a new entry in /usr/share/misc/hddtemp.db. Each line of hddtemp.db is 
+either a commentary, a blank line or a line containing:
+.TP
+- a regular expression that allow hddtemp to recognize a drive or a set of drives from its model name or from a generic model name,
+.TP
+- a value (ATTRIBUTE_ID from S.M.A.R.T.),
+.TP
+- a C or an F to set the unit to Celsius or Fahrenheit,
+.TP
+- a description.
+.PP
+Feedback is welcome (see section REPORT below).
+
+.SH "DAEMON MODE"
+To test
+.B hddtemp
+in daemon mode, start
+.B hddtemp
+like this:
+.PP
+# hddtemp -d /dev/hd[abcd]
+.PP
+and use
+.B telnet
+or
+.B netcat
+to get a reply:
+.PP
+# netcat localhost 7634
+.PP
+Database is read once at startup, so
+.B hddtemp
+must be restarted if the database is updated.
+
+.SH "REPORT"
+As I received a lot of reports, things must be clarified. When running hddtemp with debug options, hddtemp will show sort of dump of S.M.A.R.T informations. Each field correspond to an information. The standard field for temperature drive is 194. But it's not always the case. And if your drive has S.M.A.R.T capabilities, this doesn't mean it can report its temperature. So, it must be determined experimentaly.
+.PP
+So you can try to guess which field by is the good one by running hddtemp at regular interval :
+.TP
+ - just after starting up your PC/server/station,
+.TP
+ - after opening a window (a physical window :),
+.TP
+ - after opening the case,
+.TP
+ - what ever you can think of...
+.PP
+and looking for a field's value that would increase or decrease depending on what effect you want to induce.
+Be careful, field 4, 9 and 12 are often reported to match a temperature field but after some investigation they do not. But fields 194 (which is the standard field for temperature) and 231 are good candidate.
+.PP
+Then, you can send me a report with ouputs from 'hddtemp --debug ...', smartcl or 'hdparm -i ...', and/or add an entry in hddtemp.db yourself.
+
+.SH "BUGS"
+If hddtemp crashes (yes, it is able to) for some unknown reasons, take a look into /tmp directory for a file named hddtemp.backtrace.<PID>.XXXXXX (where XXXXXX is a random number generated a runtime).
+Then you can then send me this file and the hddtemp binary. This function is currently supported on i386 architectures only.
+
+.SH "SEE ALSO"
+.BR smartctl (1)
+
+.SH "AUTHOR"
+.PP
+Emmanuel Varagnat (hddtemp@guzu.net).
+.PP
+This manual page was originaly written by Aurelien Jarno <aurel32@debian.org>,
+for the Debian GNU/Linux system (but may be used by others).

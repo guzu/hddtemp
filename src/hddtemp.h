@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002  Emmanuel VARAGNAT <coredump@free.fr>
+ * Copyright (C) 2002  Emmanuel VARAGNAT <hddtemp@guzu.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ struct bustype {
 
 extern struct bustype *   bus[BUS_TYPE_MAX];
 extern char               errormsg[MAX_ERRORMSG_SIZE];
-extern int                daemon_mode, debug, quiet;
+extern int                daemon_mode, debug, quiet, wakeup;
 
 
 #endif

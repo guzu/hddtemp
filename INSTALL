@@ -17,7 +17,7 @@ INSTALLATION
 Run ./configure (see --help for options), then just type 'make' and don't forget
 to get the last hddtemp.db file on the site :
 
-$ wget http://coredump.free.fr/linux/hddtemp.db
+$ wget http://www.guzu.net/linux/hddtemp.db
 
 By default, the hddtemp.db will we searched in /usr/share/misc directory but
 you can change this at compilation time with the --with-db-path option:
@@ -57,8 +57,7 @@ exists in the reply of hddtemp.
 
 CONTACT
 =======
-Emmanuel Varagnat: coredump@free.fr
-                   emmanuel.varagnat@free.fr
+Emmanuel Varagnat: hddtemp@guzu.net
 
-http://coredump.free.fr
+http://www.guzu.net
 

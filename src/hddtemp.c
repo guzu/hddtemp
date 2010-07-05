@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002  Emmanuel VARAGNAT <coredump@free.fr>
+ * Copyright (C) 2002  Emmanuel VARAGNAT <hddtemp@guzu.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,12 +71,13 @@
 
 char *             database_path = DEFAULT_DATABASE_PATH;
 long               portnum;
-in_addr_t          listen_addr;
+char *             listen_addr;
 char               separator = SEPARATOR;
-int                sk_serv;
+int *              sks_serv;
+int                sks_serv_num;
 
 struct bustype *   bus[BUS_TYPE_MAX];
-int                daemon_mode, debug, quiet, numeric;
+int                daemon_mode, debug, quiet, numeric, wakeup, af_hint;
 
 /*******************************************************
  *******************************************************/
@@ -183,19 +184,21 @@ static void display_temperature(struct disk *dsk) {
     break;
   case GETTEMP_UNKNOWN:
     if(!quiet)
-      printf(_("WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
-	       "WARNING: This doesn't mean it hasn't got one.\n"
-	       "WARNING: If you are sure it has one, please contact me (coredump@free.fr).\n"
-	       "WARNING: See --help, --debug and --drivebase options.\n"), dsk->drive);
+      fprintf(stderr,
+	      _("WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
+		"WARNING: This doesn't mean it hasn't got one.\n"
+		"WARNING: If you are sure it has one, please contact me (hddtemp@guzu.net).\n"
+		"WARNING: See --help, --debug and --drivebase options.\n"), dsk->drive);
     printf(_("%s: %s:  no sensor\n"), dsk->drive, dsk->model);
     break;
   case GETTEMP_GUESS:
     if(!quiet)
-      printf(_("WARNING: Drive %s doesn't appear in the database of supported drives\n"
-	       "WARNING: But using a common value, it reports something.\n"
-	       "WARNING: Note that the temperature shown could be wrong.\n"
-	       "WARNING: See --help, --debug and --drivebase options.\n"
-	       "WARNING: And don't forget you can add your drive to hddtemp.db\n"), dsk->drive);
+      fprintf(stderr,
+	      _("WARNING: Drive %s doesn't appear in the database of supported drives\n"
+		"WARNING: But using a common value, it reports something.\n"
+		"WARNING: Note that the temperature shown could be wrong.\n"
+		"WARNING: See --help, --debug and --drivebase options.\n"
+		"WARNING: And don't forget you can add your drive to hddtemp.db\n"), dsk->drive);
     printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree, degree);
     break;
   case GETTEMP_KNOWN:
@@ -238,57 +241,94 @@ void do_direct_mode(struct disk *ldisks) {
 
 
 void daemon_stop(int n) {
-  close(sk_serv);
+  int i;
+	
+  for (i = 0 ; i < sks_serv_num; i++)
+    close(sks_serv[i]);
 }
 
 
 void do_daemon_mode(struct disk *ldisks) {
-  struct sockaddr_in saddr;
   struct disk *      dsk;
   int                cfd;
   /*char               sepsep[2] = { separator, separator };*/
-  int                i;
+  int                i, j, ret, maxfd;
   struct tm *        time_st;
   int                on = 1;
+  struct addrinfo    hints;
+  struct addrinfo*   all_ai;
+  struct addrinfo*   resp;
+  char               portbuf[10];
+  fd_set             deffds;
 
-  if((sk_serv = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+  memset(&hints, 0, sizeof hints);
+  hints.ai_family = af_hint;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+  snprintf(portbuf, sizeof(portbuf), "%ld", portnum);
+  ret = getaddrinfo(listen_addr, portbuf, &hints, &all_ai);
+  if (ret != 0) {
+    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(ret));
+    exit(1);
+  }
+
+  FD_ZERO(&deffds);
+  maxfd = -1;
+
+  /* Count max number of sockets we might open. */
+  for (sks_serv_num = 0, resp = all_ai ; resp ; resp = resp->ai_next)
+    sks_serv_num++;
+  sks_serv = malloc(sizeof(int) * sks_serv_num);
+  if (!sks_serv) {
+    perror("malloc");
+    freeaddrinfo(all_ai);
+    exit(1);
+  }
+
+  /* We may not be able to create the socket, if for example the
+   * machine knows about IPv6 in the C library, but not in the
+   * kernel. */
+  for (sks_serv_num = 0, resp = all_ai; resp; resp = resp->ai_next) {
+    sks_serv[sks_serv_num] = socket(resp->ai_family, resp->ai_socktype, resp->ai_protocol); 
+    if (sks_serv[sks_serv_num] == -1)
+      /* See if there's another address that will work... */
+      continue;
+
+    /* Allow local port reuse in TIME_WAIT */
+    setsockopt(sks_serv[sks_serv_num], SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+
+    /* Now we've got a socket - we need to bind it. */
+    if (bind(sks_serv[sks_serv_num], resp->ai_addr, resp->ai_addrlen) < 0) {
+      /* Nope, try another */
+      close(sks_serv[sks_serv_num]);
+      continue;
+    }
+
+    /* Ready to listen */
+    if (listen(sks_serv[sks_serv_num], 5) == -1) {
+      perror("listen");
+      for (sks_serv_num-- ; sks_serv_num > 0 ; sks_serv_num--)
+        close(sks_serv[sks_serv_num]);	      
+      freeaddrinfo(all_ai);
+      free(sks_serv);
+      exit(1);	      
+    }
+    
+    FD_SET(sks_serv[sks_serv_num], &deffds);
+    if (maxfd < sks_serv[sks_serv_num])
+      maxfd = sks_serv[sks_serv_num];
+    sks_serv_num++;
+  }
+  
+  if (sks_serv_num == 0) {
     perror("socket");
-    exit(1);
-  }
- 
-  if((sk_serv = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
-    perror("socket");
-    exit(1);
-  }
-   
-  // Allow local port reuse in TIME_WAIT
-  if (setsockopt(sk_serv, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
-    perror("setsockopt");	  
-    exit(1);
-  }	  
-	  
-  memset(&saddr, 0, sizeof(struct sockaddr_in));
-  /*    
-	if((he = gethostbyaddr("127.0.0.1")) == NULL) {
-	perror("gethostbyname");
-	exit(1);
-	}
-  */
-  
-  saddr.sin_addr.s_addr = listen_addr;
-  saddr.sin_family = AF_INET;
-  saddr.sin_port = htons(portnum);
-  
-  if(bind(sk_serv, (struct sockaddr *)&saddr, sizeof(saddr)) == -1) {
-    perror("bind");
-    exit(1);
-  }
-  
-  if(listen(sk_serv, 5) == -1) {
-    perror("listen");
+    free(sks_serv);
+    freeaddrinfo(all_ai);
     exit(1);
   }
     
+  freeaddrinfo(all_ai);
+  
   switch(fork()) {
   case -1:
     perror("fork");
@@ -301,9 +341,12 @@ void do_daemon_mode(struct disk *ldisks) {
   }
 
   /* close standard input and output */
-  for(i = 0; i < 3; i++) {
-    if(i != sk_serv)
-      close(i);
+  for(i = 0; i < 3; i++) {  
+    for (j = 0 ; j < sks_serv_num ; j++)
+      if (i == sks_serv[j])
+        break;	      
+      if (j != sks_serv_num)
+        close(i);
   }
 
   /* redirect signals */
@@ -314,6 +357,7 @@ void do_daemon_mode(struct disk *ldisks) {
     case SIGILL:
       break;
     case SIGPIPE:
+      signal(SIGPIPE, SIG_IGN);
       break;
     default:
       signal(i, daemon_stop);
@@ -331,14 +375,28 @@ void do_daemon_mode(struct disk *ldisks) {
 
   /* start to serve */
   while(1) {
-    struct sockaddr_in caddr;
+    struct sockaddr_storage caddr;
+    fd_set fds;
     socklen_t sz_caddr;
     
-    errno = 0;
-    memset(&caddr, 0, sizeof(struct sockaddr_in));
-    sz_caddr = sizeof(struct sockaddr_in);
-    if((cfd = accept(sk_serv, (struct sockaddr *)&caddr, &sz_caddr)) == -1)
+    fds = deffds;
+    
+    ret = select(maxfd + 1, &fds, NULL, NULL, NULL);
+    if (ret == -1) 
       break;
+    else if (ret == 0)
+      continue;	    
+    
+    sz_caddr = sizeof(struct sockaddr_storage);
+    for (i = 0 ; i < sks_serv_num; i++) {
+      if (FD_ISSET(sks_serv[i], &fds))
+ 	break;
+    }
+    if (i == sks_serv_num)
+      continue;
+    
+    if ((cfd = accept(sks_serv[i], (struct sockaddr *)&caddr, &sz_caddr)) == -1)
+      continue;
     
     for(dsk = ldisks; dsk; dsk = dsk->next) {
       char msg[128];
@@ -408,7 +466,10 @@ void do_daemon_mode(struct disk *ldisks) {
     }
     close(cfd);
   }
-  close(sk_serv);
+
+  for (i = 0 ; i < sks_serv_num; i++)
+    close(sks_serv[sks_serv_num]);
+  free(sks_serv);
 }
 
 
@@ -425,9 +486,9 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
   
-  show_db = debug = numeric = quiet = 0;
+  show_db = debug = numeric = quiet = wakeup = af_hint = 0;
   portnum = PORT_NUMBER;
-  listen_addr = htonl(INADDR_ANY);
+  listen_addr = NULL;
 
   /* Parse command line */
   optind = 0;
@@ -444,16 +505,23 @@ int main(int argc, char* argv[]) {
       {"port",      1, NULL, 'p'},
       {"separator", 1, NULL, 's'},
       {"numeric",   0, NULL, 'n'},
+      {"wake-up",   0, NULL, 'w'},
       {0, 0, 0, 0}
     };
  
-    c = getopt_long (argc, argv, "bDdf:l:hp:qs:vn", long_options, &lindex);
+    c = getopt_long (argc, argv, "bDdf:l:hp:qs:vnw46", long_options, &lindex);
     if (c == -1)
       break;
     
     switch (c) {
       case 'q':
 	quiet = 1;
+	break;
+      case '4':
+	af_hint = AF_INET;
+	break;
+      case '6':
+	af_hint = AF_INET6;
 	break;
       case 'b':
 	show_db = 1;
@@ -487,12 +555,7 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 'l':
-	listen_addr = inet_addr(optarg);
-	if (listen_addr == -1)
-	{
-          fprintf(stderr, _("ERROR: invalid listen address.\n"));
-	  exit(1);
-        }	  
+	listen_addr = optarg;
 	break;
       case '?':
       case 'h':
@@ -515,8 +578,11 @@ int main(int argc, char* argv[]) {
 		 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
 		 "  -q   --quiet       :  do not check if the drive is supported.\n"
 		 "  -v   --version     :  display hddtemp version number.\n"
+		 "  -w   --wake-up     :  wake-up the drive if need.\n"
+		 "  -4                 :  listen on IPv4 sockets only.\n"
+		 "  -6                 :  listen on IPv6 sockets only.\n"
 		 "\n"
-		 "Report bugs or new drives to <coredump@free.fr>.\n"),
+		 "Report bugs or new drives to <hddtemp@guzu.net>.\n"),
 	       PORT_NUMBER);
       case 'v':
 	printf(_("hddtemp version %s\n"), VERSION);
@@ -525,6 +591,9 @@ int main(int argc, char* argv[]) {
       case 'n':
         numeric = 1;
         break;
+      case 'w':
+	wakeup = 1;
+	break;
       default:
 	exit(1);
       }
@@ -536,13 +605,6 @@ int main(int argc, char* argv[]) {
      exit(0);
   }
   
-  if(geteuid()) {
-    fprintf(stderr,
-	    _("  ERROR: You must be root to run the command,\n"
-	      "  ERROR: or the root must set the suid bit for the executable.\n"));
-    exit(1);
-  }
-
   if(argc - optind <= 0) {
     fprintf(stderr, _("Too few arguments: you must specify one drive, at least.\n"));
     exit(1);

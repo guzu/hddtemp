@@ -43,7 +43,7 @@ msgstr ""
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
 "WARNING: This doesn't mean it hasn't got one.\n"
-"WARNING: If you are sure it has one, please contact me (coredump@free.fr).\n"
+"WARNING: If you are sure it has one, please contact me (hddtemp@guzu.net).\n"
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
 
@@ -97,10 +97,6 @@ msgstr ""
 msgid "ERROR: invalid port number.\n"
 msgstr ""
 
-#: src/hddtemp.c:493
-msgid "ERROR: invalid listen address.\n"
-msgstr ""
-
 #: src/hddtemp.c:499
 #, c-format
 msgid ""
@@ -123,19 +119,16 @@ msgid ""
 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
 "  -q   --quiet       :  do not check if the drive is supported.\n"
 "  -v   --version     :  display hddtemp version number.\n"
+"  -w   --wake-up     :  wake-up the drive if need.\n"
+"  -4                 :  listen on IPv4 sockets only.\n"
+"  -6                 :  listen on IPv6 sockets only.\n"
 "\n"
-"Report bugs or new drives to <coredump@free.fr>.\n"
+"Report bugs or new drives to <hddtemp@guzu.net>.\n"
 msgstr ""
 
 #: src/hddtemp.c:522
 #, c-format
 msgid "hddtemp version %s\n"
-msgstr ""
-
-#: src/hddtemp.c:541
-msgid ""
-"  ERROR: You must be root to run the command,\n"
-"  ERROR: or the root must set the suid bit for the executable.\n"
 msgstr ""
 
 #: src/hddtemp.c:547

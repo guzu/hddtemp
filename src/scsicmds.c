@@ -34,6 +34,8 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/hdreg.h>
+
+#include <scsi/scsi_ioctl.h>
 #include <scsi/scsi.h>
 
 // Application specific includes
@@ -64,7 +66,7 @@ UINT8 logsense (int device, UINT8 pagenum, UINT8 *pBuf)
   ioctlhdr->cdb[8] = 0x00;
   ioctlhdr->cdb[9] = 0x00;
 
-  status =  ioctl( device, 1 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
 	
   memcpy ( pBuf, &tBuf[8], 1024); 
 
@@ -97,7 +99,7 @@ UINT8 modesense (int device,  UINT8 pagenum, UINT8 *pBuf)
   ioctlhdr->cdb[4] = CDB_6_MAX_DATA_SIZE;
   ioctlhdr->cdb[5] = 0x00;
 
-  status =  ioctl( device, 1 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
   
   memcpy ( pBuf, &tBuf[8], 256); 
 
@@ -138,7 +140,7 @@ UINT8 modeselect (int device,  UINT8 pagenum, UINT8 *pBuf)
 
   tBuf[26] &= 0x3f;		
  
-  status = ioctl( device, 1 , &tBuf);
+  status = ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
 
   return status;
 }
@@ -171,7 +173,7 @@ UINT8 modesense10 (int device, UINT8 pagenum, UINT8 *pBuf)
   ioctlhdr->cdb[8] = 0xff;
   ioctlhdr->cdb[9] = 0x00;
 
-  status =  ioctl( device, 1 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
  
   memcpy ( pBuf, &tBuf[8], 0xff); 
   
@@ -216,7 +218,7 @@ UINT8 modeselect10 (int device,  UINT8 pagenum, UINT8 *pBuf)
 
   tBuf[26] &= 0x3f;		
  
-  status = ioctl( device, 1 , &tBuf);
+  status = ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
 
   return status;
 
@@ -249,7 +251,7 @@ UINT8 stdinquiry ( int device, UINT8 *pBuf)
   ioctlhdr->cdb[5] = 0x00;
   
   
-  status =  ioctl( device, 1, &tBuf );
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND, &tBuf );
   
   memcpy ( pBuf, &tBuf[8], 255); 
 
@@ -284,7 +286,7 @@ UINT8 inquiry ( int device, UINT8 pagenum, UINT8 *pBuf)
   ioctlhdr->cdb[5] = 0x00;
   
   
-  status =  ioctl( device, 6 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_STOP_UNIT , &tBuf);
   /*status =  ioctl( device, 1 , &tBuf);*/
   
   memcpy ( pBuf, &tBuf[8], 255); 
@@ -320,7 +322,7 @@ UINT8 requestsense (int device, UINT8 *pBuf)
   ioctlhdr->cdb[5] = 0x00;
   
   
-  status =  ioctl( device, 1 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
   
   memcpy ( pBuf, &tBuf[8], 255); 
 
@@ -362,7 +364,7 @@ UINT8 senddiagnostic (int device, UINT8 functioncode,  UINT8 *pBuf)
 				pBuf[0]);
   }
 
-  status =  ioctl( device, 1 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
   
   if (pBuf != NULL)
   	memcpy ( pBuf, &tBuf[8], 256); 
@@ -397,19 +399,19 @@ UINT8 receivediagnostic (int device, UINT8 pagenum,  UINT8 *pBuf)
   ioctlhdr->cdb[5] = 0x00;
   
 
-  status =  ioctl( device, 1 , &tBuf);
+  status =  ioctl( device, SCSI_IOCTL_SEND_COMMAND , &tBuf);
   
   memcpy ( pBuf, &tBuf[8], 256); 
 
   return status;
 }
 
-
+/*
 UINT8 testunitready (int device)
 {
-  return ioctl( device, 2 , NULL);
+  return ioctl( device, SCSI_IOCTL_TEST_UNIT_READY , NULL);
 }
-
+*/
 
 
 

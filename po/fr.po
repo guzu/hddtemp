@@ -1,7 +1,7 @@
 # translation of fr.po to FRANCAIS
 # Traduction française (french translation :o)
 # Copyright (C) 2002,2003 Free Software Foundation, Inc.
-# Emmanuel Varagnat <coredump@free.fr>, 2002.
+# Emmanuel Varagnat <hddtemp@guzu.net>, 2002.
 # Aurelien Jarno <aurelien@aurel32.net>, 2003
 #
 msgid ""
@@ -51,13 +51,13 @@ msgstr ""
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
 "WARNING: This doesn't mean it hasn't got one.\n"
-"WARNING: If you are sure it has one, please contact me (coredump@free.fr).\n"
+"WARNING: If you are sure it has one, please contact me (hddtemp@guzu.net).\n"
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
 "ATTENTION : Le lecteur %s semble ne pas avoir de capteur de température.\n"
 "ATTENTION : Cela ne veut pas dire qu'il n'en n'a pas.\n"
-"ATTENTION : Si vous êtes sûr qu'il en a un, contactez moi (coredump@free."
-"fr).\n"
+"ATTENTION : Si vous êtes sûr qu'il en a un, contactez moi (hddtemp@guzu."
+"net).\n"
 "ATTENTION : Voir les options --help, --debug et --drivebase.\n"
 
 #: src/hddtemp.c:190
@@ -118,12 +118,8 @@ msgstr "ERREUR : séparateur invalide.\n"
 msgid "ERROR: invalid port number.\n"
 msgstr "ERREUR : numéro de port invalide.\n"
 
-#: src/hddtemp.c:493
-msgid "ERROR: invalid listen address.\n"
-msgstr "ERREUR : adresse de l'interface invalide.\n"
-
 #: src/hddtemp.c:499
-#, fuzzy, c-format
+#, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
 "\n"
@@ -144,8 +140,11 @@ msgid ""
 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
 "  -q   --quiet       :  do not check if the drive is supported.\n"
 "  -v   --version     :  display hddtemp version number.\n"
+"  -w   --wake-up     :  wake-up the drive if need.\n"
+"  -4                 :  listen on IPv4 sockets only.\n"
+"  -6                 :  listen on IPv6 sockets only.\n"
 "\n"
-"Report bugs or new drives to <coredump@free.fr>.\n"
+"Report bugs or new drives to <hddtemp@guzu.net>.\n"
 msgstr ""
 " Utilisation: hddtemp [OPTIONS] DISQUE1 [DISQUE2]...\n"
 "\n"
@@ -173,21 +172,16 @@ msgstr ""
 "démon).\n"
 "  -q   --quiet       :  ne vérifie pas si le lecteur est supporté.\n"
 "  -v   --version     :  affiche la version de hddtemp.\n"
+"  -w   --wake-up     :  réveiller le lecteur si nécessaire.\n"
+"  -4                 :  écoute seulement sur les sockets IPv4.\n"
+"  -6                 :  écoute seulement sur les sockets IPv6.\n"
 "\n"
-"Report bugs or new drives to <coredump@free.fr>.\n"
+"Report bugs or new drives to <hddtemp@guzu.net>.\n"
 
 #: src/hddtemp.c:522
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "hddtemp version %s\n"
-
-#: src/hddtemp.c:541
-msgid ""
-"  ERROR: You must be root to run the command,\n"
-"  ERROR: or the root must set the suid bit for the executable.\n"
-msgstr ""
-"  ERREUR: Vous devez être root pour lancer la commande, ou\n"
-"  ERREUR: l'utilisateur root doit activer le bit suid de l'éxecutable.\n"
 
 #: src/hddtemp.c:547
 msgid "Too few arguments: you must specify one drive, at least.\n"

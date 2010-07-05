@@ -1,5 +1,5 @@
 # hddtemp
-# Copyright (C) Emmanuel Varagnat <coredump@free.fr>
+# Copyright (C) Emmanuel Varagnat <hddtemp@guzu.net>
 # This file is distributed under the same license as the hddtemp package.
 # Michael Shigorin <mike@altlinux.org>, 2003
 #
@@ -45,12 +45,12 @@ msgstr ""
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
 "WARNING: This doesn't mean it hasn't got one.\n"
-"WARNING: If you are sure it has one, please contact me (coredump@free.fr).\n"
+"WARNING: If you are sure it has one, please contact me (hddtemp@guzu.net).\n"
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
 "ВНИМАНИЕ: Диск %s не дает показания температурного датчика.\n"
 "ВНИМАНИЕ: Это еще не значит, что у него его нет.\n"
-"ВНИМАНИЕ: Если вы точно знаете, что датчик есть, напишите coredump@free.fr\n"
+"ВНИМАНИЕ: Если вы точно знаете, что датчик есть, напишите hddtemp@guzu.net\n"
 "ВНИМАНИЕ: (см. опции --help, --debug и --drivebase).\n"
 
 #: src/hddtemp.c:190
@@ -108,10 +108,6 @@ msgstr "ОШИБКА: неверный разделитель.\n"
 msgid "ERROR: invalid port number.\n"
 msgstr "ОЩИБКА: неверный номер порта.\n"
 
-#: src/hddtemp.c:493
-msgid "ERROR: invalid listen address.\n"
-msgstr ""
-
 #: src/hddtemp.c:499
 #, fuzzy, c-format
 msgid ""
@@ -134,8 +130,10 @@ msgid ""
 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"
 "  -q   --quiet       :  do not check if the drive is supported.\n"
 "  -v   --version     :  display hddtemp version number.\n"
+"  -4                 :  listen on IPv4 sockets only.\n"
+"  -6                 :  listen on IPv6 sockets only.\n"
 "\n"
-"Report bugs or new drives to <coredump@free.fr>.\n"
+"Report bugs or new drives to <hddtemp@guzu.net>.\n"
 msgstr ""
 " Использование: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
 "\n"
@@ -157,21 +155,15 @@ msgstr ""
 "  -s   --separator=C :  разделитель полей (в фоновом режиме).\n"
 "  -q   --quiet       :  не проверять, поддерживается ли устройство.\n"
 "  -v   --version     :  вывести версию hddtemp.\n"
+"  -4                 :  listen on IPv4 sockets only.\n"
+"  -6                 :  listen on IPv6 sockets only.\n"
 "\n"
-"Сообщения об ошибках и данные для дисков отправляйте на <coredump@free.fr>.\n"
+"Сообщения об ошибках и данные для дисков отправляйте на <hddtemp@guzu.net>.\n"
 
 #: src/hddtemp.c:522
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "Версия hddtemp: %s\n"
-
-#: src/hddtemp.c:541
-msgid ""
-"  ERROR: You must be root to run the command,\n"
-"  ERROR: or the root must set the suid bit for the executable.\n"
-msgstr ""
-"  ОШИБКА: для запуска необходимы права root,\n"
-"  ОШИБКА: или администратор должен установить SUID-бит на исполняемый файл.\n"
 
 #: src/hddtemp.c:547
 msgid "Too few arguments: you must specify one drive, at least.\n"

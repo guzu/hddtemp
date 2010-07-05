@@ -1,3 +1,13 @@
+v0.3 beta12
+=============================
+ * IPv6 support
+ * fixing backtracing : backtracing isn't available on non-x86 architecture.
+ * fixing manpage location from 1 to 8.
+ * fixing some messages that should have been printed on stderr.
+ * rest on kernel for SMART accessibility.
+ * add -w switch to force drive wake-up when necessary.
+
+
 v0.3 beta11
 =============================
  * fix a security problem related to the generation of the backtrace/stacktrace file

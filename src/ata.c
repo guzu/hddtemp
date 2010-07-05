@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002  Emmanuel VARAGNAT <coredump@free.fr>
+ * Copyright (C) 2002  Emmanuel VARAGNAT <hddtemp@guzu.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +149,8 @@ static enum e_gettemp ata_get_temperature(struct disk *dsk) {
   switch(ata_get_powermode(dsk)) {
   case PWM_STANDBY:
   case PWM_SLEEPING:
-    return GETTEMP_DRIVE_SLEEP;
+    if (!wakeup)
+      return GETTEMP_DRIVE_SLEEP;
   case PWM_UNKNOWN:
   case PWM_ACTIVE: /* active or idle */
   default:
@@ -164,10 +165,19 @@ static enum e_gettemp ata_get_temperature(struct disk *dsk) {
 
   /* get SMART values */
   if(ata_enable_smart(dsk->fd) != 0) {
-    snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("S.M.A.R.T. not available"));
+    enum e_gettemp ret;
+    if(errno == EIO) {
+      snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("S.M.A.R.T. not available"));
+      ret = GETTEMP_NOT_APPLICABLE;
+    }
+    else
+    {
+      snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, "%s", strerror(errno));
+      ret = GETTEMP_ERROR;
+    }
     close(dsk->fd);
     dsk->fd = -1;
-    return GETTEMP_NOT_APPLICABLE;
+    return ret;
   }
 
   if(ata_get_smart_values(dsk->fd, values)) {

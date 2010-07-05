@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003  Emmanuel VARAGNAT <coredump@free.fr>
+ * Copyright (C) 2003  Emmanuel VARAGNAT <hddtemp@guzu.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,10 @@
  *
  */
 
+#include <features.h>
+
+#if defined(__i386__) && defined(__GLIBC__)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -26,17 +30,6 @@
 #include <asm/ucontext.h>
 #include <execinfo.h>
 #include <sys/param.h>
-
-#if ! defined(__i386__) || ! defined(__GLIBC__)
-
-#warning "Backtracing is not supported for this architexture."
-
-void backtrace_handler(void) { }
-void backtrace_sigsegv(void) { }
-void backtrace_sigbus(void) { }
-void backtrace_sigill(void) { }
-
-#else
 
 #define MAX_BTSIZE 64
 
@@ -164,5 +157,14 @@ void backtrace_sigill(void) {
   if(sigaction(SIGILL, &sigst, NULL) == -1)
     perror("sigaction");
 }
+
+#else
+
+#warning "Backtracing is not supported for this architexture."
+
+void backtrace_handler(void) { }
+void backtrace_sigsegv(void) { }
+void backtrace_sigbus(void) { }
+void backtrace_sigill(void) { }
 
 #endif
