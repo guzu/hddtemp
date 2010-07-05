@@ -13,8 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef ATACMDS_H_
@@ -24,5 +23,6 @@ int ata_enable_smart(int device);
 int ata_get_smart_values(int device, unsigned char* buff);
 unsigned char* ata_search_temperature(const unsigned char* smart_data, int attribute_id);
 enum e_powermode ata_get_powermode(int device);
+int ata_get_packet (int device);
 
 #endif

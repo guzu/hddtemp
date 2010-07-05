@@ -73,7 +73,7 @@ Port number to listen to (in TCP/IP daemon mode).
 Separator to use between fields (in TCP/IP daemon mode).  The default
 separator is `|'.
 .TP
-.B \-s, \-\-syslog=\fIs\fR
+.B \-S, \-\-syslog=\fIs\fR
 Switch to daemon mode and log temperatures to syslog every \fIs\fR
 seconds.
 .TP
@@ -143,9 +143,10 @@ As I receive a lot of reports, things must be clarified.  When
 running hddtemp with debug options, hddtemp will show sort of a dump
 of S.M.A.R.T. data.  Each field corresponds to an information field.
 The standard field for drive temperature is 194.  But this is not
-always the case.  Even if your drive has S.M.A.R.T. capabilities, it
-doesn't necessarily mean that it can report its temperature.  So,
-things must be determined through experimentation.
+always the case (mostly for older drives).  Even if your drive has
+S.M.A.R.T. capabilities, it doesn't necessarily mean that it can
+report its temperature.  So, things must be determined through
+experimentation.
 .PP
 So, you can try to guess which field by is the good one by running
 hddtemp at regular intervals:

@@ -1,19 +1,18 @@
-
+# Portuguese translation for hddtemp
 # Copyright (C) 2006 Free Software Foundation, Inc.
-# This file is distributed under the same license as the 'hddtemp' package.
-# Emmanuel VARAGNAT <hddtemp@guzu.net>, 2006.
+# This file is distributed under the same license as the hddtemp package.
+# Miguel Figueiredo <elmig@debianpt.org>, 2006.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: hddtemp@guzu.net\n"
+"Project-Id-Version: hddtemp 0.3-beta14\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-25 22:43+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Emmanuel Varagnat <hddtemp@guzu.net>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2006-03-29 23:22+0000\n"
+"Last-Translator: Miguel Figueiredo <elmig@debianp.org>\n"
+"Language-Team: Portuguese <traduz@debianpt.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/hddtemp.c:112
@@ -23,11 +22,14 @@ msgid ""
 "Regexp%s| Value | Description\n"
 "------%s---------------------\n"
 msgstr ""
+"\n"
+"Regexp%s| Valor | Descrição\n"
+"------%s-------------------\n"
 
 #: src/hddtemp.c:118
 #, c-format
 msgid "%s%s| %5d | %s\n"
-msgstr ""
+msgstr "%s%s| %5d | %s\n"
 
 #: src/hddtemp.c:161
 #, c-format
@@ -37,6 +39,10 @@ msgid ""
 "Model: %s\n"
 "\n"
 msgstr ""
+"\n"
+"================= hddtemp %s ==================\n"
+"Modelo: %s\n"
+"\n"
 
 #: src/hddtemp.c:188
 #, c-format
@@ -46,11 +52,15 @@ msgid ""
 "WARNING: If you are sure it has one, please contact me (hddtemp@guzu.net).\n"
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
+"AVISO: O disco %s não parece ter um sensor de temperatura.\n"
+"AVISO: Isto não significa que não tem nenhum.\n"
+"AVISO: Se tem a certeza que tem um, por favor contacte-me (hddtemp@guzu.net).\n"
+"AVISO: Veja as opções --help, --debug e --drivebase.\n"
 
 #: src/hddtemp.c:192
 #, c-format
 msgid "%s: %s:  no sensor\n"
-msgstr ""
+msgstr "%s: %s: sem sensor\n"
 
 #: src/hddtemp.c:197
 #, c-format
@@ -61,26 +71,31 @@ msgid ""
 "WARNING: See --help, --debug and --drivebase options.\n"
 "WARNING: And don't forget you can add your drive to hddtemp.db\n"
 msgstr ""
+"AVISO: O disco %s não parece estar na base de dados de discos suportados\n"
+"AVISO: Mas ao utilizar um valor usual, relata alguma coisa.\n"
+"AVISO: Note que a temperatura mostrada pode estar errada.\n"
+"AVISO: Veja as opções --help, --debug e --frivebase.\n"
+"AVISO: E não se esqueça de adicionar o seu disco a hddtemp.db\n"
 
 #: src/hddtemp.c:202
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
-msgstr ""
+msgstr "%s: %s: %d%sC ou %sF\n"
 
 #: src/hddtemp.c:214
 #, c-format
 msgid "%s: %s: drive is sleeping\n"
-msgstr ""
+msgstr "%s: %s: o disco está adormecido\n"
 
 #: src/hddtemp.c:217
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
-msgstr ""
+msgstr "%s: %s: disco conhecido, mas não tem um sensor de temperatura.\n"
 
 #: src/hddtemp.c:220
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
-msgstr ""
+msgstr "ERRO: %s: %s: estado devolvido desconhecido\n"
 
 #: src/hddtemp.c:235
 #, c-format
@@ -89,16 +104,20 @@ msgid ""
 "If one of the field value seems to match the temperature, be sure to read\n"
 "the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
 msgstr ""
+"\n"
+"Se um dos campos de valores parecer coincidir com a temperatura, assegure-se\n"
+"que lê a página do manual hddtemp antes de me enviar um relatório (secção\n"
+"REPORT). Obrigado.\n"
 
 #: src/hddtemp.c:308
 #, c-format
 msgid "ERROR: invalid separator.\n"
-msgstr ""
+msgstr "ERRO: separador inválido.\n"
 
 #: src/hddtemp.c:319
 #, c-format
 msgid "ERROR: invalid port number.\n"
-msgstr ""
+msgstr "ERRO: número de port inválido\n"
 
 #: src/hddtemp.c:329
 #, c-format
@@ -132,59 +151,84 @@ msgid ""
 "\n"
 "Report bugs or new drives to <hddtemp@guzu.net>.\n"
 msgstr ""
+" Utilização: hddtemp [OPÇÕES] DISCO1 [DISCO2]...\n"
+"\n"
+"   hddtemp mostra a temperatura dos discos indicados no argumento.\n"
+"   Os discos têm de suportar S.M.A.R.T.\n"
+"\n"
+"  -b	 --drivebase   :  mostrar o conteúdo do ficheiro de base de dados que\n"
+"                        permite ao hddtemp reconhecer os discos suportados.\n"
+"  -D	 --debug       :  mostrar vários campos S.M.A.R.T. e os seus valores.\n"
+"                        Útil para encontrar um valor que pareça coincidir com "
+"                        a temperatura e/ou para me enviar um relatório.\n"
+"                        (feito para cada disco indicado).\n"
+"  -d   --daemon      :  correr o hddtemp no modo daemon TCP/IP\n (porto %d por omissão.)\n"
+"  -f   --file=FILE   :  especificar o ficheiro de base de dados a utilizar.\n"
+"  -l   --listen=addr :  escutar um interface específico (no modo daemon TCP/IP).\n"
+"  -n   --numeric     :  escrever apenas a temperatura.\n"
+"  -p   --port=#      :  port para escutar (no modo daemon TCP/IP).\n"
+"  -s   --separator=C :  separador a utilizar entre campos (no modo daemon TCP/IP).\n"
+"  -S   --syslog=s    :  registar a temperatura para o syslog a cada s segundos.\n"
+"  -q   --quiet       :  não verificar se o disco é suportado.\n"
+"  -v   --version     :  mostrar o número da versão do hddtemp.\n"
+"  -w   --wake-up     :  acordar o disco se necessário.\n"
+"  -4                 :  escutar apenas sockets IPv4.\n"
+"  -6                 :  escutar apenas sockets IPv6.\n"
+"\n"
+"Relatar bugs ou novos discos para <hddtemp@guzu.net>.\n"
 
 #: src/hddtemp.c:522
 #, c-format
 msgid "hddtemp version %s\n"
-msgstr ""
+msgstr "hddtemp versão %s\n"
 
 #: src/hddtemp.c:547
 #, c-format
 msgid "ERROR: invalid interval.\n"
-msgstr ""
+msgstr "ERRO: intervalo inválido.\n"
 
 #: src/hddtemp.c:547
 msgid "Too few arguments: you must specify one drive, at least.\n"
-msgstr ""
+msgstr "Número de argumentos insuficiente: tem de especificar pelo menos um disco.\n"
 
 #: src/hddtemp.c:557
 msgid "ERROR: can't use --debug and --daemon or --syslog options together.\n"
-msgstr ""
+msgstr "ERRO: não pode utilizar em conjunto as opções --debug e --daemon ou --syslog.\n"
 
 #: src/hddtemp.c:583
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
-msgstr ""
+msgstr "ERRO: %s: não é possível determinar o tipo do bus (ou este tipo de bus é desconhecido)\n"
 
 #: src/ata.c:66 src/scsi.c:68
 msgid "unknown"
-msgstr ""
+msgstr "desconhecido"
 
 #: src/ata.c:98
 #, c-format
 msgid "field(%d)\t = %d\n"
-msgstr ""
+msgstr "campo(%d)\t = %d\n"
 
 #: src/ata.c:167
 msgid "S.M.A.R.T. not available"
-msgstr ""
+msgstr "S.M.A.R.T. não está disponível"
 
 #: src/db.c:180
 #, c-format
 msgid "hddtemp: can't open %1$s: %2$s\n"
-msgstr ""
+msgstr "hddtemp: não pode abrir %1$s: %2$s\n"
 
 #: src/db.c:194
 #, c-format
 msgid "ERROR: syntax error at line %1$d in %2$s\n"
-msgstr ""
+msgstr "ERRO: erro de sintaxe na linha %1$d em %2$s\n"
 
 #: src/db.c:201
 #, c-format
 msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
-msgstr ""
+msgstr "  ERRO: a linha execedeu %1$d caracteres em %2$s.\n"
 
 #: src/scsi.c:112 src/scsi.c:130
 #, c-format
 msgid "log sense failed : %s"
-msgstr ""
+msgstr "detecção de log falhou: %s"

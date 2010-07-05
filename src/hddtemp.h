@@ -13,8 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef __HDDTEMP_H__
@@ -35,7 +34,7 @@ typedef __u16 u16;
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
 #define C_to_F(val) (int)(((double)(val)*(double)1.8) + (double)32.0)
 
-enum e_bustype { ERROR, BUS_UNKNOWN, BUS_SATA, BUS_ATA, BUS_SCSI, BUS_TYPE_MAX };
+enum e_bustype { ERROR = 0, BUS_UNKNOWN, BUS_SATA, BUS_ATA, BUS_SCSI, BUS_TYPE_MAX };
 enum e_gettemp {
   GETTEMP_ERROR,            /* Error */
   GETTEMP_NOT_APPLICABLE,   /* */
@@ -84,6 +83,7 @@ extern char               separator;
 extern long               portnum, syslog_interval;
 extern char *             listen_addr;
 
-void value_to_unit(struct disk *dsk);
+int value_to_unit(struct disk *dsk);
+char get_unit(struct disk *dsk);
 
 #endif

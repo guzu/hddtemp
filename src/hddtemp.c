@@ -13,8 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /*
@@ -76,7 +75,9 @@ char *             listen_addr;
 char               separator = SEPARATOR;
 
 struct bustype *   bus[BUS_TYPE_MAX];
-int                tcp_daemon, debug, quiet, numeric, wakeup, af_hint, celsius;
+int                tcp_daemon, debug, quiet, numeric, wakeup, af_hint;
+
+static enum { DEFAULT, CELSIUS, FAHRENHEIT } unit;
 
 /*******************************************************
  *******************************************************/
@@ -90,16 +91,33 @@ static void init_bus_types() {
 /*******************************************************
  *******************************************************/
 
-void value_to_unit(struct disk *dsk) {
-  if(celsius) {
+int value_to_unit(struct disk *dsk) {
+  switch(unit) {
+  case CELSIUS:
     if(dsk->db_entry->unit == 'F')
-      dsk->value = F_to_C(dsk->value);
-  }
-  else {
+      return F_to_C(dsk->value);
+    break;
+  case FAHRENHEIT:
     if(dsk->db_entry->unit == 'C')
-      dsk->value = C_to_F(dsk->value);
+      return C_to_F(dsk->value);
+  default:
+    break;
+  }
+
+  return dsk->value;
+}
+
+char get_unit(struct disk *dsk) {
+  switch(unit) {
+  case CELSIUS:
+    return 'C';
+  case FAHRENHEIT:
+    return 'F';
+  default:
+    return dsk->db_entry->unit;
   }
 }
+
 
 
 static enum e_bustype probe_bus_type(struct disk *dsk) {
@@ -157,18 +175,30 @@ static void display_temperature(struct disk *dsk) {
     /* see above */
     break;
   case GETTEMP_NOT_APPLICABLE:
-    printf("%s: %s: %s\n", dsk->drive, dsk->model, dsk->errormsg);    
+
+    if (numeric && quiet)
+      printf("0\n");      
+    else
+      printf("%s: %s: %s\n", dsk->drive, dsk->model, dsk->errormsg);
+
     break;
   case GETTEMP_UNKNOWN:
+
     if(!quiet)
       fprintf(stderr,
 	      _("WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
 		"WARNING: This doesn't mean it hasn't got one.\n"
 		"WARNING: If you are sure it has one, please contact me (hddtemp@guzu.net).\n"
 		"WARNING: See --help, --debug and --drivebase options.\n"), dsk->drive);
-    printf(_("%s: %s:  no sensor\n"), dsk->drive, dsk->model);
+
+    if (numeric && quiet)
+      printf("0\n");      
+    else
+      printf(_("%s: %s:  no sensor\n"), dsk->drive, dsk->model);
+
     break;
   case GETTEMP_GUESS:
+
     if(!quiet)
       fprintf(stderr,
 	      _("WARNING: Drive %s doesn't appear in the database of supported drives\n"
@@ -176,26 +206,41 @@ static void display_temperature(struct disk *dsk) {
 		"WARNING: Note that the temperature shown could be wrong.\n"
 		"WARNING: See --help, --debug and --drivebase options.\n"
 		"WARNING: And don't forget you can add your drive to hddtemp.db\n"), dsk->drive);
-    printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree, degree);
+
+    if (! numeric)
+      printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree, degree);
+    else
+      printf("%d\n", value_to_unit(dsk));
+
     break;
   case GETTEMP_KNOWN:
 
-    value_to_unit(dsk);
-
     if (! numeric)
-       printf("%s: %s: %d%sC\n",
+       printf("%s: %s: %d%s%c\n",
               dsk->drive,
               dsk->model,
-	      dsk->value,
-              degree);
+	      value_to_unit(dsk),
+              degree,
+	      get_unit(dsk)
+	      );
     else
-       printf("%d\n", dsk->value);
+       printf("%d\n", value_to_unit(dsk));
+
     break;
   case GETTEMP_DRIVE_SLEEP:
-    printf(_("%s: %s: drive is sleeping\n"), dsk->drive, dsk->model);    
+
+    if (numeric && quiet)
+      printf("0\n");      
+    else
+      printf(_("%s: %s: drive is sleeping\n"), dsk->drive, dsk->model);
+
     break;
   case GETTEMP_NOSENSOR:
-    printf(_("%s: %s:  drive supported, but it doesn't have a temperature sensor.\n"), dsk->drive, dsk->model);
+    if (numeric && quiet)
+      printf("0\n");      
+    else
+      printf(_("%s: %s:  drive supported, but it doesn't have a temperature sensor.\n"), dsk->drive, dsk->model);
+      
     break;
   default:
     fprintf(stderr, _("ERROR: %s: %s: unknown returned status\n"), dsk->drive, dsk->model);
@@ -235,7 +280,7 @@ int main(int argc, char* argv[]) {
   textdomain (PACKAGE);
   
   show_db = debug = numeric = quiet = wakeup = af_hint = syslog_interval = 0;
-  celsius = 1;
+  unit = DEFAULT;
   portnum = PORT_NUMBER;
   listen_addr = NULL;
 
@@ -249,18 +294,18 @@ int main(int argc, char* argv[]) {
       {"drivebase",  0, NULL, 'b'},
       {"debug",      0, NULL, 'D'},
       {"file",       1, NULL, 'f'},
-      {"fahrenheit", 0, NULL, 'F'},
       {"listen",     1, NULL, 'l'},
       {"version",    0, NULL, 'v'},
       {"port",       1, NULL, 'p'},
       {"separator",  1, NULL, 's'},
       {"numeric",    0, NULL, 'n'},
+      {"unit",       1, NULL, 'u'},
       {"syslog",     1, NULL, 'S'},
       {"wake-up",    0, NULL, 'w'},
       {0, 0, 0, 0}
     };
  
-    c = getopt_long (argc, argv, "bDFdf:l:hp:qs:vnw46S:", long_options, &lindex);
+    c = getopt_long (argc, argv, "bDdf:l:hp:qs:u:vnw46S:", long_options, &lindex);
     if (c == -1)
       break;
     
@@ -279,9 +324,6 @@ int main(int argc, char* argv[]) {
 	break;
       case 'd':
 	tcp_daemon = 1;
-	break;
-      case 'F':
-	celsius = 0;
 	break;
       case 'D':
 	debug = 1;
@@ -308,6 +350,18 @@ int main(int argc, char* argv[]) {
 	  }
 	}
 	break;
+      case 'u':
+	switch(*optarg) {
+	case 'c':
+	case 'C':
+	  unit = CELSIUS;
+	  break;
+	case 'f':
+	case 'F':
+	  unit = FAHRENHEIT;
+	  break;
+	}
+	break;
       case 'l':
 	listen_addr = optarg;
 	break;
@@ -330,10 +384,10 @@ int main(int argc, char* argv[]) {
 		 "  -f   --file=FILE   :  specify database file to use.\n"
 		 "  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon mode).\n"
                  "  -n   --numeric     :  print only the temperature.\n"
-                 "  -F   --fahrenheit  :  output temperature in Fahrenheit.\n"
 		 "  -p   --port=#      :  port to listen to (in TCP/IP daemon mode).\n"
 		 "  -s   --separator=C :  separator to use between fields (in TCP/IP daemon mode).\n"
 		 "  -S   --syslog=s    :  log temperature to syslog every s seconds.\n"
+                 "  -u   --unit=[C|F]  :  force output temperature either in Celius or Fahrenheit.\n"
 		 "  -q   --quiet       :  do not check if the drive is supported.\n"
 		 "  -v   --version     :  display hddtemp version number.\n"
 		 "  -w   --wake-up     :  wake-up the drive if need.\n"
@@ -400,7 +454,7 @@ int main(int argc, char* argv[]) {
 
     assert(dsk);
 
-    memset(dsk, 0, sizeof(dsk));
+    memset(dsk, 0, sizeof(*dsk));
 
     p = strchr(argv[i], ':');
     if(p == NULL)
@@ -436,7 +490,9 @@ int main(int argc, char* argv[]) {
       snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, "open: %s\n", strerror(errno));
       dsk->type = ERROR;
       continue;
-    } else if( ! dsk->type ) {
+    }
+
+    if( ! dsk->type ) {
       dsk->type = probe_bus_type(dsk);
     }
 

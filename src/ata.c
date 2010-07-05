@@ -13,8 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
@@ -76,6 +75,17 @@ static enum e_gettemp ata_get_temperature(struct disk *dsk) {
   int              i;
   u16 *            p;
 
+  if(dsk->db_entry && dsk->db_entry->attribute_id == 0) {
+    close(dsk->fd);
+    dsk->fd = -1;
+    return GETTEMP_NOSENSOR;
+  }
+
+  if(ata_get_packet(dsk->fd)) {
+    snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("S.M.A.R.T. not available"));
+    return GETTEMP_NOT_APPLICABLE;
+  }
+
   switch(ata_get_powermode(dsk->fd)) {
   case PWM_STANDBY:
   case PWM_SLEEPING:
@@ -85,12 +95,6 @@ static enum e_gettemp ata_get_temperature(struct disk *dsk) {
   case PWM_ACTIVE: /* active or idle */
   default:
     break;
-  }
-
-  if(dsk->db_entry && dsk->db_entry->attribute_id == 0) {
-    close(dsk->fd);
-    dsk->fd = -1;
-    return GETTEMP_NOSENSOR;
   }
 
   /* get SMART values */

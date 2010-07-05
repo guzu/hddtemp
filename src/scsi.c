@@ -13,8 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 /* 
  * Adapted from a patch sended by : Frederic LOCHON <lochon@roulaise.net>
@@ -89,7 +88,7 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
   dsk->db_entry->next         = NULL;
 
   if (scsi_smartsupport(dsk->fd) == 0) {
-    snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("S.M.A.R.T. not available\n"));
+    snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("S.M.A.R.T. not available"));
     close(dsk->fd);
     dsk->fd = -1;
     return GETTEMP_NOT_APPLICABLE;

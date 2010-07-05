@@ -3,7 +3,6 @@ DESCRIPTION
 ===========
 hddtemp will show you the hard drive temperature if the hard drive can
 (modern drives support this feature).
-I need feedback to make the supported drives database bigger.
 
 
 COPYRIGHT
@@ -66,4 +65,3 @@ CONTACT
 Emmanuel Varagnat: hddtemp@guzu.net
 
 http://www.guzu.net
-

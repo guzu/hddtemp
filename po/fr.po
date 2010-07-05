@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: hddtemp@guzu.net\n"
 "POT-Creation-Date: 2005-02-25 22:43+0100\n"
 "PO-Revision-Date: 2003-06-03 00:58GMT+1\n"
 "Last-Translator: Aurelien Jarno <aurelien@aurel32.net>\n"
@@ -82,43 +82,46 @@ msgstr ""
 "ATTENTION : Voir les options --help, --debug et --drivebase.\n"
 "ATTENTION : Et n'oubliez pas d'ajouter votre lecteur au fichier hddtemp.db\n"
 
-#: src/hddtemp.c:199
+#: src/hddtemp.c:202
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
 msgstr "%s: %s :  %d%sC ou %sF\n"
 
-#: src/hddtemp.c:211
+#: src/hddtemp.c:214
 #, c-format
 msgid "%s: %s: drive is sleeping\n"
 msgstr "%s: %s : le lecteur est en veille\n"
 
-#: src/hddtemp.c:214
+#: src/hddtemp.c:217
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
 msgstr ""
 "%s: %s:  lecteur connu, mais il ne possède pas de capteur de température.\n"
 
-#: src/hddtemp.c:217
+#: src/hddtemp.c:220
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr "ERREUR : %s : %s : status inconnu\n"
 
-#: src/hddtemp.c:232
+#: src/hddtemp.c:235
+#, c-format
 msgid ""
 "\n"
 "If one of the field value seems to match the temperature, be sure to read\n"
 "the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
 msgstr ""
 
-#: src/hddtemp.c:473
+#: src/hddtemp.c:308
+#, c-format
 msgid "ERROR: invalid separator.\n"
 msgstr "ERREUR : séparateur invalide.\n"
 
-#: src/hddtemp.c:484
+#: src/hddtemp.c:319
+#, c-format
 msgid "ERROR: invalid port number.\n"
 msgstr "ERREUR : numéro de port invalide.\n"
 
-#: src/hddtemp.c:499
+#: src/hddtemp.c:329
 #, fuzzy, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
@@ -243,4 +246,4 @@ msgstr "  ERREUR: ligne exécdant %1$d caractères dans %2$s.\n"
 #: src/scsi.c:112 src/scsi.c:130
 #, c-format
 msgid "log sense failed : %s"
-msgstr ""
+msgstr "echec de 'log sense' : %s "

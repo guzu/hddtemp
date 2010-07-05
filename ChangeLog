@@ -1,4 +1,18 @@
 
+v0.3 beta15
+=============================
+ * --fahrenheit option removed and replace by --unit
+ * Swedish translation (from Daniel Nylander)
+ * Portuguese translation (from the Debian Translation Team)
+ * When specifying --quiet and --numeric and if there's a problem hddtemp
+   display zero (should it be something like 999 instead of 0 ?).
+ * Update license informations in many files
+ * Fix syslog bug if clock scew
+ * Fix man page
+ * Better detection of non SMART capable ATAPI CDROM drives
+ * Better detection of SG_IO support.
+
+
 v0.3 beta14
 =============================
  * add potion for reporting value in Farhenheit

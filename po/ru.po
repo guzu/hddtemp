@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hddtemp 0.3-beta3\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: hddtemp@guzu.net\n"
 "POT-Creation-Date: 2005-02-25 22:43+0100\n"
 "PO-Revision-Date: 2003-03-08 16:42+0300\n"
 "Last-Translator: Michael Shigorin <mike@altlinux.ru>\n"
