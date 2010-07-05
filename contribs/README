@@ -1,0 +1,10 @@
+In this directory you will find some contributions sended by folks.
+This contributions are added to hddtemp just as this, without many
+explainations.
+And for the most, they were for hddtemp 0.2, so they don't use the
+deamon feature.
+
+- wminfo : allow displaying hddtemp infos into the WindowMaker's dock
+    using the wminfo dockapp.
+
+- analyze : ...

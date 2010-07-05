@@ -1,0 +1,20 @@
+
+Sended by <yeupou@coleumes.org>
+
+=======================================
+
+Using wminfo, a dockapp for WindowMaker you can display hddtemp informations.
+With a plugin (a simple bash script), containing something like:
+
+[ "$2" == "" ] ; then
+     hddtemp -q $1 | sed s@"$1: "@""@g
+else
+      hddtemp -q $1 | sed s@" $2: "@""@g | sed s@"/dev/"@""@g
+fi
+
+If the script is called hddtemp.wmiplugin, executing wminfo like this:
+
+wminfo -p "hddtemp.wmiplugin /dev/hda ST340016A" -u 60
+
+you will get something like:  "HDA: 32 C".
+

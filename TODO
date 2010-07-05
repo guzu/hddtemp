@@ -1,0 +1,9 @@
+
+* In deamon mode, unused memory database entries must but freed.
+
+* In daemon mode, restrict listening interface.
+
+* Look at static buffers in scsi.c
+
+* Copy 'po' directory at installation.
+
