@@ -5,21 +5,24 @@
 #include <string.h>
 #include <errno.h>
 
-static char *iconv_from_utf8_to_locale(char *string, char* fallback_string)
-{
-  const char *charset;
+#include "i18n.h"
 
+static char *iconv_from_utf8_to_locale(const char *string, const char* fallback_string)
+{
+  const size_t buffer_inc = 80;	// Increment buffer size in 80 bytes step
+  const char *charset;
   iconv_t cd;
   size_t nconv;
 
-  char *buffer;
-  char *buffer_ptr;
-  char *string_ptr;
+  char *dest_buffer;
+  char *old_dest_buffer;
+  char *dest_buffer_ptr;
+  char *src_buffer;
+  char *src_buffer_ptr;
 
-  const size_t buffer_inc = 80;	// Increment buffer size in 80 bytes step
-  size_t buffer_size;
-  size_t buffer_size_left;
-  size_t string_size;
+  size_t dest_buffer_size;
+  size_t dest_buffer_size_left;
+  size_t src_buffer_size;
 
   // Get the current charset
   setlocale(LC_ALL, "");
@@ -28,41 +31,44 @@ static char *iconv_from_utf8_to_locale(char *string, char* fallback_string)
   // Open iconv descriptor
   cd = iconv_open(charset, "UTF-8");
   if (cd == (iconv_t) -1)
-     return fallback_string;
+     return strdup(fallback_string);
 
   // Set up the buffer
-  buffer_size = buffer_size_left = buffer_inc;
-  buffer = (char *) malloc(buffer_size + 1);
-  if (buffer == NULL)
-    return fallback_string;
-  buffer_ptr = buffer;
-  string_ptr = string;
-  string_size = strlen(string);
+  dest_buffer_size = dest_buffer_size_left = buffer_inc;
+  dest_buffer_ptr = dest_buffer = (char *) malloc(dest_buffer_size);
+  src_buffer_ptr = src_buffer = strdup(string);	// work on a copy of the string
+  src_buffer_size = strlen(src_buffer) + 1;	// + 1 for \0
   
   // Do the conversion
-  while (string_size != 0)
+  while (src_buffer_size != 0)
   {
-    nconv = iconv(cd, &string_ptr, &string_size, &buffer_ptr, &buffer_size_left);
+    nconv = iconv(cd, &src_buffer_ptr, &src_buffer_size, &dest_buffer_ptr, &dest_buffer_size_left);
     if (nconv == (size_t) -1)
     {
-      if (errno != E2BIG)   	// if translation error
-      {
-        iconv_close(cd);	// close descriptor
-        free(buffer);  		// free buffer
-        return fallback_string; // and return fallback string
-      }
+      if (errno != E2BIG)   		// exit if translation error
+        goto iconv_error;	      
+      
       // increase buffer size
-      buffer_size += buffer_inc;
-      buffer_size_left = buffer_inc;
-      buffer = (char *) realloc(buffer, buffer_size + 1);
-      if (buffer == NULL)
-        return fallback_string;
+      dest_buffer_size += buffer_inc;
+      dest_buffer_size_left = buffer_inc;
+      old_dest_buffer = dest_buffer;
+      dest_buffer = (char *) realloc(dest_buffer, dest_buffer_size);
+      if (dest_buffer == NULL)
+        goto iconv_error;	      
+      dest_buffer_ptr = (dest_buffer_ptr - old_dest_buffer) + dest_buffer;
     }
   }
-  *buffer_ptr = '\0';
-  iconv_close(cd);
-  buffer = (char *) realloc(buffer, buffer_size + 1);
-  return buffer;
+  iconv_close(cd);			// close descriptor
+  free(src_buffer);			// free string
+  dest_buffer = (char *) realloc(dest_buffer, dest_buffer_size - dest_buffer_size_left);
+  return dest_buffer;
+
+iconv_error:  
+  iconv_close(cd);			// close descriptor
+  if (dest_buffer != NULL)
+    free(dest_buffer);  		// free buffer
+  free(src_buffer);			// free string
+  return strdup(fallback_string); 	// and return fallback string
 }
 
 char *degree_sign()

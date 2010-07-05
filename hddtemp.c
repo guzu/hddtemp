@@ -30,6 +30,8 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <getopt.h>
 #include <signal.h>
 #include <errno.h>
@@ -46,13 +48,14 @@
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
 #define C_to_F(val) (int)(((double)(val)*1.8)+32)
 
-#define HDDTEMP_VERSION        "0.3 beta4"
+#define HDDTEMP_VERSION        "0.3 beta6"
 #define PORT_NUMBER            7634
 #define SEPARATOR              '|'
 #define DELAY                  60.0
 
 char *             database_path = DEFAULT_DATABASE_PATH;
 long               portnum;
+in_addr_t          listen_addr;
 char               separator = SEPARATOR;
 int                sk_serv;
 
@@ -136,13 +139,14 @@ static int get_smart_threshold_values(int fd, unsigned char* buff) {
 
 static void display_temperature(struct disk *dsk) {
   enum e_gettemp ret;
+  char *degree;
 
   if(dsk->type != ERROR && debug ) {
     printf("\n================= hddtemp %s ==================\n"
 	   "Model: %s\n\n", HDDTEMP_VERSION, dsk->model);
     /*    return;*/
   }
-printf("%s\n", dsk->model);
+
   if(dsk->type == ERROR
      || bus[dsk->type]->get_temperature == NULL
      || (ret = bus[dsk->type]->get_temperature(dsk)) == GETTEMP_ERROR )
@@ -154,6 +158,7 @@ printf("%s\n", dsk->model);
   if(debug)
     return;
 
+  degree = degree_sign();
   switch(ret) {
   case GETTEMP_ERROR:
     /* see above */
@@ -176,14 +181,14 @@ printf("%s\n", dsk->model);
 	       "WARNING: Note that the temperature shown could be wrong.\n"
 	       "WARNING: See --help, --debug and --drivebase options.\n"
 	       "WARNING: And don't forget you can add your drive to hddtemp.db\n"), dsk->drive);
-    printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree_sign(), degree_sign());
+    printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree, degree);
     break;
   case GETTEMP_KNOWN:
     if (! numeric)
        printf("%s: %s: %d%sC\n",
               dsk->drive,
               dsk->model,
-              (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), degree_sign());
+              (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), degree);
     else
        printf("%d\n", (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value));
     break;
@@ -194,6 +199,7 @@ printf("%s\n", dsk->model);
     fprintf(stderr, _("ERROR: %s: %s: unknown returned status\n"), dsk->drive, dsk->model);
     break;
   }
+  free(degree);
 }
 
 
@@ -254,8 +260,8 @@ void do_daemon_mode(struct disk *ldisks) {
 	exit(1);
 	}
   */
-
-  saddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  
+  saddr.sin_addr.s_addr = listen_addr;
   saddr.sin_family = AF_INET;
   saddr.sin_port = htons(portnum);
   
@@ -382,6 +388,7 @@ int main(int argc, char* argv[]) {
 
   show_db = debug = numeric = quiet = 0;
   portnum = PORT_NUMBER;
+  listen_addr = htonl(INADDR_ANY);
 
   /* Parse command line */
   optind = 0;
@@ -393,6 +400,7 @@ int main(int argc, char* argv[]) {
       {"drivebase", 0, NULL, 'b'},
       {"debug",     0, NULL, 'D'},
       {"file",      1, NULL, 'f'},
+      {"listen",    1, NULL, 'l'},
       {"version",   0, NULL, 'v'},
       {"port",      1, NULL, 'p'},
       {"separator", 1, NULL, 's'},
@@ -400,7 +408,7 @@ int main(int argc, char* argv[]) {
       {0, 0, 0, 0}
     };
  
-    c = getopt_long (argc, argv, "bDdf:hp:qs:vn", long_options, &lindex);
+    c = getopt_long (argc, argv, "bDdf:l:hp:qs:vn", long_options, &lindex);
     if (c == -1)
       break;
     
@@ -439,6 +447,14 @@ int main(int argc, char* argv[]) {
 	  }
 	}
 	break;
+      case 'l':
+	listen_addr = inet_addr(optarg);
+	if (listen_addr == -1)
+	{
+          fprintf(stderr, "ERROR: invalid listen address.\n");
+	  exit(1);
+        }	  
+	break;
       case '?':
       case 'h':
 	printf(_(" Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
@@ -454,6 +470,7 @@ int main(int argc, char* argv[]) {
 		 "                        (done for every drive supplied).\n"
 		 "  -d   --daemon      :  run hddtemp in daemon mode (port %d by default)\n"
 		 "  -f   --file=FILE   :  specify database file to use.\n"
+		 "  -l   --listen=addr :  listen on a specific interface.\n"
                  "  -n   --numeric     :  print only the temperature.\n"
 		 "  -p   --port=#      :  port to listen to (in daemon mode).\n"
 		 "  -s   --separator=C :  separator to use between fields (in daemon mode).\n"

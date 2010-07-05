@@ -56,7 +56,7 @@ msgid "  ERROR: line exceed %1$d characters in %2$s.\n"
 msgstr "ОШИБКА: строка длиннее %1$d символов в %2$s.\n"
 
 #: hddtemp.c:49
-msgid "0.3 beta3"
+msgid "0.3 beta6"
 msgstr ""
 
 #: hddtemp.c:95

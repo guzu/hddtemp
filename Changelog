@@ -1,11 +1,22 @@
+v0.3 beta6
+=============================
+ * fix SCSI model reading
+ * add option -l for listening on a specific interface address
 
-v3.0 beta4
+
+v0.3 beta5
+=============================
+ * adding ru.po file (from Michael Shigorin <mike@altlinux.ru>)
+ * some fixes for internationalisation (from Aurelien Jarno <aurelien@aurel32.net>)
+
+
+v0.3 beta4
 =============================
  * correct a problem in daemon mode when hddtemp is re-launch
    quickly, hddtemp wasn't able to re-open its port.
 
 
-v3.0 beta3
+v0.3 beta3
 =============================
  * fix a problem with GCC 3.2
  * include a patch for only displaying the temperature

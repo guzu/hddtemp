@@ -53,11 +53,8 @@ static const char *scsi_model (int device) {
   if (stdinquiry (device, (char *) &gBuf) != 0)
     return strdup(_("unknown"));
   else {
-    int i;
-for(i = 0; i < 20; i++)
-  printf("%03d # %c\n", gBuf[i], gBuf[i]);
-    gBuf[16] = '\0';
-    return strdup((char*) ((u16*)gBuf + 8 ));
+    gBuf[8+8+16] = '\0';
+    return strdup((char*) (gBuf + 8 ));
   }
 }
 
