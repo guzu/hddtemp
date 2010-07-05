@@ -7,14 +7,15 @@ INSTALL_ROOT_DIR=
 CC=cc
 OBJS=hddtemp.o i18n.o db.o scsi.o ata.o scsicmds.o
 
+#CFLAGS=-Wall -O2 -DARCH_I386 -D__I18N__ -fomit-frame-pointer -g
 CFLAGS=-Wall -O2 -DARCH_I386 -D__I18N__ -fomit-frame-pointer
-#LDFLAGS=-Wl,-s
+#LDFLAGS=-Wl,-static
 
 all: hddtemp
 
 hddtemp: i18n $(OBJS)
 	$(CC) $(LDFLAGS) $(LIBS) -o $@ $(OBJS)
-	strip $@
+	strip hddtemp
 
 i18n:
 	xgettext -o po/hddtemp.pot -d hddtemp -C -a *.c *.h

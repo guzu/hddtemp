@@ -46,7 +46,7 @@
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
 #define C_to_F(val) (int)(((double)(val)*1.8)+32)
 
-#define HDDTEMP_VERSION        "0.3 beta1"
+#define HDDTEMP_VERSION        "0.3 beta2"
 #define PORT_NUMBER            7634
 #define SEPARATOR              '|'
 #define DELAY                  60.0
@@ -166,7 +166,7 @@ static void display_temperature(struct disk *dsk) {
       printf(_("WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
 	       "WARNING: This doesn't mean it hasn't got one.\n"
 	       "WARNING: If you are sure it has one, please contact me (coredump@free.fr).\n"
-	       "WARNING: See --help, --debug and --drives options.\n"), dsk->drive);
+	       "WARNING: See --help, --debug and --drivebase options.\n"), dsk->drive);
     printf(_("%s: %s:  no sensor\n"), dsk->drive, dsk->model);
     break;
   case GETTEMP_GUESS:
@@ -174,7 +174,7 @@ static void display_temperature(struct disk *dsk) {
       printf(_("WARNING: Drive %s doesn't appear in the database of supported drives\n"
 	       "WARNING: But using a common value, it reports something.\n"
 	       "WARNING: Note that the temperature shown could be wrong.\n"
-	       "WARNING: See --help, --debug and --drives options.\n"
+	       "WARNING: See --help, --debug and --drivebase options.\n"
 	       "WARNING: And don't forget you can add your drive to hddtemp.db\n"), dsk->drive);
     printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree_sign(), degree_sign());
     break;

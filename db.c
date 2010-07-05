@@ -42,7 +42,7 @@ struct harddrive_entry *is_a_supported_drive(const char* model) {
     regex_t     preg;
     regmatch_t  pmatch;
 
-    if(regcomp(&preg, p->regexp, 0))
+    if(regcomp(&preg, p->regexp, REG_EXTENDED))
       exit(-2);
     if(regexec(&preg, model, 1, &pmatch, 0) == 0)
       return p;

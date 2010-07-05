@@ -94,12 +94,28 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
   UINT8            smartsupport;
 
   /*
+    on triche un peu
+  */
+  dsk->db_entry = (struct harddrive_entry*) malloc(sizeof(struct harddrive_entry));
+  if(dsk->db_entry == NULL) {
+    perror("malloc");
+    exit(-1);
+  }
+  
+  dsk->db_entry->regexp       = "";
+  dsk->db_entry->description  = "";
+  dsk->db_entry->attribute_id = 0;
+  dsk->db_entry->unit         = 'C';
+  dsk->db_entry->next         = NULL;
+
+  /*
   if(dsk->db_entry && dsk->db_entry->attribute_id == 0) {
     close(dsk->fd);
     dsk->fd = -1;
     return GETTEMP_NOSENSOR;
   }
   */
+
 
   if ( scsiSmartSupport(dsk->fd, (UINT8 *) &smartsupport) != 0 && (gBuf[0] & 0x1f) == 0 ) {
     snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, _("%s: %s:  S.M.A.R.T. not available\n"), dsk->drive, dsk->model);
