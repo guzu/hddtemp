@@ -283,6 +283,11 @@ void do_daemon_mode(struct disk *ldisks) {
     exit(1);
   }
   
+  if(listen(sk_serv, 5) == -1) {
+    perror("listen");
+    exit(1);
+  }
+    
   switch(fork()) {
   case -1:
     perror("fork");
@@ -302,7 +307,13 @@ void do_daemon_mode(struct disk *ldisks) {
 
   /* redirect signals */
   for(i = 0; i <= _NSIG; i++) {
-    signal(i, daemon_stop);
+    switch(i) {
+    case SIGPIPE:
+      signal(i, SIGPIPE);
+    default:
+      signal(i, daemon_stop);
+      break;
+    }
   }
 
   /* timer initialisation */
@@ -318,16 +329,10 @@ void do_daemon_mode(struct disk *ldisks) {
     struct sockaddr_in caddr;
     socklen_t sz_caddr;
     
-    if(listen(sk_serv, 5) == -1) {
-      break;
-    }
-    
     memset(&caddr, 0, sizeof(struct sockaddr_in));
     sz_caddr = sizeof(struct sockaddr_in);
-    if((cfd = accept(sk_serv, (struct sockaddr *)&caddr, &sz_caddr)) == -1) {
-      close(cfd);
+    if((cfd = accept(sk_serv, (struct sockaddr *)&caddr, &sz_caddr)) == -1)
       break;
-    }
     
     for(dsk = ldisks; dsk; dsk = dsk->next) {
       char msg[128];
@@ -391,9 +396,9 @@ void do_daemon_mode(struct disk *ldisks) {
 	break;
       }
       
-      write(cfd,&separator, 1);
-      write(cfd, &msg, n);
-      write(cfd,&separator, 1);
+      write(cfd,&separator, 1) || 
+	write(cfd, &msg, n) ||
+	write(cfd,&separator, 1);
     }
     close(cfd);
   }

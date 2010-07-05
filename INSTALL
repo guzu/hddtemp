@@ -1,1 +1,64 @@
-README
+
+DESCRIPTION
+===========
+hddtemp will show you the hard drive temperature if the hard drive can
+(modern drives support this feature).
+I need feedback to make the supported drives database bigger.
+
+
+COPYRIGHT
+=========
+This software is distributed under the GPL license.
+Please see COPYING file.
+
+
+INSTALLATION
+============
+Run ./configure (see --help for options), then just type 'make' and don't forget
+to get the last hddtemp.db file on the site :
+
+$ wget http://coredump.free.fr/linux/hddtemp.db
+
+By default, the hddtemp.db will we searched in /usr/share/misc directory but
+you can change this at compilation time with the --with-db-path option:
+
+$ ./configure --with-db-path=/etc/hddtemp.db
+
+
+
+INFORMATION
+===========
+In deamon mode, hddtemp doesn't allow too much query at a time. If the interval
+between two query is inferior to 1 minute, hddtemp will give the previous value
+(hddtemp query the disk every at each connection, if the period is superior to
+1 minute).
+After starting hddtemp in deamon mode, you can test it with a simple telnet
+or netcat:
+
+$ telnet localhost 7634
+or
+$ netcat localhost 7634
+
+(note: sometimes the netcat command is called nc).
+
+If you know that your drive has a temperature sensor and is reported to be
+unsupported tell me which model and which manufacturer it is, and/or just
+add a new entry in hddtemp.db. Each line of hddtemp.db is either a commentary,
+a blank line or a line containing:
+ - a regular expression that allow hddtemp to recognize a drive or a set of drives
+   from its model name or from a generic model name,
+ - a value (ATTRIBUTE_ID from S.M.A.R.T.),
+ - a description.
+
+The separator option allows to specify a separator in the case the drive's name
+contains the default separator. Be carefull not to use '?' or '*' which could
+exists in the reply of hddtemp.
+
+
+CONTACT
+=======
+Emmanuel Varagnat: coredump@free.fr
+                   emmanuel.varagnat@free.fr
+
+http://coredump.free.fr
+
