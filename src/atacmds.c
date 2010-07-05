@@ -66,7 +66,10 @@ unsigned char* ata_search_temperature(const unsigned char* smart_data, int attri
   i = 0;
   while((debug || *(smart_data + n) != attribute_id) && i < 30) {
     if(debug && *(smart_data + n))
-      printf(_("field(%d)\t = %d\n"), *(smart_data + n), *(smart_data + n + 3));
+      printf(_("field(%d)\t = %d\t(0x%02x)\n"),
+	     (int)*(smart_data + n),
+	     (int)*(smart_data + n + 3),
+	     *(smart_data + n + 3));
 
     n += 12;
     i++;
@@ -86,7 +89,7 @@ enum e_powermode ata_get_powermode(int device) {
 #define WIN_CHECKPOWERMODE2 0x98
 #endif
   unsigned char args[4] = { WIN_CHECKPOWERMODE1, 0, 0, 0 };
-  enum e_powermode state;
+  enum e_powermode state = PWM_UNKNOWN;
 
   /*
     After ioctl:

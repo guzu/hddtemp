@@ -1,4 +1,15 @@
 
+v0.3 beta14
+=============================
+ * add potion for reporting value in Farhenheit
+ * fix daemonization mode (thanks to Aurelien Jarno)
+ * improvements and spelling fixes for the man page.
+ * free database after getting useful entries (for a smaller memory footprint
+   in daemon mode.
+ * bus type can be forced by prefixing device drive path with SATA/PATA/SCSI
+ * update man page
+
+
 v0.3 beta13
 =============================
  * fix backtracing

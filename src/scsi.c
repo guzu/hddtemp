@@ -145,6 +145,7 @@ static enum e_gettemp scsi_get_temperature(struct disk *dsk) {
  *******************************/
 
 struct bustype scsi_bus = {
+  "SCSI",
   scsi_probe,
   scsi_model,
   scsi_get_temperature

@@ -163,6 +163,7 @@ static enum e_gettemp ata_get_temperature(struct disk *dsk) {
  *******************************/
 
 struct bustype ata_bus = {
+  "PATA",
   ata_probe,
   ata_model,
   ata_get_temperature

@@ -25,16 +25,16 @@
 #endif
 
 struct harddrive_entry {
-  const char             *regexp;
+  char                   *regexp;
   short int              attribute_id;
-  const char             *description;
+  char                   *description;
   unsigned char          unit;
   struct harddrive_entry *next;
 };
 
-extern struct harddrive_entry   *supported_drives;
-
 struct harddrive_entry *is_a_supported_drive(const char* model);
+void display_supported_drives();
 void load_database(const char* filename);
+void free_database(void);
 
 #endif

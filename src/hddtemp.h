@@ -33,10 +33,7 @@ typedef __u16 u16;
 #define DEFAULT_ATTRIBUTE_ID   194
 
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
-#define C_to_F(val) (int)(((double)(val)*1.8)+32)
-
-#define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
-#define C_to_F(val) (int)(((double)(val)*1.8)+32)
+#define C_to_F(val) (int)(((double)(val)*(double)1.8) + (double)32.0)
 
 enum e_bustype { ERROR, BUS_UNKNOWN, BUS_SATA, BUS_ATA, BUS_SCSI, BUS_TYPE_MAX };
 enum e_gettemp {
@@ -73,6 +70,7 @@ struct disk {
 };
 
 struct bustype {
+  char *name;
   int (*probe)(int);
   const char *(*model)(int);
   enum e_gettemp (*get_temperature)(struct disk *);
@@ -86,5 +84,6 @@ extern char               separator;
 extern long               portnum, syslog_interval;
 extern char *             listen_addr;
 
+void value_to_unit(struct disk *dsk);
 
 #endif

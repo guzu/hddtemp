@@ -53,6 +53,8 @@
 #include <time.h>
 #include <netinet/in.h>
 #include <linux/hdreg.h>
+#include <ctype.h>
+#include <assert.h>
 
 // Application specific includes
 #include "ata.h"
@@ -74,7 +76,7 @@ char *             listen_addr;
 char               separator = SEPARATOR;
 
 struct bustype *   bus[BUS_TYPE_MAX];
-int                tcp_daemon, debug, quiet, numeric, wakeup, af_hint;
+int                tcp_daemon, debug, quiet, numeric, wakeup, af_hint, celsius;
 
 /*******************************************************
  *******************************************************/
@@ -88,41 +90,15 @@ static void init_bus_types() {
 /*******************************************************
  *******************************************************/
 
-
-static void show_supported_drives() {
-  unsigned char           *tabs, *line;
-  struct harddrive_entry  *p;
-  int                     max, len;
-
-  max = 0;
-  for(p = supported_drives; p; p = p->next) {
-    len = strlen(p->regexp);
-    if(len > max)
-      max = len;
+void value_to_unit(struct disk *dsk) {
+  if(celsius) {
+    if(dsk->db_entry->unit == 'F')
+      dsk->value = F_to_C(dsk->value);
   }
-  len = max/8 + 1;
-  tabs = malloc(len+1);
-  memset(tabs, '\t', len);
-  tabs[len] = '\0';
-
-  len = (max/8 + 1) * 8;
-  line = malloc(len+1);
-  memset(line, '-', len);
-  line[len] = '\0';
-  
-  printf(_("\n"
-	   "Regexp%s| Value | Description\n"
-	   "------%s---------------------\n"), tabs, line);
-
-  for(p = supported_drives; p; p = p->next) {
-    len = strlen(p->regexp);
-    printf(_("%s%s| %5d | %s\n"),
-	   p->regexp,
-	   tabs+(len/8),
-	   p->attribute_id,
-	   p->description);
-  }  
-  printf("\n");
+  else {
+    if(dsk->db_entry->unit == 'C')
+      dsk->value = C_to_F(dsk->value);
+  }
 }
 
 
@@ -203,19 +179,23 @@ static void display_temperature(struct disk *dsk) {
     printf(_("%s: %s:  %d%sC or %sF\n"), dsk->drive, dsk->model, dsk->value, degree, degree);
     break;
   case GETTEMP_KNOWN:
+
+    value_to_unit(dsk);
+
     if (! numeric)
        printf("%s: %s: %d%sC\n",
               dsk->drive,
               dsk->model,
-              (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), degree);
+	      dsk->value,
+              degree);
     else
-       printf("%d\n", (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value));
+       printf("%d\n", dsk->value);
     break;
   case GETTEMP_DRIVE_SLEEP:
     printf(_("%s: %s: drive is sleeping\n"), dsk->drive, dsk->model);    
     break;
   case GETTEMP_NOSENSOR:
-    printf(_("%s: %s:  known drive, but it doesn't have a temperature sensor.\n"), dsk->drive, dsk->model);
+    printf(_("%s: %s:  drive supported, but it doesn't have a temperature sensor.\n"), dsk->drive, dsk->model);
     break;
   default:
     fprintf(stderr, _("ERROR: %s: %s: unknown returned status\n"), dsk->drive, dsk->model);
@@ -235,7 +215,7 @@ void do_direct_mode(struct disk *ldisks) {
   if(debug) {
     printf(_("\n"
 	     "If one of the field value seems to match the temperature, be sure to read\n"
-	     "the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
+	     "the hddtemp man page before sending a report (section REPORT). Thanks.\n"
 	     ));
   }
 }
@@ -255,6 +235,7 @@ int main(int argc, char* argv[]) {
   textdomain (PACKAGE);
   
   show_db = debug = numeric = quiet = wakeup = af_hint = syslog_interval = 0;
+  celsius = 1;
   portnum = PORT_NUMBER;
   listen_addr = NULL;
 
@@ -262,23 +243,24 @@ int main(int argc, char* argv[]) {
   optind = 0;
   while (1) {
     static struct option long_options[] = {
-      {"help",      0, NULL, 'h'},
-      {"quiet",     0, NULL, 'q'},
-      {"daemon",    0, NULL, 'd'},
-      {"drivebase", 0, NULL, 'b'},
-      {"debug",     0, NULL, 'D'},
-      {"file",      1, NULL, 'f'},
-      {"listen",    1, NULL, 'l'},
-      {"version",   0, NULL, 'v'},
-      {"port",      1, NULL, 'p'},
-      {"separator", 1, NULL, 's'},
-      {"numeric",   0, NULL, 'n'},
-      {"syslog",    1, NULL, 'S'},
-      {"wake-up",   0, NULL, 'w'},
+      {"help",       0, NULL, 'h'},
+      {"quiet",      0, NULL, 'q'},
+      {"daemon",     0, NULL, 'd'},
+      {"drivebase",  0, NULL, 'b'},
+      {"debug",      0, NULL, 'D'},
+      {"file",       1, NULL, 'f'},
+      {"fahrenheit", 0, NULL, 'F'},
+      {"listen",     1, NULL, 'l'},
+      {"version",    0, NULL, 'v'},
+      {"port",       1, NULL, 'p'},
+      {"separator",  1, NULL, 's'},
+      {"numeric",    0, NULL, 'n'},
+      {"syslog",     1, NULL, 'S'},
+      {"wake-up",    0, NULL, 'w'},
       {0, 0, 0, 0}
     };
  
-    c = getopt_long (argc, argv, "bDdf:l:hp:qs:vnw46S:", long_options, &lindex);
+    c = getopt_long (argc, argv, "bDFdf:l:hp:qs:vnw46S:", long_options, &lindex);
     if (c == -1)
       break;
     
@@ -297,6 +279,9 @@ int main(int argc, char* argv[]) {
 	break;
       case 'd':
 	tcp_daemon = 1;
+	break;
+      case 'F':
+	celsius = 0;
 	break;
       case 'D':
 	debug = 1;
@@ -328,10 +313,12 @@ int main(int argc, char* argv[]) {
 	break;
       case '?':
       case 'h':
-	printf(_(" Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
+	printf(_(" Usage: hddtemp [OPTIONS] [TYPE:]DISK1 [[TYPE:]DISK2]...\n"
 		 "\n"
 		 "   hddtemp displays the temperature of drives supplied in argument.\n"
 		 "   Drives must support S.M.A.R.T.\n"
+		 "\n"
+		 "  TYPE could be SATA, PATA or SCSI. If omitted hddtemp will try to guess.\n"
 		 "\n"
 		 "  -b   --drivebase   :  display database file content that allow hddtemp to\n"
 		 "                        recognize supported drives.\n"
@@ -343,6 +330,7 @@ int main(int argc, char* argv[]) {
 		 "  -f   --file=FILE   :  specify database file to use.\n"
 		 "  -l   --listen=addr :  listen on a specific interface (in TCP/IP daemon mode).\n"
                  "  -n   --numeric     :  print only the temperature.\n"
+                 "  -F   --fahrenheit  :  output temperature in Fahrenheit.\n"
 		 "  -p   --port=#      :  port to listen to (in TCP/IP daemon mode).\n"
 		 "  -s   --separator=C :  separator to use between fields (in TCP/IP daemon mode).\n"
 		 "  -S   --syslog=s    :  log temperature to syslog every s seconds.\n"
@@ -383,7 +371,7 @@ int main(int argc, char* argv[]) {
   
   if(show_db) {
      load_database(database_path);
-     show_supported_drives();
+     display_supported_drives();
      exit(0);
   }
   
@@ -408,8 +396,37 @@ int main(int argc, char* argv[]) {
   ldisks = NULL;
   for(i = argc - 1; i >= optind; i--) {
     struct disk *dsk = (struct disk *) malloc(sizeof(struct disk));
+    char *p;
 
-    dsk->drive = argv[i];
+    assert(dsk);
+
+    memset(dsk, 0, sizeof(dsk));
+
+    p = strchr(argv[i], ':');
+    if(p == NULL)
+      dsk->drive = argv[i];
+    else {
+      char *q;
+      int j;
+
+      /* upper case type */
+      for(q = argv[i]; q != p; q++)
+	*q = (char) toupper(*q);
+
+      /* force bus type */
+      for(j = 0; j < BUS_TYPE_MAX; j++) {
+	if(bus[j] &&
+	   bus[j]->name &&
+	   strncmp(bus[j]->name, argv[i], p - argv[i] - 1) == 0)
+	  {
+	    dsk->type = j;
+	    break;
+	  }
+      }
+
+      dsk->drive = p + 1;      
+    }
+
     dsk->next = ldisks;
     ldisks = dsk;    
 
@@ -419,7 +436,7 @@ int main(int argc, char* argv[]) {
       snprintf(dsk->errormsg, MAX_ERRORMSG_SIZE, "open: %s\n", strerror(errno));
       dsk->type = ERROR;
       continue;
-    } else {
+    } else if( ! dsk->type ) {
       dsk->type = probe_bus_type(dsk);
     }
 
@@ -434,16 +451,23 @@ int main(int argc, char* argv[]) {
     dsk->model = bus[dsk->type]->model(dsk->fd);
     dsk->value = -1;
     if(dsk->type != BUS_SCSI) {
+      struct harddrive_entry   *dbe;
+
       if(!db_loaded) {
 	load_database(database_path);
 	db_loaded = 1;
       }      
-      dsk->db_entry = is_a_supported_drive(dsk->model);
+
+      dbe = is_a_supported_drive(dsk->model);
+      if(dbe) {
+	dsk->db_entry = (struct harddrive_entry *)malloc(sizeof(struct harddrive_entry));
+	memcpy(dsk->db_entry, dbe, sizeof(struct harddrive_entry));
+      }	
     }
   }
 
+  free_database();
   if(tcp_daemon || syslog_interval != 0) {
-    /*    cleanup_database(ldisks);*/
     do_daemon_mode(ldisks);
   }
   else {

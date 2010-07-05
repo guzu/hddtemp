@@ -182,6 +182,7 @@ static enum e_gettemp sata_get_temperature(struct disk *dsk) {
  *******************************/
 
 struct bustype sata_bus = {
+  "SATA",
   sata_probe,
   sata_model,
   sata_get_temperature

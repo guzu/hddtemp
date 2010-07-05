@@ -1,5 +1,5 @@
 
-* In deamon mode, unused memory database entries must but freed.
+* make 3ware support (take a look at smartctl)
 
 * In daemon mode, restrict listening interface.
 
@@ -9,4 +9,6 @@
 
 * Look at static buffers in scsi.c
 
+* Western Digital SATA drives seems to declare themselves as "ATA WDC..."
+  this could be useful for probing bus type.
 

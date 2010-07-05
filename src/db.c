@@ -44,7 +44,7 @@
 
 #define MAX_LINE_LEN           1024
 
-struct harddrive_entry   *supported_drives = NULL;
+static struct harddrive_entry   *supported_drives = NULL;
 struct harddrive_entry   **last_entry = &supported_drives;
 
 struct harddrive_entry *is_a_supported_drive(const char* model) {
@@ -59,6 +59,7 @@ struct harddrive_entry *is_a_supported_drive(const char* model) {
 
     if(regcomp(&preg, p->regexp, REG_EXTENDED))
       exit(-2);
+
     if(regexec(&preg, model, 1, &pmatch, 0) == 0)
       return p;
   }
@@ -89,6 +90,42 @@ static const char *extract_string(char **string) {
   }
 
   return NULL;
+}
+
+void display_supported_drives() {
+  unsigned char           *tabs, *line;
+  struct harddrive_entry  *p;
+  int                     max, len;
+
+  max = 0;
+  for(p = supported_drives; p; p = p->next) {
+    len = strlen(p->regexp);
+    if(len > max)
+      max = len;
+  }
+  len = max/8 + 1;
+  tabs = malloc(len+1);
+  memset(tabs, '\t', len);
+  tabs[len] = '\0';
+
+  len = (max/8 + 1) * 8;
+  line = malloc(len+1);
+  memset(line, '-', len);
+  line[len] = '\0';
+  
+  printf(_("\n"
+	   "Regexp%s| Value | Description\n"
+	   "------%s---------------------\n"), tabs, line);
+
+  for(p = supported_drives; p; p = p->next) {
+    len = strlen(p->regexp);
+    printf(_("%s%s| %5d | %s\n"),
+	   p->regexp,
+	   tabs+(len/8),
+	   p->attribute_id,
+	   p->description);
+  }  
+  printf("\n");
 }
 
 
@@ -166,6 +203,26 @@ static int parse_db_line(char *line) {
   last_entry = &(new_entry->next);
 
   return 0;
+}
+
+void free_database(void) {
+  struct harddrive_entry   *p;
+
+  p = supported_drives;
+
+  while( p ) {
+    struct harddrive_entry   *q;
+    
+    if(p->regexp)
+      free(p->regexp);
+
+    if(p->description)
+      free(p->description);
+
+    q = p;
+    p = p->next;
+    free(q);
+  }    
 }
 
 void load_database(const char* filename) {

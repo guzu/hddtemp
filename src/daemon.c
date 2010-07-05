@@ -37,6 +37,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -178,10 +179,12 @@ void daemon_send_msg(struct disk *ldisks, int cfd) {
                    '*');
       break;
     case GETTEMP_KNOWN:
+      value_to_unit(dsk);
+
       n = snprintf(msg, sizeof(msg), "%s%c%s%c%d%c%c",
-                   dsk->drive,                                                     separator,
-                   dsk->model,                                                     separator,
-                   (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value), separator,
+                   dsk->drive,  separator,
+                   dsk->model,  separator,
+                   dsk->value,  separator,
                    dsk->db_entry->unit);
       break;
     case GETTEMP_NOSENSOR:
@@ -223,10 +226,12 @@ void daemon_syslog(struct disk *ldisks) {
     switch(dsk->ret) {
     case GETTEMP_KNOWN:
     case GETTEMP_GUESS:
+      value_to_unit(dsk);
+
       syslog(LOG_INFO, "%s: %s: %d %c", 
              dsk->drive,
 	     dsk->model,
-	     (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value),
+	     dsk->value,
 	     dsk->db_entry->unit);
       break;
     case GETTEMP_DRIVE_SLEEP:
@@ -263,16 +268,10 @@ void daemon_stop(int n) {
 void do_daemon_mode(struct disk *ldisks) {
   struct disk *      dsk;
   int                cfd;
-  int                i, j, ret, maxfd;
+  int                i, ret, maxfd;
   struct tm *        time_st;
   fd_set             deffds;
   time_t             next_time;
-
-  if (tcp_daemon)
-    daemon_open_sockets();
-  
-  if (syslog_interval > 0)
-    openlog("hddtemp", LOG_PID, LOG_DAEMON);
 
   switch(fork()) {
   case -1:
@@ -284,15 +283,32 @@ void do_daemon_mode(struct disk *ldisks) {
   default:
     exit(0);
   }
-
-  /* close standard input and output */
-  for(i = 0; i < 3; i++) {  
-    for (j = 0 ; j < sks_serv_num ; j++)
-      if (i == sks_serv[j])
-        break;	      
-      if (j != sks_serv_num)
-        close(i);
+  
+  setsid();
+  
+  switch(fork()) {
+  case -1:
+    perror("fork");
+    exit(2);
+    break;
+  case 0:
+    break;
+  default:
+    exit(0);
   }
+  chdir("/");
+  umask(0);
+  
+  /* close standard input and output */
+  close(0);
+  close(1);
+  close(2);
+  
+  if (tcp_daemon)
+    daemon_open_sockets();
+  
+  if (syslog_interval > 0)
+    openlog("hddtemp", LOG_PID, LOG_DAEMON);
 
   /* redirect signals */
   for(i = 0; i <= _NSIG; i++) {
