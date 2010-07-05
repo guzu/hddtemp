@@ -1,3 +1,10 @@
+
+v3.0 beta4
+=============================
+ * correct a problem in daemon mode when hddtemp is re-launch
+   quickly, hddtemp wasn't able to re-open its port.
+
+
 v3.0 beta3
 =============================
  * fix a problem with GCC 3.2

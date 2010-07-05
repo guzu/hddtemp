@@ -46,7 +46,7 @@
 #define F_to_C(val) (int)(((double)(val)-32.0)/1.8)
 #define C_to_F(val) (int)(((double)(val)*1.8)+32)
 
-#define HDDTEMP_VERSION        "0.3 beta3"
+#define HDDTEMP_VERSION        "0.3 beta4"
 #define PORT_NUMBER            7634
 #define SEPARATOR              '|'
 #define DELAY                  60.0
@@ -142,12 +142,12 @@ static void display_temperature(struct disk *dsk) {
 	   "Model: %s\n\n", HDDTEMP_VERSION, dsk->model);
     /*    return;*/
   }
-
+printf("%s\n", dsk->model);
   if(dsk->type == ERROR
      || bus[dsk->type]->get_temperature == NULL
      || (ret = bus[dsk->type]->get_temperature(dsk)) == GETTEMP_ERROR )
   {
-    fprintf(stderr, "%s: %s", dsk->drive, dsk->errormsg);
+    fprintf(stderr, "%s: %s\n", dsk->drive, dsk->errormsg);
     return;
   }
 
@@ -229,12 +229,24 @@ void do_daemon_mode(struct disk *ldisks) {
   /*char               sepsep[2] = { separator, separator };*/
   int                i;
   struct tm *        time_st;
+  int                on = 1;
 
   if((sk_serv = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
     perror("socket");
     exit(1);
   }
-  
+ 
+  if((sk_serv = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+    perror("socket");
+    exit(1);
+  }
+   
+  // Allow local port reuse in TIME_WAIT
+  if (setsockopt(sk_serv, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
+    perror("setsockopt");	  
+    exit(1);
+  }	  
+	  
   memset(&saddr, 0, sizeof(struct sockaddr_in));
   /*    
 	if((he = gethostbyaddr("127.0.0.1")) == NULL) {
