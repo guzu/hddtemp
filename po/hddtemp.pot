@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-06-03 01:32+0200\n"
+"POT-Creation-Date: 2003-07-22 00:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "%s%s| %5d | %s\n"
 msgstr ""
 
-#: src/hddtemp.c:160
+#: src/hddtemp.c:159
 #, c-format
 msgid ""
 "\n"
@@ -37,7 +37,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/hddtemp.c:186
+#: src/hddtemp.c:185
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -46,12 +46,12 @@ msgid ""
 "WARNING: See --help, --debug and --drivebase options.\n"
 msgstr ""
 
-#: src/hddtemp.c:190
+#: src/hddtemp.c:189
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr ""
 
-#: src/hddtemp.c:194
+#: src/hddtemp.c:193
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't appear in the database of supported drives\n"
@@ -61,46 +61,46 @@ msgid ""
 "WARNING: And don't forget you can add your drive to hddtemp.db\n"
 msgstr ""
 
-#: src/hddtemp.c:199
+#: src/hddtemp.c:198
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
 msgstr ""
 
-#: src/hddtemp.c:211
+#: src/hddtemp.c:210
+#, c-format
+msgid "%s: %s: drive is sleeping\n"
+msgstr ""
+
+#: src/hddtemp.c:213
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
 msgstr ""
 
-#: src/hddtemp.c:214
+#: src/hddtemp.c:216
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr ""
 
-#: src/hddtemp.c:229
+#: src/hddtemp.c:231
 msgid ""
 "\n"
-"If one of the field value seems to match the temperature, you can\n"
-"send me a report so I can add it to the database of supported drives\n"
-"and/or you can do it yourself by adding an entry in hddtemp.db and send\n"
-"me the updated hddtemp.db.\n"
-"\n"
-"Don't forget to compare your value(s) with those in the database.\n"
-"(see option --drivebase)\n"
+"If one of the field value seems to match the temperature, be sure to read\n"
+"the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
 msgstr ""
 
-#: src/hddtemp.c:453
+#: src/hddtemp.c:458
 msgid "ERROR: invalid separator.\n"
 msgstr ""
 
-#: src/hddtemp.c:464
+#: src/hddtemp.c:469
 msgid "ERROR: invalid port number.\n"
 msgstr ""
 
-#: src/hddtemp.c:473
+#: src/hddtemp.c:478
 msgid "ERROR: invalid listen address.\n"
 msgstr ""
 
-#: src/hddtemp.c:479
+#: src/hddtemp.c:484
 #, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
@@ -126,26 +126,26 @@ msgid ""
 "Report bugs or new drives to <coredump@free.fr>.\n"
 msgstr ""
 
-#: src/hddtemp.c:502
+#: src/hddtemp.c:507
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr ""
 
-#: src/hddtemp.c:521
+#: src/hddtemp.c:526
 msgid ""
 "  ERROR: You must be root to run the command,\n"
 "  ERROR: or the root must set the suid bit for the executable.\n"
 msgstr ""
 
-#: src/hddtemp.c:527
+#: src/hddtemp.c:532
 msgid "Too few arguments: you must specify one drive, at least.\n"
 msgstr ""
 
-#: src/hddtemp.c:537
+#: src/hddtemp.c:542
 msgid "ERROR: can't use --debug and --daemon options together.\n"
 msgstr ""
 
-#: src/hddtemp.c:564
+#: src/hddtemp.c:568
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr ""
@@ -159,7 +159,7 @@ msgstr ""
 msgid "field(%d)\t = %d\n"
 msgstr ""
 
-#: src/ata.c:125
+#: src/ata.c:167
 msgid "S.M.A.R.T. not available"
 msgstr ""
 

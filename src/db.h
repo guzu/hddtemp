@@ -20,7 +20,9 @@
 #ifndef __DB_H__
 #define __DB_H__
 
-#define DEFAULT_DATABASE_PATH  "/etc/hddtemp.db"
+#ifndef DEFAULT_DATABASE_PATH
+#define DEFAULT_DATABASE_PATH  "/usr/share/misc/hddtemp.db"
+#endif
 
 struct harddrive_entry {
   const char             *regexp;

@@ -107,12 +107,54 @@ static unsigned char* ata_search_temperature(const unsigned char* smart_data, in
     return (unsigned char*)(smart_data + n);
 }
 
+static
+enum e_powermode ata_get_powermode(struct disk *dsk) {
+#ifndef WIN_CHECKPOWERMODE1
+#define WIN_CHECKPOWERMODE1 0xE5
+#endif
+#ifndef WIN_CHECKPOWERMODE2
+#define WIN_CHECKPOWERMODE2 0x98
+#endif
+  unsigned char args[4] = { WIN_CHECKPOWERMODE1, 0, 0, 0 };
+  enum e_powermode state;
+
+  /*
+    After ioctl:
+      args[0] = status;
+      args[1] = error;
+      args[2] = nsector_reg;
+  */
+
+  if (ioctl(dsk->fd, HDIO_DRIVE_CMD, &args)
+      && (args[0] = WIN_CHECKPOWERMODE2) /* try again with 0x98 */
+      && ioctl(dsk->fd, HDIO_DRIVE_CMD, &args))
+    {
+       if (errno != EIO || args[0] != 0 || args[1] != 0)
+         state = PWM_UNKNOWN;
+       else
+         state = PWM_SLEEPING;
+    } else {
+       state = ( (args[2] == 0xFF) ? PWM_ACTIVE : PWM_STANDBY );
+    }
+
+  return state;
+}
 
 static enum e_gettemp ata_get_temperature(struct disk *dsk) {   
   unsigned char    values[512]/*, thresholds[512]*/;
   unsigned char *  field;
   int              i;
   u16 *            p;
+
+  switch(ata_get_powermode(dsk)) {
+  case PWM_STANDBY:
+  case PWM_SLEEPING:
+    return GETTEMP_DRIVE_SLEEP;
+  case PWM_UNKNOWN:
+  case PWM_ACTIVE: /* active or idle */
+  default:
+    break;
+  }
 
   if(dsk->db_entry && dsk->db_entry->attribute_id == 0) {
     close(dsk->fd);
@@ -175,7 +217,6 @@ static enum e_gettemp ata_get_temperature(struct disk *dsk) {
 
   /* never reached */
 }
-
 
 
 /*******************************

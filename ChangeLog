@@ -1,3 +1,15 @@
+v0.3 beta8
+=============================
+ * hddtemp.db is now back into /usr/share. By default, it is not anymore in
+   /etc. hddtemp.db is not a configuration file...
+   This can be changed with --with-db-path option of 'configure' script.
+ * Some informations about how to report me a new drive (main.c and hddtemp man
+   page). 
+ * hddtemp.db is not loaded if drives are only SCSI drives.
+ * for IDE drives, check if drive is spinning/not sleeping before querying
+   temperature.
+
+
 v0.3 beta7 (from Aurelien Jarno <aurel32@debian.org>)
 =============================
  * use autoconf/automake

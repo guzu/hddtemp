@@ -14,10 +14,16 @@ Please see COPYING file.
 
 INSTALLATION
 ============
-just type 'make' and don't forget to get the last hddtemp.db file
-on the site :
+Run ./configure (see --help for options), then just type 'make' and don't forget
+to get the last hddtemp.db file on the site :
 
 $ wget http://coredump.free.fr/linux/hddtemp.db
+
+By default, the hddtemp.db will we searched in /usr/share/misc directory but
+you can change this at compilation time with the --with-db-path option:
+
+$ ./configure --with-db-path=/etc/hddtemp.db
+
 
 
 INFORMATION

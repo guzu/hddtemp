@@ -850,7 +850,6 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
-  --disable-rpath         do not hardcode runtime library paths
   --disable-nls           do not use Native Language Support
 
 Optional Packages:
@@ -862,6 +861,8 @@ Optional Packages:
   --with-included-gettext use the GNU gettext library included here
   --with-libintl-prefix=DIR  search for libintl in DIR/include and DIR/lib
   --without-libintl-prefix     don't search for libintl in includedir and libdir
+  --with-db-path=PATH \
+                Default location of hddtemp.db file /usr/share/misc/hddtemp.db
 
 Some influential environment variables:
   CC          C compiler command
@@ -1610,7 +1611,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=hddtemp
- VERSION=0.3-beta7
+ VERSION=0.3-beta8
 
 
 cat >>confdefs.h <<_ACEOF
@@ -2506,12 +2507,12 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (exit $ac_status); }; }; then
   for ac_declaration in \
    ''\
+   '#include <stdlib.h>' \
    'extern "C" void std::exit (int) throw (); using std::exit;' \
    'extern "C" void std::exit (int); using std::exit;' \
    'extern "C" void exit (int) throw ();' \
    'extern "C" void exit (int);' \
-   'void exit (int);' \
-   '#include <stdlib.h>'
+   'void exit (int);'
 do
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
@@ -2611,9 +2612,8 @@ DEPDIR="${am__leading_dot}deps"
 
 am_make=${MAKE-make}
 cat > confinc << 'END'
-am__doit:
+doit:
 	@echo done
-.PHONY: am__doit
 END
 # If we don't find an include directive, just comment out the code.
 echo "$as_me:$LINENO: checking for style of include used by $am_make" >&5
@@ -3451,6 +3451,206 @@ _ACEOF
 fi
 
 done
+
+
+for ac_header in netinet/in.h
+do
+as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
+else
+  # Is the header compilable?
+echo "$as_me:$LINENO: checking $ac_header usability" >&5
+echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_header_compiler=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6
+
+# Is the header present?
+echo "$as_me:$LINENO: checking $ac_header presence" >&5
+echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
+  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null; then
+  if test -s conftest.err; then
+    ac_cpp_err=$ac_c_preproc_warn_flag
+  else
+    ac_cpp_err=
+  fi
+else
+  ac_cpp_err=yes
+fi
+if test -z "$ac_cpp_err"; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+rm -f conftest.err conftest.$ac_ext
+echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc in
+  yes:no )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    (
+      cat <<\_ASBOX
+## ------------------------------------ ##
+## Report this to bug-autoconf@gnu.org. ##
+## ------------------------------------ ##
+_ASBOX
+    ) |
+      sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+  no:yes )
+    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: $ac_header: check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    (
+      cat <<\_ASBOX
+## ------------------------------------ ##
+## Report this to bug-autoconf@gnu.org. ##
+## ------------------------------------ ##
+_ASBOX
+    ) |
+      sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+echo "$as_me:$LINENO: checking for $ac_header" >&5
+echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
+if eval "test \"\${$as_ac_Header+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  eval "$as_ac_Header=$ac_header_preproc"
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
+
+fi
+if test `eval echo '${'$as_ac_Header'}'` = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+echo "$as_me:$LINENO: checking for in_addr_t" >&5
+echo $ECHO_N "checking for in_addr_t... $ECHO_C" >&6
+if test "${ac_cv_type_in_addr_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <netinet/in.h>
+
+int
+main ()
+{
+if ((in_addr_t *) 0)
+  return 0;
+if (sizeof (in_addr_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_in_addr_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_in_addr_t=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_in_addr_t" >&5
+echo "${ECHO_T}$ac_cv_type_in_addr_t" >&6
+if test $ac_cv_type_in_addr_t = yes; then
+  :
+else
+
+cat >>confdefs.h <<_ACEOF
+#define in_addr_t uint32_t
+_ACEOF
+
+fi
 
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -4880,401 +5080,6 @@ echo "${ECHO_T}$ac_cv_gnu_library_2_1" >&6
 
 
 
-
-  echo "$as_me:$LINENO: checking whether integer division by zero raises SIGFPE" >&5
-echo $ECHO_N "checking whether integer division by zero raises SIGFPE... $ECHO_C" >&6
-if test "${gt_cv_int_divbyzero_sigfpe+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-      if test "$cross_compiling" = yes; then
-
-          # Guess based on the CPU.
-          case "$host_cpu" in
-            alpha* | i3456786 | m68k | s390*)
-              gt_cv_int_divbyzero_sigfpe="guessing yes";;
-            *)
-              gt_cv_int_divbyzero_sigfpe="guessing no";;
-          esac
-
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-#include <stdlib.h>
-#include <signal.h>
-
-static void
-#ifdef __cplusplus
-sigfpe_handler (int sig)
-#else
-sigfpe_handler (sig) int sig;
-#endif
-{
-  /* Exit with code 0 if SIGFPE, with code 1 if any other signal.  */
-  exit (sig != SIGFPE);
-}
-
-int x = 1;
-int y = 0;
-int z;
-int nan;
-
-int main ()
-{
-  signal (SIGFPE, sigfpe_handler);
-/* IRIX and AIX (when "xlc -qcheck" is used) yield signal SIGTRAP.  */
-#if (defined (__sgi) || defined (_AIX)) && defined (SIGTRAP)
-  signal (SIGTRAP, sigfpe_handler);
-#endif
-/* Linux/SPARC yields signal SIGILL.  */
-#if defined (__sparc__) && defined (__linux__)
-  signal (SIGILL, sigfpe_handler);
-#endif
-
-  z = x / y;
-  nan = y / y;
-  exit (1);
-}
-
-_ACEOF
-rm -f conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  gt_cv_int_divbyzero_sigfpe=yes
-else
-  echo "$as_me: program exited with status $ac_status" >&5
-echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-( exit $ac_status )
-gt_cv_int_divbyzero_sigfpe=no
-fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
-fi
-
-fi
-echo "$as_me:$LINENO: result: $gt_cv_int_divbyzero_sigfpe" >&5
-echo "${ECHO_T}$gt_cv_int_divbyzero_sigfpe" >&6
-  case "$gt_cv_int_divbyzero_sigfpe" in
-    *yes) value=1;;
-    *) value=0;;
-  esac
-
-cat >>confdefs.h <<_ACEOF
-#define INTDIV0_RAISES_SIGFPE $value
-_ACEOF
-
-
-
-  echo "$as_me:$LINENO: checking for inttypes.h" >&5
-echo $ECHO_N "checking for inttypes.h... $ECHO_C" >&6
-if test "${jm_ac_cv_header_inttypes_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/types.h>
-#include <inttypes.h>
-int
-main ()
-{
-uintmax_t i = (uintmax_t) -1;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  jm_ac_cv_header_inttypes_h=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-jm_ac_cv_header_inttypes_h=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $jm_ac_cv_header_inttypes_h" >&5
-echo "${ECHO_T}$jm_ac_cv_header_inttypes_h" >&6
-  if test $jm_ac_cv_header_inttypes_h = yes; then
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_INTTYPES_H_WITH_UINTMAX 1
-_ACEOF
-
-  fi
-
-
-  echo "$as_me:$LINENO: checking for stdint.h" >&5
-echo $ECHO_N "checking for stdint.h... $ECHO_C" >&6
-if test "${jm_ac_cv_header_stdint_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/types.h>
-#include <stdint.h>
-int
-main ()
-{
-uintmax_t i = (uintmax_t) -1;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  jm_ac_cv_header_stdint_h=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-jm_ac_cv_header_stdint_h=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $jm_ac_cv_header_stdint_h" >&5
-echo "${ECHO_T}$jm_ac_cv_header_stdint_h" >&6
-  if test $jm_ac_cv_header_stdint_h = yes; then
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_STDINT_H_WITH_UINTMAX 1
-_ACEOF
-
-  fi
-
-
-  echo "$as_me:$LINENO: checking for unsigned long long" >&5
-echo $ECHO_N "checking for unsigned long long... $ECHO_C" >&6
-if test "${ac_cv_type_unsigned_long_long+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-unsigned long long ull = 1; int i = 63;
-int
-main ()
-{
-unsigned long long ullmax = (unsigned long long) -1;
-     return ull << i | ull >> i | ullmax / ull | ullmax % ull;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_type_unsigned_long_long=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_type_unsigned_long_long=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_unsigned_long_long" >&5
-echo "${ECHO_T}$ac_cv_type_unsigned_long_long" >&6
-  if test $ac_cv_type_unsigned_long_long = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_UNSIGNED_LONG_LONG 1
-_ACEOF
-
-  fi
-
-
-
-
-  if test $jm_ac_cv_header_inttypes_h = no && test $jm_ac_cv_header_stdint_h = no; then
-
-    test $ac_cv_type_unsigned_long_long = yes \
-      && ac_type='unsigned long long' \
-      || ac_type='unsigned long'
-
-cat >>confdefs.h <<_ACEOF
-#define uintmax_t $ac_type
-_ACEOF
-
-  fi
-
-
-  echo "$as_me:$LINENO: checking for inttypes.h" >&5
-echo $ECHO_N "checking for inttypes.h... $ECHO_C" >&6
-if test "${gt_cv_header_inttypes_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-    cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/types.h>
-#include <inttypes.h>
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  gt_cv_header_inttypes_h=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-gt_cv_header_inttypes_h=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-
-fi
-echo "$as_me:$LINENO: result: $gt_cv_header_inttypes_h" >&5
-echo "${ECHO_T}$gt_cv_header_inttypes_h" >&6
-  if test $gt_cv_header_inttypes_h = yes; then
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_INTTYPES_H 1
-_ACEOF
-
-  fi
-
-
-
-  if test $gt_cv_header_inttypes_h = yes; then
-    echo "$as_me:$LINENO: checking whether the inttypes.h PRIxNN macros are broken" >&5
-echo $ECHO_N "checking whether the inttypes.h PRIxNN macros are broken... $ECHO_C" >&6
-if test "${gt_cv_inttypes_pri_broken+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-        cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <inttypes.h>
-#ifdef PRId32
-char *p = PRId32;
-#endif
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  gt_cv_inttypes_pri_broken=no
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-gt_cv_inttypes_pri_broken=yes
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-
-fi
-echo "$as_me:$LINENO: result: $gt_cv_inttypes_pri_broken" >&5
-echo "${ECHO_T}$gt_cv_inttypes_pri_broken" >&6
-  fi
-  if test "$gt_cv_inttypes_pri_broken" = yes; then
-
-cat >>confdefs.h <<_ACEOF
-#define PRI_MACROS_BROKEN 1
-_ACEOF
-
-  fi
-
-
       if test "X$prefix" = "XNONE"; then
     acl_final_prefix="$ac_default_prefix"
   else
@@ -5415,13 +5220,7 @@ echo "${ECHO_T}$acl_cv_rpath" >&6
   hardcode_minus_L="$acl_cv_hardcode_minus_L"
   sys_lib_search_path_spec="$acl_cv_sys_lib_search_path_spec"
   sys_lib_dlsearch_path_spec="$acl_cv_sys_lib_dlsearch_path_spec"
-    # Check whether --enable-rpath or --disable-rpath was given.
-if test "${enable_rpath+set}" = set; then
-  enableval="$enable_rpath"
-  :
-else
-  enable_rpath=yes
-fi;
+
 
 
 
@@ -5562,7 +5361,7 @@ fi;
           if test "X$found_dir" != "X"; then
                         LTLIBICONV="${LTLIBICONV}${LTLIBICONV:+ }-L$found_dir -l$name"
             if test "X$found_so" != "X"; then
-                                                        if test "$enable_rpath" = no || test "X$found_dir" = "X/usr/lib"; then
+                                                        if test "X$found_dir" = "X/usr/lib"; then
                                 LIBICONV="${LIBICONV}${LIBICONV:+ }$found_so"
               else
                                                                                 haveit=
@@ -5734,27 +5533,25 @@ fi;
                     ;;
                   -R*)
                     dir=`echo "X$dep" | sed -e 's/^X-R//'`
-                    if test "$enable_rpath" != no; then
-                                                                  haveit=
-                      for x in $rpathdirs; do
-                        if test "X$x" = "X$dir"; then
-                          haveit=yes
-                          break
-                        fi
-                      done
-                      if test -z "$haveit"; then
-                        rpathdirs="$rpathdirs $dir"
+                                                            haveit=
+                    for x in $rpathdirs; do
+                      if test "X$x" = "X$dir"; then
+                        haveit=yes
+                        break
                       fi
-                                                                  haveit=
-                      for x in $ltrpathdirs; do
-                        if test "X$x" = "X$dir"; then
-                          haveit=yes
-                          break
-                        fi
-                      done
-                      if test -z "$haveit"; then
-                        ltrpathdirs="$ltrpathdirs $dir"
+                    done
+                    if test -z "$haveit"; then
+                      rpathdirs="$rpathdirs $dir"
+                    fi
+                                                            haveit=
+                    for x in $ltrpathdirs; do
+                      if test "X$x" = "X$dir"; then
+                        haveit=yes
+                        break
                       fi
+                    done
+                    if test -z "$haveit"; then
+                      ltrpathdirs="$ltrpathdirs $dir"
                     fi
                     ;;
                   -l*)
@@ -5804,6 +5601,145 @@ fi;
       LTLIBICONV="${LTLIBICONV}${LTLIBICONV:+ }-R$found_dir"
     done
   fi
+
+
+          am_save_CPPFLAGS="$CPPFLAGS"
+
+  for element in $INCICONV; do
+    haveit=
+    for x in $CPPFLAGS; do
+
+  acl_save_prefix="$prefix"
+  prefix="$acl_final_prefix"
+  acl_save_exec_prefix="$exec_prefix"
+  exec_prefix="$acl_final_exec_prefix"
+  eval x=\"$x\"
+  exec_prefix="$acl_save_exec_prefix"
+  prefix="$acl_save_prefix"
+
+      if test "X$x" = "X$element"; then
+        haveit=yes
+        break
+      fi
+    done
+    if test -z "$haveit"; then
+      CPPFLAGS="${CPPFLAGS}${CPPFLAGS:+ }$element"
+    fi
+  done
+
+
+  echo "$as_me:$LINENO: checking for iconv" >&5
+echo $ECHO_N "checking for iconv... $ECHO_C" >&6
+if test "${am_cv_func_iconv+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+    am_cv_func_iconv="no, consider installing GNU libiconv"
+    am_cv_lib_iconv=no
+    cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdlib.h>
+#include <iconv.h>
+int
+main ()
+{
+iconv_t cd = iconv_open("","");
+       iconv(cd,NULL,NULL,NULL,NULL);
+       iconv_close(cd);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  am_cv_func_iconv=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+    if test "$am_cv_func_iconv" != yes; then
+      am_save_LIBS="$LIBS"
+      LIBS="$LIBS $LIBICONV"
+      cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdlib.h>
+#include <iconv.h>
+int
+main ()
+{
+iconv_t cd = iconv_open("","");
+         iconv(cd,NULL,NULL,NULL,NULL);
+         iconv_close(cd);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  am_cv_lib_iconv=yes
+        am_cv_func_iconv=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+      LIBS="$am_save_LIBS"
+    fi
+
+fi
+echo "$as_me:$LINENO: result: $am_cv_func_iconv" >&5
+echo "${ECHO_T}$am_cv_func_iconv" >&6
+  if test "$am_cv_func_iconv" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_ICONV 1
+_ACEOF
+
+  fi
+  if test "$am_cv_lib_iconv" = yes; then
+    echo "$as_me:$LINENO: checking how to link with libiconv" >&5
+echo $ECHO_N "checking how to link with libiconv... $ECHO_C" >&6
+    echo "$as_me:$LINENO: result: $LIBICONV" >&5
+echo "${ECHO_T}$LIBICONV" >&6
+  else
+            CPPFLAGS="$am_save_CPPFLAGS"
+    LIBICONV=
+    LTLIBICONV=
+  fi
+
 
 
 
@@ -6069,148 +6005,6 @@ done
 
 
 
-
-
-
-          am_save_CPPFLAGS="$CPPFLAGS"
-
-  for element in $INCICONV; do
-    haveit=
-    for x in $CPPFLAGS; do
-
-  acl_save_prefix="$prefix"
-  prefix="$acl_final_prefix"
-  acl_save_exec_prefix="$exec_prefix"
-  exec_prefix="$acl_final_exec_prefix"
-  eval x=\"$x\"
-  exec_prefix="$acl_save_exec_prefix"
-  prefix="$acl_save_prefix"
-
-      if test "X$x" = "X$element"; then
-        haveit=yes
-        break
-      fi
-    done
-    if test -z "$haveit"; then
-      CPPFLAGS="${CPPFLAGS}${CPPFLAGS:+ }$element"
-    fi
-  done
-
-
-  echo "$as_me:$LINENO: checking for iconv" >&5
-echo $ECHO_N "checking for iconv... $ECHO_C" >&6
-if test "${am_cv_func_iconv+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-    am_cv_func_iconv="no, consider installing GNU libiconv"
-    am_cv_lib_iconv=no
-    cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdlib.h>
-#include <iconv.h>
-int
-main ()
-{
-iconv_t cd = iconv_open("","");
-       iconv(cd,NULL,NULL,NULL,NULL);
-       iconv_close(cd);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  am_cv_func_iconv=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-    if test "$am_cv_func_iconv" != yes; then
-      am_save_LIBS="$LIBS"
-      LIBS="$LIBS $LIBICONV"
-      cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <stdlib.h>
-#include <iconv.h>
-int
-main ()
-{
-iconv_t cd = iconv_open("","");
-         iconv(cd,NULL,NULL,NULL,NULL);
-         iconv_close(cd);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  am_cv_lib_iconv=yes
-        am_cv_func_iconv=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-      LIBS="$am_save_LIBS"
-    fi
-
-fi
-echo "$as_me:$LINENO: result: $am_cv_func_iconv" >&5
-echo "${ECHO_T}$am_cv_func_iconv" >&6
-  if test "$am_cv_func_iconv" = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_ICONV 1
-_ACEOF
-
-  fi
-  if test "$am_cv_lib_iconv" = yes; then
-    echo "$as_me:$LINENO: checking how to link with libiconv" >&5
-echo $ECHO_N "checking how to link with libiconv... $ECHO_C" >&6
-    echo "$as_me:$LINENO: result: $LIBICONV" >&5
-echo "${ECHO_T}$LIBICONV" >&6
-  else
-            CPPFLAGS="$am_save_CPPFLAGS"
-    LIBICONV=
-    LTLIBICONV=
-  fi
-
-
-
   if test "$am_cv_func_iconv" = yes; then
     echo "$as_me:$LINENO: checking for iconv declaration" >&5
 echo $ECHO_N "checking for iconv declaration... $ECHO_C" >&6
@@ -6336,8 +6130,7 @@ _ACEOF
   fi
 
   if test $ac_cv_header_locale_h = yes; then
-
-  echo "$as_me:$LINENO: checking for LC_MESSAGES" >&5
+    echo "$as_me:$LINENO: checking for LC_MESSAGES" >&5
 echo $ECHO_N "checking for LC_MESSAGES... $ECHO_C" >&6
 if test "${am_cv_val_LC_MESSAGES+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -6381,14 +6174,13 @@ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 fi
 echo "$as_me:$LINENO: result: $am_cv_val_LC_MESSAGES" >&5
 echo "${ECHO_T}$am_cv_val_LC_MESSAGES" >&6
-  if test $am_cv_val_LC_MESSAGES = yes; then
+    if test $am_cv_val_LC_MESSAGES = yes; then
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_LC_MESSAGES 1
 _ACEOF
 
-  fi
-
+    fi
   fi
 
                       for ac_prog in bison
@@ -6449,8 +6241,6 @@ echo "${ECHO_T}$ac_prog_version" >&6
   if test $ac_verc_fail = yes; then
     INTLBISON=:
   fi
-
-
 
 
 
@@ -6694,7 +6484,7 @@ fi;
           if test "X$found_dir" != "X"; then
                         LTLIBINTL="${LTLIBINTL}${LTLIBINTL:+ }-L$found_dir -l$name"
             if test "X$found_so" != "X"; then
-                                                        if test "$enable_rpath" = no || test "X$found_dir" = "X/usr/lib"; then
+                                                        if test "X$found_dir" = "X/usr/lib"; then
                                 LIBINTL="${LIBINTL}${LIBINTL:+ }$found_so"
               else
                                                                                 haveit=
@@ -6866,27 +6656,25 @@ fi;
                     ;;
                   -R*)
                     dir=`echo "X$dep" | sed -e 's/^X-R//'`
-                    if test "$enable_rpath" != no; then
-                                                                  haveit=
-                      for x in $rpathdirs; do
-                        if test "X$x" = "X$dir"; then
-                          haveit=yes
-                          break
-                        fi
-                      done
-                      if test -z "$haveit"; then
-                        rpathdirs="$rpathdirs $dir"
+                                                            haveit=
+                    for x in $rpathdirs; do
+                      if test "X$x" = "X$dir"; then
+                        haveit=yes
+                        break
                       fi
-                                                                  haveit=
-                      for x in $ltrpathdirs; do
-                        if test "X$x" = "X$dir"; then
-                          haveit=yes
-                          break
-                        fi
-                      done
-                      if test -z "$haveit"; then
-                        ltrpathdirs="$ltrpathdirs $dir"
+                    done
+                    if test -z "$haveit"; then
+                      rpathdirs="$rpathdirs $dir"
+                    fi
+                                                            haveit=
+                    for x in $ltrpathdirs; do
+                      if test "X$x" = "X$dir"; then
+                        haveit=yes
+                        break
                       fi
+                    done
+                    if test -z "$haveit"; then
+                      ltrpathdirs="$ltrpathdirs $dir"
                     fi
                     ;;
                   -l*)
@@ -7168,6 +6956,44 @@ _ACEOF
 
 
 
+
+if test "x$prefix" = "xNONE"; then
+   prefix="/usr/local"
+fi
+if test "x$exec_prefix" = "xNONE"; then
+   exec_prefix=$prefix
+fi
+
+echo "$as_me:$LINENO: checking Location of hddtemp.db" >&5
+echo $ECHO_N "checking Location of hddtemp.db... $ECHO_C" >&6
+DEFAULT_DATABASE_PATH=
+#db_path=\"`eval echo ${datadir}`/misc/hddtemp.db\"
+db_path=\"/usr/share/misc/hddtemp.db\"
+
+# Check whether --with-db_path or --without-db_path was given.
+if test "${with_db_path+set}" = set; then
+  withval="$with_db_path"
+    if test -d "$withval"; then
+                     { { echo "$as_me:$LINENO: error: new file name for db-path
+See \`config.log' for more details." >&5
+echo "$as_me: error: new file name for db-path
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }
+                  fi
+                  DEFAULT_DATABASE_PATH="\"$withval\""
+
+else
+    DEFAULT_DATABASE_PATH="$db_path"
+fi;
+echo "$as_me:$LINENO: result: $DEFAULT_DATABASE_PATH" >&5
+echo "${ECHO_T}$DEFAULT_DATABASE_PATH" >&6
+
+cat >>confdefs.h <<_ACEOF
+#define DEFAULT_DATABASE_PATH $DEFAULT_DATABASE_PATH
+_ACEOF
+
+
+CFLAGS="$CFLAGS -Wall -fomit-frame-pointer -Wcast-align"
 
 # Substitute configuration variables
                                                             ac_config_files="$ac_config_files Makefile intl/Makefile po/Makefile.in m4/Makefile src/Makefile doc/Makefile"
@@ -7709,7 +7535,7 @@ cat >>$CONFIG_STATUS <<_ACEOF
 #
 
 AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"
-# Capture the value of obsolete ALL_LINGUAS because we need it to compute
+# Capture the value of obsolete $ALL_LINGUAS because we need it to compute
     # POFILES, GMOFILES, UPDATEPOFILES, DUMMYPOFILES, CATALOGS. But hide it
     # from automake.
     eval 'ALL_LINGUAS''="$ALL_LINGUAS"'

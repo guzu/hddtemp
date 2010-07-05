@@ -40,8 +40,16 @@ enum e_gettemp {
   GETTEMP_GUESS,            /* Not in database, but something was guessed, user must
 			       check that the temperature returned is correct */
   GETTEMP_KNOWN,            /* Drive appear in database */
-  GETTEMP_NOSENSOR          /* Drive appear in database but is known to have no sensor */
+  GETTEMP_NOSENSOR,         /* Drive appear in database but is known to have no sensor */
+  GETTEMP_DRIVE_SLEEP       /* Drive is sleeping */
 };
+enum e_powermode {
+  PWM_UNKNOWN,
+  PWM_ACTIVE,
+  PWM_SLEEPING,
+  PWM_STANDBY
+};
+
 
 struct disk {
   struct disk *            next;

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
-"POT-Creation-Date: 2003-06-03 01:32+0200\n"
+"POT-Creation-Date: 2003-07-22 00:56+0200\n"
 "PO-Revision-Date: 2003-06-03 00:58GMT+1\n"
 "Last-Translator: Aurelien Jarno <aurelien@aurel32.net>\n"
 "Language-Team: FRANCAIS <fr@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "%s%s| %5d | %s\n"
 msgstr "%s%s|  %5d | %s\n"
 
-#: src/hddtemp.c:160
+#: src/hddtemp.c:159
 #, c-format
 msgid ""
 "\n"
@@ -45,7 +45,7 @@ msgstr ""
 "Modèle: %s\n"
 "\n"
 
-#: src/hddtemp.c:186
+#: src/hddtemp.c:185
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -59,12 +59,12 @@ msgstr ""
 "fr).\n"
 "ATTENTION : Voir les options --help, --debug et --drivebase.\n"
 
-#: src/hddtemp.c:190
+#: src/hddtemp.c:189
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr "%s: %s :  pas de capteur\n"
 
-#: src/hddtemp.c:194
+#: src/hddtemp.c:193
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't appear in the database of supported drives\n"
@@ -81,55 +81,47 @@ msgstr ""
 "ATTENTION : Voir les options --help, --debug et --drivebase.\n"
 "ATTENTION : Et n'oubliez pas d'ajouter votre lecteur au fichier hddtemp.db\n"
 
-#: src/hddtemp.c:199
+#: src/hddtemp.c:198
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
 msgstr "%s: %s :  %d%sC ou %sF\n"
 
-#: src/hddtemp.c:211
+#: src/hddtemp.c:210
+#, fuzzy, c-format
+msgid "%s: %s: drive is sleeping\n"
+msgstr "%s: %s :  pas de capteur\n"
+
+#: src/hddtemp.c:213
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
 msgstr ""
 "%s: %s:  lecteur connu, mais il ne possède pas de capteur de température.\n"
 
-#: src/hddtemp.c:214
+#: src/hddtemp.c:216
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr "ERREUR : %s : %s : status inconnu\n"
 
-#: src/hddtemp.c:229
+#: src/hddtemp.c:231
 msgid ""
 "\n"
-"If one of the field value seems to match the temperature, you can\n"
-"send me a report so I can add it to the database of supported drives\n"
-"and/or you can do it yourself by adding an entry in hddtemp.db and send\n"
-"me the updated hddtemp.db.\n"
-"\n"
-"Don't forget to compare your value(s) with those in the database.\n"
-"(see option --drivebase)\n"
+"If one of the field value seems to match the temperature, be sure to read\n"
+"the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
 msgstr ""
-"\n"
-"Si un des champs semble correspondre à une température, vous pouvez\n"
-"m'envoyer un message pour que j'ajoute le lecteur à la base de donnée des\n"
-"lecteurs supportés et/ou vous pouvez ajouter l'entrée correspondante dans\n"
-"hddtemp.db et m'envoyer la version mise à jour de hddtemp.db\n"
-"\n"
-"N'oubliez pas de comparer vos valeurs avec celles de la base de données.\n"
-"(voir l'option --drivebase)\n"
 
-#: src/hddtemp.c:453
+#: src/hddtemp.c:458
 msgid "ERROR: invalid separator.\n"
 msgstr "ERREUR : séparateur invalide.\n"
 
-#: src/hddtemp.c:464
+#: src/hddtemp.c:469
 msgid "ERROR: invalid port number.\n"
 msgstr "ERREUR : numéro de port invalide.\n"
 
-#: src/hddtemp.c:473
+#: src/hddtemp.c:478
 msgid "ERROR: invalid listen address.\n"
 msgstr "ERREUR : adresse de l'interface invalide.\n"
 
-#: src/hddtemp.c:479
+#: src/hddtemp.c:484
 #, fuzzy, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
@@ -183,12 +175,12 @@ msgstr ""
 "\n"
 "Report bugs or new drives to <coredump@free.fr>.\n"
 
-#: src/hddtemp.c:502
+#: src/hddtemp.c:507
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "hddtemp version %s\n"
 
-#: src/hddtemp.c:521
+#: src/hddtemp.c:526
 msgid ""
 "  ERROR: You must be root to run the command,\n"
 "  ERROR: or the root must set the suid bit for the executable.\n"
@@ -196,17 +188,17 @@ msgstr ""
 "  ERREUR: Vous devez être root pour lancer la commande, ou\n"
 "  ERREUR: l'utilisateur root doit activer le bit suid de l'éxecutable.\n"
 
-#: src/hddtemp.c:527
+#: src/hddtemp.c:532
 msgid "Too few arguments: you must specify one drive, at least.\n"
 msgstr "Trop peu d'arguments : vous devez spécifier au moins un lecteur.\n"
 
-#: src/hddtemp.c:537
+#: src/hddtemp.c:542
 msgid "ERROR: can't use --debug and --daemon options together.\n"
 msgstr ""
 "ERREUR: impossible d'utiliser les options --debug et --daemon en même "
 "temps.\n"
 
-#: src/hddtemp.c:564
+#: src/hddtemp.c:568
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr ""
@@ -222,7 +214,7 @@ msgstr "inconnu"
 msgid "field(%d)\t = %d\n"
 msgstr "champ(%d)\t = %d\n"
 
-#: src/ata.c:125
+#: src/ata.c:167
 msgid "S.M.A.R.T. not available"
 msgstr "S.M.A.R.T. non disponible"
 
@@ -927,3 +919,24 @@ msgstr ""
 #: src/scsicmds.c:763
 msgid "SMART Sense: False Alarm"
 msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "If one of the field value seems to match the temperature, you can\n"
+#~ "send me a report so I can add it to the database of supported drives\n"
+#~ "and/or you can do it yourself by adding an entry in hddtemp.db and send\n"
+#~ "me the updated hddtemp.db.\n"
+#~ "\n"
+#~ "Don't forget to compare your value(s) with those in the database.\n"
+#~ "(see option --drivebase)\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Si un des champs semble correspondre à une température, vous pouvez\n"
+#~ "m'envoyer un message pour que j'ajoute le lecteur à la base de donnée "
+#~ "des\n"
+#~ "lecteurs supportés et/ou vous pouvez ajouter l'entrée correspondante "
+#~ "dans\n"
+#~ "hddtemp.db et m'envoyer la version mise à jour de hddtemp.db\n"
+#~ "\n"
+#~ "N'oubliez pas de comparer vos valeurs avec celles de la base de données.\n"
+#~ "(voir l'option --drivebase)\n"

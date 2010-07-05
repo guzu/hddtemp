@@ -151,7 +151,6 @@ static int get_smart_threshold_values(int fd, unsigned char* buff) {
 */
 
 
-
 static void display_temperature(struct disk *dsk) {
   enum e_gettemp ret;
   char *degree;
@@ -207,6 +206,9 @@ static void display_temperature(struct disk *dsk) {
     else
        printf("%d\n", (dsk->db_entry->unit == 'C') ? dsk->value : F_to_C(dsk->value));
     break;
+  case GETTEMP_DRIVE_SLEEP:
+    printf(_("%s: %s: drive is sleeping\n"), dsk->drive, dsk->model);    
+    break;
   case GETTEMP_NOSENSOR:
     printf(_("%s: %s:  known drive, but it doesn't have a temperature sensor.\n"), dsk->drive, dsk->model);
     break;
@@ -227,13 +229,9 @@ void do_direct_mode(struct disk *ldisks) {
   
   if(debug) {
     printf(_("\n"
-	     "If one of the field value seems to match the temperature, you can\n"
-	     "send me a report so I can add it to the database of supported drives\n"
-	     "and/or you can do it yourself by adding an entry in hddtemp.db and send\n"
-	     "me the updated hddtemp.db.\n"
-	     "\n"
-	     "Don't forget to compare your value(s) with those in the database.\n"
-	     "(see option --drivebase)\n"));
+	     "If one of the field value seems to match the temperature, be sure to read\n"
+	     "the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
+	     ));
   }
 }
 
@@ -340,7 +338,7 @@ void do_daemon_mode(struct disk *ldisks) {
 
 	if(dsk->type == ERROR)
 	  dsk->ret = GETTEMP_ERROR;
-	else
+	else 
 	  dsk->ret = bus[dsk->type]->get_temperature(dsk);
 
 	time(&dsk->last_time);
@@ -376,6 +374,13 @@ void do_daemon_mode(struct disk *ldisks) {
 		     "NOS",      separator,
 		     '*');
 	break;
+      case GETTEMP_DRIVE_SLEEP:
+	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
+		     dsk->drive, separator,
+		     dsk->model, separator,
+		     "SLP",      separator,
+		     '*');
+	break;
       case GETTEMP_ERROR:
       default:
 	n = snprintf(msg, sizeof(msg), "%s%c%s%c%s%c%c",
@@ -397,7 +402,7 @@ void do_daemon_mode(struct disk *ldisks) {
 
 
 int main(int argc, char* argv[]) {
-  int           i, c, lindex = 0;
+  int           i, c, lindex = 0, db_loaded = 0;
   int           show_db;
   struct disk * ldisks;
 
@@ -538,7 +543,6 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  load_database(database_path);
   init_bus_types();
 
   /* collect disks informations */
@@ -569,8 +573,14 @@ int main(int argc, char* argv[]) {
     }
 
     dsk->model = bus[dsk->type]->model(dsk->fd);
-    dsk->db_entry = is_a_supported_drive(dsk->model);
     dsk->value = -1;
+    if(dsk->type != BUS_SCSI) {
+      if(!db_loaded) {
+	load_database(database_path);
+	db_loaded = 1;
+      }      
+      dsk->db_entry = is_a_supported_drive(dsk->model);
+    }
   }
 
   if(daemon_mode) {

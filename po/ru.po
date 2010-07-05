@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: hddtemp 0.3-beta3\n"
-"POT-Creation-Date: 2003-06-03 01:32+0200\n"
+"POT-Creation-Date: 2003-07-22 00:56+0200\n"
 "PO-Revision-Date: 2003-03-08 16:42+0300\n"
 "Last-Translator: Michael Shigorin <mike@altlinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "%s%s| %5d | %s\n"
 msgstr "%s: %s:  %d%sC или %sF\n"
 
-#: src/hddtemp.c:160
+#: src/hddtemp.c:159
 #, c-format
 msgid ""
 "\n"
@@ -39,7 +39,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/hddtemp.c:186
+#: src/hddtemp.c:185
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't seem to have a temperature sensor.\n"
@@ -52,12 +52,12 @@ msgstr ""
 "ВНИМАНИЕ: Если вы точно знаете, что датчик есть, напишите coredump@free.fr\n"
 "ВНИМАНИЕ: (см. опции --help, --debug и --drivebase).\n"
 
-#: src/hddtemp.c:190
+#: src/hddtemp.c:189
 #, c-format
 msgid "%s: %s:  no sensor\n"
 msgstr "%s: %s:  нет датчика\n"
 
-#: src/hddtemp.c:194
+#: src/hddtemp.c:193
 #, c-format
 msgid ""
 "WARNING: Drive %s doesn't appear in the database of supported drives\n"
@@ -72,54 +72,46 @@ msgstr ""
 "ВНИМАНИЕ: См. опции --help, --debug и --drivebase.\n"
 "ВНИМАНИЕ: И не забудьте, что можно добавить привод в hddtemp.db\n"
 
-#: src/hddtemp.c:199
+#: src/hddtemp.c:198
 #, c-format
 msgid "%s: %s:  %d%sC or %sF\n"
 msgstr "%s: %s:  %d%sC или %sF\n"
 
-#: src/hddtemp.c:211
+#: src/hddtemp.c:210
+#, fuzzy, c-format
+msgid "%s: %s: drive is sleeping\n"
+msgstr "%s: %s:  нет датчика\n"
+
+#: src/hddtemp.c:213
 #, c-format
 msgid "%s: %s:  known drive, but it doesn't have a temperature sensor.\n"
 msgstr "%s: %s:  известный диск, не содержащий датчика температуры.\n"
 
-#: src/hddtemp.c:214
+#: src/hddtemp.c:216
 #, c-format
 msgid "ERROR: %s: %s: unknown returned status\n"
 msgstr "ОШИБКА: %s: %s: неизвестный статус возврата\n"
 
-#: src/hddtemp.c:229
+#: src/hddtemp.c:231
 msgid ""
 "\n"
-"If one of the field value seems to match the temperature, you can\n"
-"send me a report so I can add it to the database of supported drives\n"
-"and/or you can do it yourself by adding an entry in hddtemp.db and send\n"
-"me the updated hddtemp.db.\n"
-"\n"
-"Don't forget to compare your value(s) with those in the database.\n"
-"(see option --drivebase)\n"
+"If one of the field value seems to match the temperature, be sure to read\n"
+"the hddtemp man page before sending me a report (section REPORT). Thanks.\n"
 msgstr ""
-"\n"
-"Если значение одного из полей похоже на правильную температуру, вы можете\n"
-"прислать мне отчет, чтобы я добавил информацию в базу данных по дискам\n"
-"и/или вы можете сделать это самостоятельно, добавив запись в hddtemp.db\n"
-"и прислав мне обновленный файл.\n"
-"\n"
-"Не забудьте сравнить свои значения с уже имеющимися в базе\n"
-"(см. опцию --drivebase).\n"
 
-#: src/hddtemp.c:453
+#: src/hddtemp.c:458
 msgid "ERROR: invalid separator.\n"
 msgstr "ОШИБКА: неверный разделитель.\n"
 
-#: src/hddtemp.c:464
+#: src/hddtemp.c:469
 msgid "ERROR: invalid port number.\n"
 msgstr "ОЩИБКА: неверный номер порта.\n"
 
-#: src/hddtemp.c:473
+#: src/hddtemp.c:478
 msgid "ERROR: invalid listen address.\n"
 msgstr ""
 
-#: src/hddtemp.c:479
+#: src/hddtemp.c:484
 #, fuzzy, c-format
 msgid ""
 " Usage: hddtemp [OPTIONS] DISK1 [DISK2]...\n"
@@ -167,12 +159,12 @@ msgstr ""
 "\n"
 "Сообщения об ошибках и данные для дисков отправляйте на <coredump@free.fr>.\n"
 
-#: src/hddtemp.c:502
+#: src/hddtemp.c:507
 #, c-format
 msgid "hddtemp version %s\n"
 msgstr "Версия hddtemp: %s\n"
 
-#: src/hddtemp.c:521
+#: src/hddtemp.c:526
 msgid ""
 "  ERROR: You must be root to run the command,\n"
 "  ERROR: or the root must set the suid bit for the executable.\n"
@@ -180,15 +172,15 @@ msgstr ""
 "  ОШИБКА: для запуска необходимы права root,\n"
 "  ОШИБКА: или администратор должен установить SUID-бит на исполняемый файл.\n"
 
-#: src/hddtemp.c:527
+#: src/hddtemp.c:532
 msgid "Too few arguments: you must specify one drive, at least.\n"
 msgstr ""
 
-#: src/hddtemp.c:537
+#: src/hddtemp.c:542
 msgid "ERROR: can't use --debug and --daemon options together.\n"
 msgstr "ОШИБКА: одновременное использование --debug и --daemon недопустимо.\n"
 
-#: src/hddtemp.c:564
+#: src/hddtemp.c:568
 #, c-format
 msgid "ERROR: %s: can't determine bus type (or this bus type is unknown)\n"
 msgstr "ОШИБКА: %s: невозможно определить тип шины\n"
@@ -202,7 +194,7 @@ msgstr "неизв."
 msgid "field(%d)\t = %d\n"
 msgstr "поле(%d)\t = %d\n"
 
-#: src/ata.c:125
+#: src/ata.c:167
 msgid "S.M.A.R.T. not available"
 msgstr "S.M.A.R.T. недоступен"
 
@@ -907,3 +899,23 @@ msgstr ""
 #: src/scsicmds.c:763
 msgid "SMART Sense: False Alarm"
 msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "If one of the field value seems to match the temperature, you can\n"
+#~ "send me a report so I can add it to the database of supported drives\n"
+#~ "and/or you can do it yourself by adding an entry in hddtemp.db and send\n"
+#~ "me the updated hddtemp.db.\n"
+#~ "\n"
+#~ "Don't forget to compare your value(s) with those in the database.\n"
+#~ "(see option --drivebase)\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Если значение одного из полей похоже на правильную температуру, вы "
+#~ "можете\n"
+#~ "прислать мне отчет, чтобы я добавил информацию в базу данных по дискам\n"
+#~ "и/или вы можете сделать это самостоятельно, добавив запись в hddtemp.db\n"
+#~ "и прислав мне обновленный файл.\n"
+#~ "\n"
+#~ "Не забудьте сравнить свои значения с уже имеющимися в базе\n"
+#~ "(см. опцию --drivebase).\n"

@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH HDDTEMP 1 "October 28, 2002"
+.TH HDDTEMP 1 "July 21, 2003"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -15,7 +15,7 @@
 .\" .br        insert line break
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
-.SH NAME
+.SH "NAME"
 hddtemp \- Utility to monitor hard drive temperature
 .SH SYNOPSIS
 .B hddtemp
@@ -30,7 +30,7 @@ sensor. hddtemp now support reading S.M.A.R.T information from SCSI drives.
 .B hddtemp
 can work as simple command line tool or as a daemon.
 
-.SH OPTIONS
+.SH "OPTIONS"
 The programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`-').
 A summary of options are included below.
@@ -68,10 +68,10 @@ Doesn't check if the drive drive is supported.
 Display hddtemp version number.
 
 
-.SH DRIVE DATABASE
+.SH "DRIVE DATABASE"
 If you know that your drive has a temperature sensor and is reported to be
 unsupported tell me which model and which manufacturer it is, and/or just
-add a new entry in /etc/hddtemp.db. Each line of hddtemp.db is 
+add a new entry in /usr/share/misc/hddtemp.db. Each line of hddtemp.db is 
 either a commentary, a blank line or a line containing:
 .TP
 - a regular expression that allow hddtemp to recognize a drive or a set of drives from its model name or from a generic model name,
@@ -82,9 +82,9 @@ either a commentary, a blank line or a line containing:
 .TP
 - a description.
 .PP
-Feedback is welcome.
+Feedback is welcome (see section REPORT below).
 
-.SH DAEMON MODE
+.SH "DAEMON MODE"
 To test
 .B hddtemp
 in daemon mode, start
@@ -104,7 +104,29 @@ to get a reply:
 Database is read once at startup, so
 .B hddtemp
 must be restarted if the database is updated.
-.SH AUTHOR
+
+.SH "REPORT"
+As I received a lot of reports, things must be clarified. When running hddtemp with debug options, hddtemp will show sort of dump of S.M.A.R.T informations. Each field correspond to an information. The standard field for temperature drive is 194. But it's not always the case. And if your drive has S.M.A.R.T capabilities, this doesn't mean it can report its temperature. So, it must be determined experimentaly.
+.PP
+So you can try to guess which field by is the good one by running hddtemp at regular interval :
+.TP
+ - just after starting up your PC/server/station,
+.TP
+ - after opening a window (a physical window :),
+.TP
+ - after opening the case,
+.TP
+ - what ever you can think of...
+.PP
+and looking for a field's value that would increase or decrease depending on what effect you want to induce.
+Be carefull, field 4, 9 and 12 are often reported to match a temperature field but after some investigation they do not. But fields 194 (which is the standard field for temperature) and 231 are good candidate.
+.PP
+Then, you can send me a report with ouputs from 'hddtemp --debug ...', smartcl or 'hdparm -i ...', and/or add an entry in hddtemp.db yourself.
+
+.SH "SEE ALSO"
+.BR smartctl (1)
+
+.SH "AUTHOR"
 .PP
 Emmanuel Varagnat (coredump@free.fr).
 .PP
