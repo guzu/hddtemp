@@ -8,7 +8,7 @@ AC_CONFIG_HEADERS([config.h])
 # Determine the host and build type. The target is always a PIC.
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(hddtemp, 0.3-beta15)
+AM_INIT_AUTOMAKE(hddtemp, 0.3-beta16)
 
 dnl Checks for programs.
 AC_PROG_CC

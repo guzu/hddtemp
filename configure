@@ -1648,7 +1648,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=hddtemp
- VERSION=0.3-beta15
+ VERSION=0.3-beta16
 
 
 cat >>confdefs.h <<_ACEOF

@@ -88,7 +88,7 @@ static const char *sata_model (int device) {
     return strdup(_("unknown"));
   else
   {
-    sata_fixstring(identify + 54, 24);
+    sata_fixstring(identify + 54, 40);
     return strdup(identify + 54);
   }
 }

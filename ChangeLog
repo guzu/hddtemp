@@ -1,4 +1,4 @@
-v0.3 beta16 (not yet released)
+v0.3 beta17 (not yet released)
 =============================
  * --foreground added
  * Fix some error messages wrongly ouput to stdout instead of stderr
@@ -6,6 +6,10 @@ v0.3 beta16 (not yet released)
  * Consider field 194 as a temperature in Celsius if the disk
    is not present in hddtemp.db.
  * Update config.{guess,sub}
+
+v0.3 beta16 (not yet released)
+=============================
+ * Fix invalid characters on the disk model name
 
 v0.3 beta15
 =============================
